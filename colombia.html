@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Guía de Operaciones de Viaje: Colombia 2025</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<!-- Chosen Palette: A Fresh & Earthy Palette -->
+		<!-- Application Structure Plan: The application is engineered as a comprehensive, single-page briefing document. It begins with a strategic overview section containing key metrics (total cost, duration) and high-level data visualizations (budget distribution, cost per destination) for quick situational awareness. The core architecture consists of 13 distinct, sequential sections, one for each day. Each section is a self-contained operational brief, providing a narrative summary, a tactical dossier (effort, weather, budget), critical logistics and advice, and a detailed chronological action plan (the itinerary table). This linear, scroll-based structure was selected for its robustness and ease of access, ensuring all critical mission data is available without user interaction, making it ideal for reference in the field. -->
+		<!-- Visualization & Content Choices: 
+    - Overall Budget Distribution: Report Info -> Budget percentages by category. Goal -> Compare composition of total expenditure. Viz -> Doughnut Chart. Interaction -> Hover for details. Justification -> Optimal for visualizing proportional contributions to a whole. Library -> Chart.js/Canvas.
+    - Daily Itinerary & Operations Table: Report Info -> Timed activities with costs, comments, transport logistics, and external links. Goal -> Organize and provide actionable intelligence. Viz -> Structured HTML table. Interaction -> Clickable external hyperlinks for navigation and supplier access. Justification -> Presents detailed operational data in a highly structured and scannable format, directly embedding all necessary resources. Method -> HTML/Tailwind.
+    - Daily Tactical Dossier: Report Info -> Key daily parameters (budget, physical effort, weather). Goal -> Inform and prepare. Viz -> Styled data cards in a banner format. Interaction -> None. Justification -> Provides at-a-glance situational data with high visual impact for daily preparation. Method -> HTML/Tailwind. -->
+		<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+		<style>
+			body {
+				font-family: "Inter", sans-serif;
+				background-color: #f8fafc;
+			}
+			.chart-container {
+				position: relative;
+				width: 100%;
+				max-width: 500px;
+				margin-left: auto;
+				margin-right: auto;
+				height: 300px;
+				max-height: 350px;
+			}
+			@media (min-width: 768px) {
+				.chart-container {
+					height: 350px;
+				}
+			}
+		</style>
+	</head>
+	<body class="text-slate-800">
+		<header class="bg-white shadow-sm sticky top-0 z-10">
+			<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+				<h1 class="text-2xl sm:text-3xl font-bold text-teal-700">
+					Guía de Operaciones de Viaje: Colombia 2025
+				</h1>
+				<p class="text-slate-500 mt-1 text-sm sm:text-base">
+					Dossier Táctico del 10 al 22 de Octubre.
+				</p>
+			</div>
+		</header>
+
+		<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+			<section id="summary" class="mb-12">
+				<h2 class="text-3xl font-bold mb-6 text-slate-700 border-b pb-2">
+					Resumen Estratégico del Viaje
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+					<div class="bg-white p-6 rounded-lg shadow-md text-center">
+						<h3 class="text-lg font-semibold text-slate-600">
+							Costo Total Estimado
+						</h3>
+						<p class="text-3xl font-bold text-teal-600 mt-2">
+							$6,250,000 <span class="text-xl text-slate-500">COP</span>
+						</p>
+						<p class="text-xl text-slate-500">~$37,500 MXN</p>
+					</div>
+					<div class="bg-white p-6 rounded-lg shadow-md text-center">
+						<h3 class="text-lg font-semibold text-slate-600">
+							Duración de la Misión
+						</h3>
+						<p class="text-3xl font-bold text-teal-600 mt-2">
+							13 <span class="text-xl text-slate-500">Días</span>
+						</p>
+						<p class="text-xl text-slate-500">12 Noches</p>
+					</div>
+					<div class="bg-white p-6 rounded-lg shadow-md text-center">
+						<h3 class="text-lg font-semibold text-slate-600">
+							Teatros de Operaciones
+						</h3>
+						<p class="text-3xl font-bold text-teal-600 mt-2">4</p>
+						<p class="text-xl text-slate-500">
+							Cartagena, Medellín, Eje Cafetero, Bogotá
+						</p>
+					</div>
+				</div>
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+					<div class="bg-white p-6 rounded-lg shadow-md">
+						<h3 class="text-xl font-semibold mb-4 text-center text-slate-700">
+							Distribución de Recursos
+						</h3>
+						<div class="chart-container">
+							<canvas id="budgetDistributionChart"></canvas>
+						</div>
+					</div>
+					<div class="bg-white p-6 rounded-lg shadow-md">
+						<h3 class="text-xl font-semibold mb-4 text-center text-slate-700">
+							Huella Financiera por Destino (Prom. Diario)
+						</h3>
+						<div class="chart-container">
+							<canvas id="dailyCostChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<div id="daily-sections-container"></div>
+		</main>
+
+		<footer class="bg-white mt-12 py-6 border-t">
+			<div
+				class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500"
+			>
+				<p>
+					&copy; 2025 Guía de Viaje a Colombia. Planificación estratégica para
+					una aventura inolvidable.
+				</p>
+			</div>
+		</footer>
+
+		<script>
+			const tripData = {
+				general: {
+					budgetDistribution: {
+						labels: [
+							"Alojamiento",
+							"Alimentación",
+							"Actividades",
+							"Contingencia (15%)",
+							"Vuelos Internos",
+							"Transporte Local",
+						],
+						data: [24.7, 20.5, 18.4, 13.0, 9.6, 7.3],
+					},
+					dailyCost: {
+						labels: ["Cartagena", "Medellín", "Eje Cafetero", "Bogotá"],
+						data: [226267, 208160, 134667, 199550],
+					},
+				},
+				days: [
+					{
+						day: 1,
+						date: "Viernes, 10 de Octubre",
+						title: "Llegada e Inmersión en la Ciudad Amurallada",
+						city: "Cartagena",
+						narrative:
+							"El viaje comienza en el Caribe. Aterrizaremos en la vibrante Cartagena, nos instalaremos en el corazón de la Ciudad Amurallada y nos sumergiremos de inmediato en sus calles coloridas y su historia palpable, culminando con un atardecer inolvidable sobre las antiguas murallas.",
+						logistics:
+							"La estructura de este día es ideal para la llegada. La exploración autoguiada permite una aclimatación gradual al ritmo y clima del Caribe. La elección del Baluarte de Santo Domingo para el atardecer, en lugar del conocido Café del Mar, es una decisión estratégica que optimiza la experiencia y el presupuesto.",
+						budget: 133000,
+						effort: "Medio",
+						steps: "10,000 - 12,000",
+						weather:
+							"Ropa muy ligera (lino, algodón), sandalias cómodas, sombrero y protector solar.",
+						itinerary: [
+							{
+								time: "10:00 - 13:00",
+								activity: "Llegada y Traslado a Cartagena",
+								cost: "Taxi: 20,000 COP",
+								transport:
+									"🚕 <strong>Taxi (15-20 min)</strong><br>Desde el Aeropuerto CTG al Centro Histórico.",
+								comments:
+									"Nuestro hospedaje está en el corazón de la Ciudad Amurallada, la tarifa de taxi está regulada.",
+								links: [
+									{
+										name: "Apartamento Bijou",
+										url: "https://www.google.com/maps/search/?api=1&query=Apartamento+Bijou+Centro+Historico+Cartagena",
+									},
+								],
+							},
+							{
+								time: "13:00 - 14:30",
+								activity: "Almuerzo de Bienvenida",
+								cost: "28,000 COP",
+								transport:
+									"👟 <strong>A pie (5 min)</strong><br>Desde el apartamento.",
+								comments:
+									'Restaurantes como Espiritu Santo o La Mulata son excelentes opciones para probar un buen "corrientazo" gourmet o platos locales.',
+								links: [
+									{
+										name: "Restaurante Espiritu Santo",
+										url: "https://www.google.com/maps/search/?api=1&query=Restaurante+Espiritu+Santo+Cartagena",
+									},
+									{
+										name: "La Mulata",
+										url: "https://www.google.com/maps/search/?api=1&query=La+Mulata+Cartagena",
+									},
+								],
+							},
+							{
+								time: "14:30 - 17:30",
+								activity: "Ciudad Amurallada (Zona Norte)",
+								cost: "Gratis",
+								transport:
+									"👟 <strong>A pie</strong><br>Recorrido por la zona norte.",
+								comments:
+									"Exploraremos la Plaza Fernández Madrid, Las Bóvedas (mercado de artesanías) y caminaremos sobre la muralla.",
+								links: [
+									{
+										name: "Plaza Fernández Madrid",
+										url: "https://www.google.com/maps/search/?api=1&query=Plaza+Fernández+Madrid+Cartagena",
+									},
+									{
+										name: "Las Bóvedas",
+										url: "https://www.google.com/maps/search/?api=1&query=Las+Bóvedas+Cartagena",
+									},
+								],
+							},
+							{
+								time: "17:30 - 18:30",
+								activity: "Atardecer en la Muralla",
+								cost: "Bebida: 30,000 COP",
+								transport:
+									"👟 <strong>A pie (10 min)</strong><br>Caminata hacia el Baluarte de Santo Domingo.",
+								comments:
+									"Ver la puesta de sol desde el Baluarte de Santo Domingo. Opción más auténtica y económica que Café del Mar.",
+								links: [
+									{
+										name: "Baluarte Santo Domingo",
+										url: "https://www.google.com/maps/search/?api=1&query=Baluarte+de+Santo+Domingo+Cartagena",
+									},
+								],
+							},
+							{
+								time: "18:30 - 20:00",
+								activity: "Peinado con Ros (Opcional)",
+								cost: "A negociar",
+								transport:
+									"👟 <strong>A pie (2 min)</strong><br>En la Plaza de Santo Domingo.",
+								comments:
+									"Actividad cultural única. Se arregla un pago/propina directamente con Ros en la plaza.",
+								links: [
+									{
+										name: "Plaza de Santo Domingo",
+										url: "https://www.google.com/maps/search/?api=1&query=Plaza+de+Santo+Domingo+Cartagena",
+									},
+								],
+							},
+							{
+								time: "20:00 +",
+								activity: "Cena en Getsemaní",
+								cost: "55,000 COP",
+								transport:
+									"👟 <strong>A pie (15 min)</strong><br>Caminata agradable cruzando el Parque Centenario.",
+								comments:
+									"Explorar el vibrante barrio bohemio, conocido por su arte callejero, ambiente y excelentes restaurantes.",
+								links: [
+									{
+										name: "Demente Bar",
+										url: "https://www.google.com/maps/search/?api=1&query=Demente+Bar+Cartagena",
+									},
+									{
+										name: "La Cocina de Pepina",
+										url: "https://www.google.com/maps/search/?api=1&query=La+Cocina+de+Pepina+Cartagena",
+									},
+								],
+							},
+						],
+					},
+					{
+						day: 2,
+						date: "Sábado, 11 de Octubre",
+						title: "Fortalezas y Vistas Panorámicas",
+						city: "Cartagena",
+						narrative:
+							"Hoy conquistaremos los puntos más altos de Cartagena. Empezaremos en el imponente Castillo de San Felipe, una obra maestra de la ingeniería militar, y luego ascenderemos al Convento de la Popa para obtener las vistas panorámicas más espectaculares.",
+						logistics:
+							"El plan de negociar un taxi para el trayecto de ida, espera y vuelta al Convento de la Popa es la metodología más segura y eficiente. No se recomienda intentar el ascenso a pie debido a consideraciones de seguridad en la ruta. Esta es una recomendación logística crítica.",
+						budget: 157800,
+						effort: "Pesado",
+						steps: "13,000 - 16,000",
+						weather:
+							"Caluroso y húmedo. Calzado extremadamente cómodo para subir rampas y escaleras, gorra indispensable.",
+						itinerary: [
+							{
+								time: "09:00 - 12:00",
+								activity: "Castillo de San Felipe",
+								cost: "Taxi: 11,800 + Entrada: 36,000 COP",
+								transport:
+									"🚕 <strong>Taxi (10 min)</strong><br>Desde Getsemaní.",
+								comments:
+									"Explorar la fortaleza y sus túneles. Comprar tickets en línea para evitar filas.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Castillo+de+San+Felipe+de+Barajas+Cartagena",
+									},
+									{
+										name: "Tickets Oficiales",
+										url: "https://fortificacionescartagena.com.co/es/tarifas/",
+									},
+								],
+							},
+							{
+								time: "12:00 - 14:00",
+								activity: "Convento de la Popa",
+								cost: "Taxi I/V: ~50,000 (grupo) + Entrada: 15,000 COP",
+								transport:
+									"🚕 <strong>Taxi (20 min)</strong><br>Desde el Castillo. Negociar ida, espera y vuelta.",
+								comments:
+									"Subir al punto más alto para las mejores vistas. Indispensable negociar el trayecto completo con el taxista.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Convento+de+la+Popa+Cartagena",
+									},
+								],
+							},
+							{
+								time: "14:00 - 15:30",
+								activity: "Almuerzo en Getsemaní",
+								cost: "35,000 COP",
+								transport:
+									"🚕 <strong>Taxi (15 min)</strong><br>Bajada desde La Popa.",
+								comments:
+									"Regresar a Getsemaní para almorzar y descansar del calor del mediodía.",
+								links: [
+									{
+										name: "Caffé Lunático",
+										url: "https://www.google.com/maps/search/?api=1&query=Caffé+Lunático+Cartagena",
+									},
+								],
+							},
+							{
+								time: "15:30 +",
+								activity: "Tarde/Noche Libre",
+								cost: "Variable",
+								transport:
+									"👟 <strong>A pie</strong><br>Exploración por el Centro y Getsemaní.",
+								comments:
+									"Tiempo para compras de artesanías o disfrutar de la atmósfera de la ciudad antes de cenar.",
+								links: [
+									{
+										name: "Alma Restaurante",
+										url: "https://www.google.com/maps/search/?api=1&query=Alma+Restaurante+Cartagena",
+									},
+								],
+							},
+						],
+					},
+					{
+						day: 3,
+						date: "Domingo, 12 de Octubre",
+						title: "Escapada Caribeña a las Islas del Rosario",
+						city: "Cartagena",
+						narrative:
+							"Dejamos la historia atrás para un día de relajación total. Navegaremos hacia el Parque Nacional Natural Corales del Rosario para pasar un día completo en un club de playa, con una parada en el Oceanario para los más pequeños.",
+						logistics:
+							"La elección de un tour familiar que incluya el Oceanario es un acierto. Es fundamental recordar que el impuesto portuario (aprox. 29,000 COP) es un pago obligatorio y separado que se realiza en efectivo en el muelle antes de embarcar.",
+						budget: 309000,
+						effort: "Relajado",
+						steps: "< 4,000",
+						weather:
+							"Sol radiante. Traje de baño, ropa de playa, sandalias, sombrero y protector solar biodegradable.",
+						itinerary: [
+							{
+								time: "08:00 - 17:00",
+								activity: "Tour Islas del Rosario + Oceanario",
+								cost: "Tour: 280,000 + Impuesto: 29,000 COP",
+								transport:
+									"🚤 <strong>Lancha rápida (50-60 min)</strong><br>Desde el Muelle de la Bodeguita.",
+								comments:
+									"El tour familiar incluye transporte, almuerzo, y visita al Oceanario. Pagar impuesto portuario en efectivo.",
+								links: [
+									{
+										name: "Punto de Salida: Muelle de la Bodeguita",
+										url: "https://www.google.com/maps/search/?api=1&query=Muelle+de+la+Bodeguita+Cartagena",
+									},
+									{
+										name: "Tour Sugerido (GYG)",
+										url: "https://www.getyourguide.com/cartagena-l362/cartagena-6-stop-rosario-islands-oceanario-lunch-snorkel-t543037",
+									},
+								],
+							},
+							{
+								time: "17:00 +",
+								activity: "Regreso y Noche Tranquila",
+								cost: "Cena ligera",
+								transport:
+									"👟 <strong>A pie</strong><br>Desde el muelle al apartamento.",
+								comments:
+									"Noche para descansar, empacar para el vuelo de mañana y cenar algo ligero.",
+								links: [],
+							},
+						],
+					},
+					{
+						day: 4,
+						date: "Lunes, 13 de Octubre",
+						title: "Transformación Urbana y Cultura Paisa",
+						city: "Medellín",
+						narrative:
+							"Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín, la ciudad de la eterna primavera, para sumergirnos en su historia de transformación en la Comuna 13 y admirar el arte de Botero en el corazón de la ciudad.",
+						logistics:
+							"El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Adquirir una tarjeta Cívica al llegar es una decisión acertada. Para la Comuna 13, un tour guiado pre-pagado es esencial para comprender el contexto.",
+						budget: 196460,
+						effort: "Pesado",
+						steps: "15,000 - 18,000",
+						weather:
+							"Templado, alta probabilidad de lluvia. Calzado muy cómodo y chaqueta ligera indispensable.",
+						itinerary: [
+							{
+								time: "07:00 - 10:00",
+								activity: "Vuelo y Llegada a Medellín",
+								cost: "Traslado Aero CTG: 17,100 + Bus MDE: 17,000 COP",
+								transport:
+									"✈️ <strong>Vuelo (1h) / 🚌 Bus (45 min)</strong><br>Vuelo CTG-MDE y bus desde aeropuerto Rionegro al hotel.",
+								comments: "Llegada al hotel en el barrio Laureles.",
+								links: [
+									{
+										name: "Casa Santafé (Hotel)",
+										url: "https://www.google.com/maps/search/?api=1&query=Casa+Santafé+Carrera+72+%23C2-30+Medellín",
+									},
+								],
+							},
+							{
+								time: "11:00 - 14:30",
+								activity: "Tour Guiado Comuna 13",
+								cost: "Tour: 55,500 + Metro: 6,860 COP",
+								transport:
+									"🚇 <strong>Metro y Metrocable (40 min)</strong><br>Desde Est. Estadio a Est. San Javier.",
+								comments:
+									"Un tour guiado es clave para entender la resiliencia del barrio. Incluye snacks y Metrocable.",
+								links: [
+									{
+										name: "Escaleras Eléctricas",
+										url: "https://www.google.com/maps/search/?api=1&query=Escaleras+electricas+Comuna+13+Medellin",
+									},
+									{
+										name: "Tour Recomendado (GYG)",
+										url: "https://www.getyourguide.com/medellin-l363/medellin-comuna-13-graffiti-tour-w-street-food-cable-car-t385233",
+									},
+								],
+							},
+							{
+								time: "14:30 - 15:30",
+								activity: "Almuerzo en San Javier",
+								cost: "20,000 COP",
+								transport:
+									"👟 <strong>A pie</strong><br>Cerca de la estación del Metrocable.",
+								comments: "Comida local y rápida para recargar energías.",
+								links: [],
+							},
+							{
+								time: "15:30 - 17:00",
+								activity: "Plaza Botero",
+								cost: "Gratis",
+								transport:
+									"🚇 <strong>Metro (20 min)</strong><br>Desde San Javier a Parque Berrío.",
+								comments:
+									"Visitar el famoso museo al aire libre con las esculturas de Botero.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Plaza+Botero+Medellin",
+									},
+								],
+							},
+							{
+								time: "17:00 - 18:30",
+								activity: "Pueblito Paisa",
+								cost: "Taxi: 15,000 COP",
+								transport:
+									"🚕 <strong>Taxi (15 min)</strong><br>Desde el centro de la ciudad.",
+								comments:
+									"Disfrutar de vistas panorámicas de todo el valle al atardecer.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Pueblito+Paisa+Cerro+Nutibara+Medellin",
+									},
+								],
+							},
+							{
+								time: "19:00 +",
+								activity: "Cena en Laureles",
+								cost: "65,000 COP",
+								transport:
+									"🚕 <strong>Taxi (15 min)</strong><br>Desde el Pueblito Paisa.",
+								comments: "Explorar la escena gastronómica del barrio.",
+								links: [],
+							},
+						],
+					},
+					{
+						day: 5,
+						date: "Martes, 14 de Octubre",
+						title: "Ciencia, Naturaleza y el Medellín Moderno",
+						city: "Medellín",
+						narrative:
+							"Un día de contrastes. Exploraremos la belleza natural en el Jardín Botánico, nos maravillaremos con la ciencia en el Parque Explora y terminaremos la noche en El Poblado, el epicentro de la modernidad y la gastronomía paisa.",
+						logistics:
+							"La combinación del Jardín Botánico y el Parque Explora es muy eficiente, ya que se encuentran uno al lado del otro. Se puede llegar fácilmente en Metro (Estación Universidad), optimizando tiempos y costos.",
+						budget: 219860,
+						effort: "Medio",
+						steps: "12,000 - 14,000",
+						weather:
+							"Clima templado. Atuendo cómodo. Opcional un atuendo más arreglado para la noche en El Poblado.",
+						itinerary: [
+							{
+								time: "09:00 - 12:00",
+								activity: "Jardín Botánico",
+								cost: "Gratis",
+								transport:
+									"🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Universidad.",
+								comments:
+									"Explorar este oasis urbano y su famoso Orquideorama.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Jardín+Botánico+de+Medellín",
+									},
+								],
+							},
+							{
+								time: "12:00 - 13:30",
+								activity: "Almuerzo",
+								cost: "38,000 COP",
+								transport:
+									"👟 <strong>A pie</strong><br>En los alrededores del Jardín Botánico.",
+								comments: "Almorzar antes de entrar al siguiente parque.",
+								links: [],
+							},
+							{
+								time: "13:30 - 17:00",
+								activity: "Parque Explora",
+								cost: "Entrada: 55,000 + Metro: 6,860 COP",
+								transport:
+									"👟 <strong>A pie (2 min)</strong><br>Cruzando la calle desde el Jardín Botánico.",
+								comments:
+									"Visitar este entretenido museo interactivo de ciencia y tecnología.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Parque+Explora+Medellín",
+									},
+									{
+										name: "Sitio Oficial",
+										url: "https://www.parqueexplora.org/",
+									},
+								],
+							},
+							{
+								time: "18:00 +",
+								activity: "Explorar El Poblado",
+								cost: "Cena: 100,000 COP",
+								transport:
+									"🚇 <strong>Metro (30 min)</strong><br>Desde Est. Universidad a Est. Poblado.",
+								comments:
+									"Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna.",
+								links: [
+									{
+										name: "Parque Lleras",
+										url: "https://www.google.com/maps/search/?api=1&query=Parque+Lleras+El+Poblado+Medellin",
+									},
+								],
+							},
+						],
+					},
+					{
+						day: 6,
+						date: "Miércoles, 15 de Octubre",
+						title: "Viaje al Corazón del Eje Cafetero",
+						city: "Salento",
+						narrative:
+							"Hoy nos adentramos en el alma de Colombia. Volamos hacia el Eje Cafetero y ascendemos entre montañas verdes hasta llegar a Salento, un pueblo de ensueño que será nuestra base para explorar la cultura cafetera.",
+						logistics:
+							"La ruta de volar a Armenia (AXM) y tomar una buseta directa a Salento desde la terminal es la más estándar, eficiente y económica. El trayecto por carretera ya es parte de la experiencia y ofrece vistas espectaculares.",
+						budget: 112000,
+						effort: "Relajado",
+						steps: "5,000 - 7,000",
+						weather:
+							"Templado y húmedo. Alta probabilidad de lluvia. Chaqueta ligera para la noche es indispensable.",
+						itinerary: [
+							{
+								time: "Mañana",
+								activity: "Mañana Libre y Almuerzo",
+								cost: "30,000 COP",
+								transport: "👟 <strong>A pie</strong><br>En Medellín.",
+								comments: "Disfrutar de la mañana con calma antes del viaje.",
+								links: [],
+							},
+							{
+								time: "Tarde",
+								activity: "Vuelo y Traslado a Salento",
+								cost: "Traslado Aero MDE: 40,000 + Buseta: 6,000 COP",
+								transport:
+									"✈️ <strong>Vuelo (45 min) / 🚌 Buseta (40 min)</strong><br>Vuelo MDE-AXM y buseta desde Terminal de Armenia.",
+								comments: "Prepararse para un paisaje increíble.",
+								links: [
+									{
+										name: "Hotel El Jardín",
+										url: "https://www.google.com/maps/search/?api=1&query=Hotel+El+Jardín+Salento+Quindio",
+									},
+								],
+							},
+							{
+								time: "20:00 - 21:00",
+								activity: "Exploración de Salento",
+								cost: "Gratis",
+								transport: "👟 <strong>A pie</strong><br>Desde el hotel.",
+								comments:
+									"Caminar por la Calle Real y subir al Mirador Alto de la Cruz.",
+								links: [
+									{
+										name: "Calle Real",
+										url: "https://www.google.com/maps/search/?api=1&query=Calle+Real+Salento",
+									},
+									{
+										name: "Mirador Alto de la Cruz",
+										url: "https://www.google.com/maps/search/?api=1&query=Mirador+Alto+de+la+Cruz+Salento",
+									},
+								],
+							},
+							{
+								time: "21:00 +",
+								activity: "Cena en Salento",
+								cost: "36,000 COP",
+								transport:
+									"👟 <strong>A pie</strong><br>En el centro del pueblo.",
+								comments:
+									"Disfrutar de la trucha con patacón, un plato icónico de la región.",
+								links: [],
+							},
+						],
+					},
+					{
+						day: 7,
+						date: "Jueves, 16 de Octubre",
+						title: "Palmas de Cera Icónicas y Legado del Café",
+						city: "Salento",
+						narrative:
+							"Este es el día icónico del Eje Cafetero. Caminaremos entre las palmas de cera más altas del mundo en el Valle de Cocora y por la tarde descubriremos los secretos del café colombiano en una finca tradicional.",
+						logistics:
+							'Visitar el Valle de Cocora a primera hora es crucial para encontrar el valle despejado. Los Jeeps "Willys" salen de la plaza principal. Reservar el tour de café en línea es recomendable.',
+						budget: 164000,
+						effort: "Pesado",
+						steps: "14,000 - 17,000",
+						weather:
+							"Prepararse para lluvia y posible barro. Calzado resistente e impermeable (o botas de hule) es esencial. Vestir en capas.",
+						itinerary: [
+							{
+								time: "07:00 - 12:30",
+								activity: "Valle de Cocora",
+								cost: "Jeep I/V: 10,000 + Entrada: 25,000 COP",
+								transport:
+									'🚙 <strong>Jeep "Willy" (30 min)</strong><br>Desde la Plaza de Bolívar de Salento.',
+								comments:
+									'Tomar un Jeep temprano. Se hará la ruta corta (2-3h) al "Bosque de las Palmas".',
+								links: [
+									{
+										name: "Plaza de Bolívar (Salida Jeeps)",
+										url: "https://www.google.com/maps/search/?api=1&query=Plaza+de+Bolívar+Salento",
+									},
+									{
+										name: "Valle de Cocora",
+										url: "https://www.google.com/maps/search/?api=1&query=Valle+de+Cocora",
+									},
+								],
+							},
+							{
+								time: "12:30 - 14:00",
+								activity: "Almuerzo en Salento",
+								cost: "33,000 COP",
+								transport:
+									'🚙 <strong>Jeep "Willy" (30 min)</strong><br>Regreso desde Cocora.',
+								comments: "Recargar energías antes de la siguiente actividad.",
+								links: [],
+							},
+							{
+								time: "14:00 - 16:30",
+								activity: "Tour de Café en Finca El Ocaso",
+								cost: "Tour: 35,000 + Jeep: 8,000 COP",
+								transport:
+									'🚙 <strong>Jeep "Willy" (20 min)</strong><br>Desde Salento.',
+								comments:
+									"Aprender todo el proceso del café, desde la siembra hasta la taza.",
+								links: [
+									{
+										name: "Finca El Ocaso",
+										url: "https://www.google.com/maps/search/?api=1&query=Finca+El+Ocaso+Salento",
+									},
+									{
+										name: "Reservar Tour (GYG)",
+										url: "https://www.getyourguide.com/salento-colombia-l32675/salento-coffee-tour-at-finca-el-ocaso-t335531/",
+									},
+								],
+							},
+							{
+								time: "17:00 +",
+								activity: "Tarde Libre y Cena",
+								cost: "36,000 COP",
+								transport: "👟 <strong>A pie</strong><br>En Salento.",
+								comments: "Tiempo para descansar y cenar.",
+								links: [],
+							},
+						],
+					},
+					{
+						day: 8,
+						date: "Viernes, 17 de Octubre",
+						title: "Filandia, la Colina Iluminada",
+						city: "Salento / Filandia",
+						narrative:
+							"Hoy exploramos más allá de Salento con una visita a Filandia, un pueblo menos turístico pero rebosante de encanto. Subiremos a su famoso mirador para obtener vistas de 360 grados del paisaje cultural cafetero.",
+						logistics:
+							"Incluir Filandia es una excelente decisión para una perspectiva más auténtica del Eje Cafetero. El transporte en bus o jeep entre Salento y Filandia es frecuente y económico.",
+						budget: 128000,
+						effort: "Medio",
+						steps: "10,000 - 12,000",
+						weather:
+							"Similar a Salento. Estar preparado para la lluvia intermitente y llevar una chaqueta ligera.",
+						itinerary: [
+							{
+								time: "09:00 - 12:00",
+								activity: "Visita a Filandia y Mirador",
+								cost: "Transporte I/V: 15,000 + Entrada: 15,000 COP",
+								transport:
+									"🚌 <strong>Bus (45 min)</strong><br>Desde la terminal de Salento.",
+								comments:
+									'Subir al "Mirador Colina Iluminada" es una atracción imperdible.',
+								links: [
+									{
+										name: "Mirador Colina Iluminada",
+										url: "https://www.google.com/maps/search/?api=1&query=Mirador+Colina+Iluminada+Filandia",
+									},
+								],
+							},
+							{
+								time: "12:00 - 13:30",
+								activity: "Almuerzo en Filandia",
+								cost: "45,000 COP",
+								transport:
+									"👟 <strong>A pie</strong><br>En el centro de Filandia.",
+								comments:
+									"Disfrutar de la reconocida alta calidad gastronómica del pueblo.",
+								links: [
+									{
+										name: "Helena Adentro",
+										url: "https://www.google.com/maps/search/?api=1&query=Helena+Adentro+Restaurante+Filandia",
+									},
+								],
+							},
+							{
+								time: "13:30 +",
+								activity: "Regreso y Tarde Libre",
+								cost: "Cena: 36,000 COP",
+								transport:
+									"🚌 <strong>Bus (45 min)</strong><br>Regreso a Salento.",
+								comments:
+									"Últimas compras de artesanías y disfrutar del ambiente del pueblo.",
+								links: [],
+							},
+						],
+					},
+					{
+						day: 9,
+						date: "Sábado, 18 de Octubre",
+						title: "Llegada a la Capital y Corazón Histórico",
+						city: "Bogotá",
+						narrative:
+							"Dejamos la tranquilidad del campo para sumergirnos en la vibrante capital. Volamos a Bogotá y nos dirigimos directamente a La Candelaria, el centro histórico, para probar su plato insignia y maravillarnos con el tesoro del Museo del Oro.",
+						logistics:
+							"Un primer día en Bogotá bien aprovechado. La ubicación del hotel en Salitre implica que los traslados a La Candelaria en taxi o VTC son necesarios. La altitud puede afectar, por lo que es clave tomarlo con calma.",
+						budget: 129200,
+						effort: "Medio",
+						steps: "10,000 - 13,000",
+						weather:
+							"Clima fresco. Necesitará chaqueta. El clima puede ser muy variable, con sol y lluvia en el mismo día.",
+						itinerary: [
+							{
+								time: "05:00 - 12:00",
+								activity: "Vuelo y Llegada a Bogotá",
+								cost: "Buseta: 7,200 + Taxi Aero: 25,000 COP",
+								transport:
+									"✈️ <strong>Vuelo (1h) / 🚕 Taxi (20 min)</strong><br>Vuelo AXM-BOG y taxi a hotel en Salitre.",
+								comments: "Check-in y dejar equipaje.",
+								links: [
+									{
+										name: "Hotel DoubleTree Salitre AR",
+										url: "https://www.google.com/maps/search/?api=1&query=DoubleTree+by+Hilton+Bogota+Salitre+AR",
+									},
+								],
+							},
+							{
+								time: "12:00 - 14:00",
+								activity: "Almuerzo: Ajiaco Santafereño",
+								cost: "Taxi: 25,000 + Almuerzo: 29,000 COP",
+								transport:
+									"🚕 <strong>Taxi (25-30 min)</strong><br>Desde Salitre a La Candelaria.",
+								comments:
+									"Probar el plato emblemático en La Puerta Falsa, el restaurante más antiguo de la ciudad.",
+								links: [
+									{
+										name: "La Puerta Falsa",
+										url: "https://www.google.com/maps/search/?api=1&query=La+Puerta+Falsa+Restaurante+Bogotá",
+									},
+								],
+							},
+							{
+								time: "14:00 - 16:30",
+								activity: "Museo del Oro",
+								cost: "Entrada: 5,000 COP",
+								transport:
+									"👟 <strong>A pie (5 min)</strong><br>Desde el restaurante.",
+								comments:
+									"Explorar una de las colecciones de orfebrería más importantes del mundo.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Museo+del+Oro+Bogotá",
+									},
+								],
+							},
+							{
+								time: "16:30 +",
+								activity: "Plaza de Bolívar y Chorro de Quevedo",
+								cost: "Cena: 38,000 COP",
+								transport:
+									"👟 <strong>A pie (10-15 min)</strong><br>Recorrido por el centro histórico.",
+								comments:
+									"Visitar el corazón político de Colombia y la plazoleta bohemia fundacional antes de cenar.",
+								links: [
+									{
+										name: "Plaza de Bolívar",
+										url: "https://www.google.com/maps/search/?api=1&query=Plaza+de+Bolívar+Bogotá",
+									},
+									{
+										name: "Chorro de Quevedo",
+										url: "https://www.google.com/maps/search/?api=1&query=Chorro+de+Quevedo+Bogotá",
+									},
+								],
+							},
+						],
+					},
+					{
+						day: 10,
+						date: "Domingo, 19 de Octubre",
+						title: "Vistas desde Monserrate y el Arte de Botero",
+						city: "Bogotá",
+						narrative:
+							"Hoy ascendemos a los cielos de Bogotá. Subiremos al Cerro de Monserrate para obtener la vista más espectacular de la metrópolis, y luego descenderemos para sumergirnos en el arte universal de Fernando Botero.",
+						logistics:
+							"Ascender a Monserrate a primera hora es fundamental para vistas despejadas. La compra de tiquetes en línea es una recomendación operativa clave para evitar filas extremadamente largas.",
+						budget: 222000,
+						effort: "Pesado",
+						steps: "14,000 - 16,000",
+						weather:
+							"Notablemente más frío en Monserrate (3,152m). Una chaqueta abrigada es esencial. Vestir en capas.",
+						itinerary: [
+							{
+								time: "07:45 - 11:00",
+								activity: "Cerro de Monserrate",
+								cost: "Taxi: 25,000 + Tiquete: 32,000 COP",
+								transport:
+									"🚕 <strong>Taxi (30 min) / 🚠 Funicular</strong><br>Taxi desde hotel a base; funicular para ascender.",
+								comments:
+									"Comprar tiquetes en línea es CRUCIAL para evitar filas.",
+								links: [
+									{
+										name: "Taquilla Teleférico",
+										url: "https://www.google.com/maps/search/?api=1&query=Taquilla+Teleférico+Monserrate+Bogotá",
+									},
+									{
+										name: "Compra Online (Tiqets)",
+										url: "https://www.tiqets.com/es/atracciones-bogota-c81/entradas-para-monserrate-funicular-o-teleferico-ida-y-vuelta-p1003913/",
+									},
+								],
+							},
+							{
+								time: "11:00 - 13:00",
+								activity: "Museo Botero",
+								cost: "Taxi: 20,000 + Entrada: Gratis",
+								transport:
+									"🚕 <strong>Taxi (15 min)</strong><br>Desde la base de Monserrate a La Candelaria.",
+								comments:
+									"Visitar la impresionante colección de arte donada por Fernando Botero.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Museo+Botero+Bogotá",
+									},
+								],
+							},
+							{
+								time: "13:00 +",
+								activity: "Almuerzo y Tarde/Noche en Zona G",
+								cost: "100,000 COP",
+								transport:
+									"🚕 <strong>Taxi (25-30 min)</strong><br>Desde La Candelaria a Chapinero.",
+								comments:
+									"Trasladarse a la exclusiva Zona Gastronómica para almorzar y pasar la tarde.",
+								links: [
+									{
+										name: "Zona G, Chapinero",
+										url: "https://www.google.com/maps/search/?api=1&query=restaurantes+en+Zona+G+Chapinero+Bogota",
+									},
+								],
+							},
+						],
+					},
+					{
+						day: 11,
+						date: "Lunes, 20 de Octubre",
+						title: "Mercado de Paloquemao y Nostalgia Televisiva",
+						city: "Bogotá",
+						narrative:
+							'Un día de inmersión en la cultura popular colombiana. Empezamos con la explosión de colores, olores y sabores del Mercado de Paloquemao y terminamos siguiendo los pasos de la telenovela más famosa del mundo: "Betty, la Fea".',
+						logistics:
+							"Este día está diseñado para una inmersión cultural auténtica. Paloquemao es una experiencia sensorial vibrante. La ruta de Betty es un toque único y divertido que resonará con los fans.",
+						budget: 211000,
+						effort: "Medio",
+						steps: "11,000 - 13,000",
+						weather:
+							"Atuendo estándar de Bogotá. Calzado cómodo y cerrado es recomendable para el mercado.",
+						itinerary: [
+							{
+								time: "07:30 - 10:30",
+								activity: "Mercado de Paloquemao",
+								cost: "Taxi: 18,000 + Degustación: 15,000 COP",
+								transport:
+									"🚕 <strong>Taxi (20 min)</strong><br>Desde el hotel.",
+								comments:
+									"Una experiencia sensorial increíble. Explorar la sección de flores y probar frutas exóticas.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Mercado+de+Paloquemao+Bogotá",
+									},
+								],
+							},
+							{
+								time: "10:30 +",
+								activity: 'Ruta "Betty, la Fea"',
+								cost: "Taxi: 15,000 + Almuerzo: 38,000 COP",
+								transport:
+									"🚕 <strong>Taxi (15 min)</strong><br>Desde Paloquemao al barrio Teusaquillo.",
+								comments:
+									"Visitaremos la icónica casa de Betty (Carrera 18A #43A-59), ahora un museo-café. Una parada obligada para los fans.",
+								links: [
+									{
+										name: "Casa de Betty",
+										url: "https://www.google.com/maps/search/?api=1&query=Carrera+18a+%2343a-59+Bogotá",
+									},
+								],
+							},
+						],
+					},
+					{
+						day: 12,
+						date: "Martes, 21 de Octubre",
+						title: "La Catedral Subterránea de Sal",
+						city: "Bogotá / Zipaquirá",
+						narrative:
+							"En nuestro último día completo, realizamos una excursión inolvidable a Zipaquirá para descender 180 metros bajo tierra y maravillarnos con la primera maravilla de Colombia: una imponente catedral católica tallada enteramente en una mina de sal.",
+						logistics:
+							"La planificación de usar la Terminal de Salitre para el transporte a Zipaquirá es logísticamente sólida dada la proximidad del hotel. Asignar cuatro horas para la visita es adecuado. Comprar la entrada en línea evita filas.",
+						budget: 236000,
+						effort: "Medio",
+						steps: "9,000 - 11,000",
+						weather:
+							"Vestir en capas. Llevar chaqueta abrigada para la catedral (temperatura interior de ~14°C).",
+						itinerary: [
+							{
+								time: "07:30 - 13:30",
+								activity: "Excursión a la Catedral de Sal",
+								cost: "Transporte I/V: 40,000 + Entrada: 118,000 COP",
+								transport:
+									"🚕 <strong>Taxi (10 min) / 🚌 Bus (1.5h)</strong><br>Taxi a Terminal Salitre y bus intermunicipal a Zipaquirá.",
+								comments:
+									"El recorrido básico dura unas 2 horas. Comprar tickets en línea para evitar filas.",
+								links: [
+									{
+										name: "Ubicación",
+										url: "https://www.google.com/maps/search/?api=1&query=Catedral+de+Sal+de+Zipaquirá",
+									},
+									{
+										name: "Tickets Oficiales",
+										url: "https://www.catedraldesal.gov.co/",
+									},
+									{
+										name: "Terminal Salitre",
+										url: "https://www.google.com/maps/search/?api=1&query=Terminal+de+Transporte+Salitre+Bogotá",
+									},
+								],
+							},
+							{
+								time: "13:30 - 15:00",
+								activity: "Almuerzo en Zipaquirá",
+								cost: "33,000 COP",
+								transport:
+									"👟 <strong>A pie</strong><br>En el centro de Zipaquirá.",
+								comments:
+									"Probar la gastronomía local antes de regresar a Bogotá.",
+								links: [],
+							},
+							{
+								time: "15:00 +",
+								activity: "Regreso y Tarde Libre",
+								cost: "Variable",
+								transport:
+									"🚌 <strong>Bus (1.5h) / 🚕 Taxi (10 min)</strong><br>Regreso a Bogotá.",
+								comments:
+									"Tarde para descansar, compras de última hora o disfrutar de una cena de despedida.",
+								links: [],
+							},
+						],
+					},
+					{
+						day: 13,
+						date: "Miércoles, 22 de Octubre",
+						title: "Regreso a Casa",
+						city: "Bogotá",
+						narrative:
+							"Es el final de nuestra aventura colombiana. Después del desayuno, nos dirigiremos al Aeropuerto El Dorado para tomar nuestro vuelo de regreso a casa, llenos de recuerdos inolvidables.",
+						logistics:
+							"Coordinar el taxi o VTC al aeropuerto con suficiente antelación, considerando el tráfico de Bogotá. El Aeropuerto El Dorado es moderno y eficiente.",
+						budget: 65000,
+						effort: "Relajado",
+						steps: "< 3,000",
+						weather: "Ropa cómoda para el vuelo.",
+						itinerary: [
+							{
+								time: "Mañana",
+								activity: "Desayuno y Check-out",
+								cost: "Variable",
+								transport: "👟 <strong>A pie</strong><br>En el hotel.",
+								comments:
+									"Disfrutar del último desayuno colombiano y realizar el check-out.",
+								links: [],
+							},
+							{
+								time: "12:00",
+								activity: "Traslado al Aeropuerto (BOG)",
+								cost: "Taxi: ~25,000 COP",
+								transport:
+									"🚕 <strong>Taxi (20 min)</strong><br>Desde el hotel al aeropuerto.",
+								comments: "Dirigirse al aeropuerto para el vuelo de regreso.",
+								links: [
+									{
+										name: "Aeropuerto El Dorado",
+										url: "https://www.google.com/maps/search/?api=1&query=Aeropuerto+Internacional+El+Dorado+Bogotá",
+									},
+								],
+							},
+						],
+					},
+				],
+			};
+
+			const palette = {
+				primary: "#0d9488",
+				secondary: "#0f766e",
+				accent: "#f59e0b",
+				lightBg: "#f8fafc",
+				chartColors: [
+					"#14b8a6",
+					"#f59e0b",
+					"#3b82f6",
+					"#8b5cf6",
+					"#ec4899",
+					"#65a30d",
+				],
+			};
+
+			document.addEventListener("DOMContentLoaded", () => {
+				createBudgetDistributionChart();
+				createDailyCostChart();
+				createDailySections();
+			});
+
+			function createBudgetDistributionChart() {
+				const ctx = document
+					.getElementById("budgetDistributionChart")
+					.getContext("2d");
+				new Chart(ctx, {
+					type: "doughnut",
+					data: {
+						labels: tripData.general.budgetDistribution.labels,
+						datasets: [
+							{
+								label: "Distribución de Gastos",
+								data: tripData.general.budgetDistribution.data,
+								backgroundColor: palette.chartColors,
+								borderColor: palette.lightBg,
+								borderWidth: 2,
+								hoverOffset: 4,
+							},
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: { position: "bottom" },
+							tooltip: {
+								callbacks: {
+									label: c => `${c.label}: ${c.parsed.toFixed(1)}%`,
+								},
+							},
+						},
+					},
+				});
+			}
+
+			function createDailyCostChart() {
+				const ctx = document.getElementById("dailyCostChart").getContext("2d");
+				new Chart(ctx, {
+					type: "bar",
+					data: {
+						labels: tripData.general.dailyCost.labels,
+						datasets: [
+							{
+								label: "Gasto Promedio Diario (COP)",
+								data: tripData.general.dailyCost.data,
+								backgroundColor: palette.chartColors.slice(0, 4),
+							},
+						],
+					},
+					options: {
+						indexAxis: "y",
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: { display: false },
+							tooltip: {
+								callbacks: {
+									label: c =>
+										` ${new Intl.NumberFormat("es-CO", {
+											style: "currency",
+											currency: "COP",
+											minimumFractionDigits: 0,
+										}).format(c.parsed.x)}`,
+								},
+							},
+						},
+						scales: { x: { ticks: { callback: v => v / 1000 + "K" } } },
+					},
+				});
+			}
+
+			function createDailySections() {
+				const container = document.getElementById("daily-sections-container");
+				tripData.days.forEach(day => {
+					const section = document.createElement("section");
+					section.className =
+						"pt-12 bg-white p-6 sm:p-8 rounded-lg shadow-md mb-12";
+
+					const linksHTML = links =>
+						links
+							.map(
+								link =>
+									`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-700 hover:bg-teal-100 text-xs font-semibold mr-2 mb-2 px-2.5 py-1 rounded-full transition-colors">${link.name}</a>`
+							)
+							.join("");
+
+					const itineraryHTML = day.itinerary
+						.map(
+							item => `
+                    <tr class="border-b border-slate-200 last:border-b-0">
+                        <td class="py-4 pr-3 align-top text-sm font-semibold text-slate-600 w-[12%]">${
+													item.time
+												}</td>
+                        <td class="py-4 pr-3 align-top w-[20%]">
+                            <p class="font-semibold text-slate-800">${
+															item.activity
+														}</p>
+                            <p class="font-bold text-teal-600 text-sm mt-1">${
+															item.cost
+														}</p>
+                        </td>
+                        <td class="py-4 pr-3 align-top text-sm text-slate-500 w-[23%]">${
+													item.transport
+												}</td>
+                        <td class="py-4 pr-3 align-top text-sm text-slate-500 w-[20%]">${
+													item.comments
+												}</td>
+                        <td class="py-4 align-top w-[25%]">${
+													item.links ? linksHTML(item.links) : ""
+												}</td>
+                    </tr>
+                `
+						)
+						.join("");
+
+					section.innerHTML = `
+                    <div class="border-b-2 border-teal-600 pb-4 mb-6">
+                        <h2 class="text-3xl font-bold text-teal-700">${`Día ${day.day}: ${day.title}`}</h2>
+                        <p class="text-lg text-slate-500 mt-1">${day.date} - ${
+						day.city
+					}</p>
+                    </div>
+
+                    <div class="mb-8">
+                         <h3 class="text-xl font-bold mb-3 text-slate-700">Resumen Narrativo</h3>
+                         <p class="text-slate-600">${day.narrative}</p>
+                    </div>
+                    
+                    <div class="mb-8">
+                         <h3 class="text-xl font-bold mb-4 text-slate-700">Dossier Táctico del Día</h3>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">💰</p>
+                                <p class="text-sm font-semibold text-slate-500">Presupuesto</p>
+                                <p class="text-lg font-bold text-teal-600">${new Intl.NumberFormat(
+																	"es-CO",
+																	{
+																		style: "currency",
+																		currency: "COP",
+																		minimumFractionDigits: 0,
+																	}
+																).format(day.budget)}</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">💪</p>
+                                <p class="text-sm font-semibold text-slate-500">Esfuerzo Físico</p>
+                                <p class="text-lg font-bold text-teal-600">${
+																	day.effort
+																}</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">👟</p>
+                                <p class="text-sm font-semibold text-slate-500">Pasos Aprox.</p>
+                                <p class="text-lg font-bold text-teal-600">${
+																	day.steps
+																}</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">${
+																	day.city.includes("Cartagena")
+																		? "☀️"
+																		: day.city.includes("Medellín") ||
+																		  day.city.includes("Salento")
+																		? "🌦️"
+																		: "☁️"
+																}</p>
+                                <p class="text-sm font-semibold text-slate-500">Clima / Vestimenta</p>
+                                <p class="text-xs font-semibold text-teal-700 mt-1">${
+																	day.weather
+																}</p>
+                            </div>
+                         </div>
+                    </div>
+                    
+                     <div class="mb-8">
+                         <h3 class="text-xl font-bold mb-3 text-slate-700">Logística y Consejos</h3>
+                         <p class="text-slate-600">${day.logistics}</p>
+                    </div>
+
+                    <div>
+                         <h3 class="text-xl font-bold mb-4 text-slate-700">Plan de Acción Detallado</h3>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left table-fixed">
+                                <thead>
+                                    <tr class="border-b-2 border-slate-300">
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[12%]">Horario</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Actividad y Costo</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[23%]">Cómo Llegar y Tiempos</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Comentarios</th>
+                                        <th class="py-2 font-semibold text-sm w-[25%]">Recursos Externos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${itineraryHTML}
+                                </tbody>
+                            </table>
+                         </div>
+                    </div>
+                `;
+					container.appendChild(section);
+				});
+			}
+		</script>
+	</body>
+</html>
