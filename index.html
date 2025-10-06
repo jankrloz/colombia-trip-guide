@@ -51,6 +51,12 @@
 				box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
 					0 2px 4px -2px rgb(0 0 0 / 0.1);
 			}
+			.header-container {
+				height: 88px; /* Fixed height for the header */
+			}
+			#tabs-navigation {
+				top: 88px; /* This value must match the header's height */
+			}
 			/* Style for scrollbar */
 			.tabs-container::-webkit-scrollbar {
 				height: 4px;
@@ -66,13 +72,17 @@
 	</head>
 	<body class="text-slate-800">
 		<header class="bg-white shadow-sm sticky top-0 z-20">
-			<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-				<h1 class="text-2xl sm:text-3xl font-bold text-teal-700">
-					Guía Interactiva de Viaje: Colombia 2025
-				</h1>
-				<p class="text-slate-500 mt-1 text-sm sm:text-base">
-					Dossier Táctico del 10 al 22 de Octubre.
-				</p>
+			<div
+				class="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center header-container"
+			>
+				<div>
+					<h1 class="text-2xl sm:text-3xl font-bold text-teal-700">
+						Guía Interactiva de Viaje: Colombia 2025
+					</h1>
+					<p class="text-slate-500 mt-1 text-sm sm:text-base">
+						Dossier Táctico del 10 al 22 de Octubre.
+					</p>
+				</div>
 			</div>
 		</header>
 
@@ -132,7 +142,7 @@
 
 			<nav
 				id="tabs-navigation"
-				class="p-2 rounded-lg mb-8 sticky top-[88px] z-10 bg-slate-100/80 backdrop-blur-sm"
+				class="p-2 rounded-lg mb-8 sticky z-10 bg-slate-100/80 backdrop-blur-sm"
 			>
 				<div class="tabs-container overflow-x-auto whitespace-nowrap pb-2">
 					<!-- Day tabs will be inserted here -->
@@ -145,6 +155,35 @@
 		</main>
 
 		<script>
+			const COP_TO_MXN_RATE = 0.006;
+
+			const formatCOP = value =>
+				new Intl.NumberFormat("es-CO", {
+					style: "currency",
+					currency: "COP",
+					maximumFractionDigits: 0,
+				}).format(value);
+			const formatMXN = value =>
+				new Intl.NumberFormat("es-MX", {
+					style: "currency",
+					currency: "MXN",
+				}).format(value);
+
+			const formatDualCurrency = copValue => {
+				if (typeof copValue !== "number" || isNaN(copValue)) return "N/A";
+				const mxnValue = copValue * COP_TO_MXN_RATE;
+				return `${formatCOP(copValue)} (~${formatMXN(mxnValue)})`;
+			};
+
+			const parseCost = costString => {
+				if (!costString) return 0;
+				const numbers = costString.match(/\d{1,3}(,\d{3})*(\.\d+)?/g) || [];
+				return numbers.reduce(
+					(sum, num) => sum + parseFloat(num.replace(/,/g, "")),
+					0
+				);
+			};
+
 			const tripData = {
 				general: {
 					budgetDistribution: {
@@ -182,7 +221,7 @@
 							{
 								time: "10:00 - 13:00",
 								activity: "Llegada y Traslado a Cartagena",
-								cost: "Taxi: 20,000 COP",
+								cost_cop: 20000,
 								transport:
 									"🚕 <strong>Taxi (15-20 min)</strong><br>Desde el Aeropuerto CTG al Centro Histórico.",
 								comments:
@@ -197,7 +236,7 @@
 							{
 								time: "13:00 - 14:30",
 								activity: "Almuerzo de Bienvenida",
-								cost: "28,000 COP",
+								cost_cop: 28000,
 								transport:
 									"👟 <strong>A pie (5 min)</strong><br>Desde el apartamento.",
 								comments:
@@ -216,7 +255,7 @@
 							{
 								time: "14:30 - 17:30",
 								activity: "Ciudad Amurallada (Zona Norte)",
-								cost: "Gratis",
+								cost_cop: 0,
 								transport:
 									"👟 <strong>A pie</strong><br>Recorrido por la zona norte.",
 								comments:
@@ -235,7 +274,7 @@
 							{
 								time: "17:30 - 18:30",
 								activity: "Atardecer en la Muralla",
-								cost: "Bebida: 30,000 COP",
+								cost_cop: 30000,
 								transport:
 									"👟 <strong>A pie (10 min)</strong><br>Caminata hacia el Baluarte de Santo Domingo.",
 								comments:
@@ -250,11 +289,11 @@
 							{
 								time: "18:30 - 20:00",
 								activity: "Peinado con Ros (Opcional)",
-								cost: "A negociar",
-								transport:
-									"👟 <strong>A pie (2 min)</strong><br>En la Plaza de Santo Domingo.",
+								cost_cop: 0,
 								comments:
 									"Actividad cultural única. Se arregla un pago/propina directamente con Ros en la plaza.",
+								transport:
+									"👟 <strong>A pie (2 min)</strong><br>En la Plaza de Santo Domingo.",
 								links: [
 									{
 										name: "Plaza de Santo Domingo",
@@ -265,7 +304,7 @@
 							{
 								time: "20:00 +",
 								activity: "Cena en Getsemaní",
-								cost: "55,000 COP",
+								cost_cop: 55000,
 								transport:
 									"👟 <strong>A pie (15 min)</strong><br>Caminata agradable cruzando el Parque Centenario.",
 								comments:
@@ -301,7 +340,7 @@
 							{
 								time: "09:00 - 12:00",
 								activity: "Castillo de San Felipe",
-								cost: "Taxi: 11,800 + Entrada: 36,000 COP",
+								cost_cop: 47800,
 								transport:
 									"🚕 <strong>Taxi (10 min)</strong><br>Desde Getsemaní.",
 								comments:
@@ -320,11 +359,11 @@
 							{
 								time: "12:00 - 14:00",
 								activity: "Convento de la Popa",
-								cost: "Taxi I/V: ~50,000 (grupo) + Entrada: 15,000 COP",
+								cost_cop: 65000,
 								transport:
 									"🚕 <strong>Taxi (20 min)</strong><br>Desde el Castillo. Negociar ida, espera y vuelta.",
 								comments:
-									"Subir al punto más alto para las mejores vistas. Indispensable negociar el trayecto completo con el taxista.",
+									"Subir al punto más alto para las mejores vistas. Taxi I/V ~50,000 para el grupo.",
 								links: [
 									{
 										name: "Ubicación",
@@ -335,7 +374,7 @@
 							{
 								time: "14:00 - 15:30",
 								activity: "Almuerzo en Getsemaní",
-								cost: "35,000 COP",
+								cost_cop: 35000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Bajada desde La Popa.",
 								comments:
@@ -350,7 +389,7 @@
 							{
 								time: "15:30 +",
 								activity: "Tarde/Noche Libre",
-								cost: "Variable",
+								cost_cop: 0,
 								transport:
 									"👟 <strong>A pie</strong><br>Exploración por el Centro y Getsemaní.",
 								comments:
@@ -382,7 +421,7 @@
 							{
 								time: "08:00 - 17:00",
 								activity: "Tour Islas del Rosario + Oceanario",
-								cost: "Tour: 280,000 + Impuesto: 29,000 COP",
+								cost_cop: 309000,
 								transport:
 									"🚤 <strong>Lancha rápida (50-60 min)</strong><br>Desde el Muelle de la Bodeguita.",
 								comments:
@@ -401,7 +440,7 @@
 							{
 								time: "17:00 +",
 								activity: "Regreso y Noche Tranquila",
-								cost: "Cena ligera",
+								cost_cop: 0,
 								transport:
 									"👟 <strong>A pie</strong><br>Desde el muelle al apartamento.",
 								comments:
@@ -428,7 +467,7 @@
 							{
 								time: "07:00 - 10:00",
 								activity: "Vuelo y Llegada a Medellín",
-								cost: "Traslado Aero CTG: 17,100 + Bus MDE: 17,000 COP",
+								cost_cop: 34100,
 								transport:
 									"✈️ <strong>Vuelo (1h) / 🚌 Bus (45 min)</strong><br>Vuelo CTG-MDE y bus desde aeropuerto Rionegro al hotel.",
 								comments: "Llegada al hotel en el barrio Laureles.",
@@ -442,7 +481,7 @@
 							{
 								time: "11:00 - 14:30",
 								activity: "Tour Guiado Comuna 13",
-								cost: "Tour: 55,500 + Metro: 6,860 COP",
+								cost_cop: 62360,
 								transport:
 									"🚇 <strong>Metro y Metrocable (40 min)</strong><br>Desde Est. Estadio a Est. San Javier.",
 								comments:
@@ -461,7 +500,7 @@
 							{
 								time: "14:30 - 15:30",
 								activity: "Almuerzo en San Javier",
-								cost: "20,000 COP",
+								cost_cop: 20000,
 								transport:
 									"👟 <strong>A pie</strong><br>Cerca de la estación del Metrocable.",
 								comments: "Comida local y rápida para recargar energías.",
@@ -470,7 +509,7 @@
 							{
 								time: "15:30 - 17:00",
 								activity: "Plaza Botero",
-								cost: "Gratis",
+								cost_cop: 0,
 								transport:
 									"🚇 <strong>Metro (20 min)</strong><br>Desde San Javier a Parque Berrío.",
 								comments:
@@ -485,7 +524,7 @@
 							{
 								time: "17:00 - 18:30",
 								activity: "Pueblito Paisa",
-								cost: "Taxi: 15,000 COP",
+								cost_cop: 15000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Desde el centro de la ciudad.",
 								comments:
@@ -500,7 +539,7 @@
 							{
 								time: "19:00 +",
 								activity: "Cena en Laureles",
-								cost: "65,000 COP",
+								cost_cop: 65000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Desde el Pueblito Paisa.",
 								comments: "Explorar la escena gastronómica del barrio.",
@@ -526,7 +565,7 @@
 							{
 								time: "09:00 - 12:00",
 								activity: "Jardín Botánico",
-								cost: "Gratis",
+								cost_cop: 0,
 								transport:
 									"🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Universidad.",
 								comments:
@@ -541,7 +580,7 @@
 							{
 								time: "12:00 - 13:30",
 								activity: "Almuerzo",
-								cost: "38,000 COP",
+								cost_cop: 38000,
 								transport:
 									"👟 <strong>A pie</strong><br>En los alrededores del Jardín Botánico.",
 								comments: "Almorzar antes de entrar al siguiente parque.",
@@ -550,7 +589,7 @@
 							{
 								time: "13:30 - 17:00",
 								activity: "Parque Explora",
-								cost: "Entrada: 55,000 + Metro: 6,860 COP",
+								cost_cop: 61860,
 								transport:
 									"👟 <strong>A pie (2 min)</strong><br>Cruzando la calle desde el Jardín Botánico.",
 								comments:
@@ -569,7 +608,7 @@
 							{
 								time: "18:00 +",
 								activity: "Explorar El Poblado",
-								cost: "Cena: 100,000 COP",
+								cost_cop: 100000,
 								transport:
 									"🚇 <strong>Metro (30 min)</strong><br>Desde Est. Universidad a Est. Poblado.",
 								comments:
@@ -601,7 +640,7 @@
 							{
 								time: "Mañana",
 								activity: "Mañana Libre y Almuerzo",
-								cost: "30,000 COP",
+								cost_cop: 30000,
 								transport: "👟 <strong>A pie</strong><br>En Medellín.",
 								comments: "Disfrutar de la mañana con calma antes del viaje.",
 								links: [],
@@ -609,7 +648,7 @@
 							{
 								time: "Tarde",
 								activity: "Vuelo y Traslado a Salento",
-								cost: "Traslado Aero MDE: 40,000 + Buseta: 6,000 COP",
+								cost_cop: 46000,
 								transport:
 									"✈️ <strong>Vuelo (45 min) / 🚌 Buseta (40 min)</strong><br>Vuelo MDE-AXM y buseta desde Terminal de Armenia.",
 								comments: "Prepararse para un paisaje increíble.",
@@ -623,7 +662,7 @@
 							{
 								time: "20:00 - 21:00",
 								activity: "Exploración de Salento",
-								cost: "Gratis",
+								cost_cop: 0,
 								transport: "👟 <strong>A pie</strong><br>Desde el hotel.",
 								comments:
 									"Caminar por la Calle Real y subir al Mirador Alto de la Cruz.",
@@ -641,7 +680,7 @@
 							{
 								time: "21:00 +",
 								activity: "Cena en Salento",
-								cost: "36,000 COP",
+								cost_cop: 36000,
 								transport:
 									"👟 <strong>A pie</strong><br>En el centro del pueblo.",
 								comments:
@@ -668,7 +707,7 @@
 							{
 								time: "07:00 - 12:30",
 								activity: "Valle de Cocora",
-								cost: "Jeep I/V: 10,000 + Entrada: 25,000 COP",
+								cost_cop: 35000,
 								transport:
 									'🚙 <strong>Jeep "Willy" (30 min)</strong><br>Desde la Plaza de Bolívar de Salento.',
 								comments:
@@ -687,7 +726,7 @@
 							{
 								time: "12:30 - 14:00",
 								activity: "Almuerzo en Salento",
-								cost: "33,000 COP",
+								cost_cop: 33000,
 								transport:
 									'🚙 <strong>Jeep "Willy" (30 min)</strong><br>Regreso desde Cocora.',
 								comments: "Recargar energías antes de la siguiente actividad.",
@@ -696,7 +735,7 @@
 							{
 								time: "14:00 - 16:30",
 								activity: "Tour de Café en Finca El Ocaso",
-								cost: "Tour: 35,000 + Jeep: 8,000 COP",
+								cost_cop: 43000,
 								transport:
 									'🚙 <strong>Jeep "Willy" (20 min)</strong><br>Desde Salento.',
 								comments:
@@ -715,7 +754,7 @@
 							{
 								time: "17:00 +",
 								activity: "Tarde Libre y Cena",
-								cost: "36,000 COP",
+								cost_cop: 36000,
 								transport: "👟 <strong>A pie</strong><br>En Salento.",
 								comments: "Tiempo para descansar y cenar.",
 								links: [],
@@ -740,7 +779,7 @@
 							{
 								time: "09:00 - 12:00",
 								activity: "Visita a Filandia y Mirador",
-								cost: "Transporte I/V: 15,000 + Entrada: 15,000 COP",
+								cost_cop: 30000,
 								transport:
 									"🚌 <strong>Bus (45 min)</strong><br>Desde la terminal de Salento.",
 								comments:
@@ -755,7 +794,7 @@
 							{
 								time: "12:00 - 13:30",
 								activity: "Almuerzo en Filandia",
-								cost: "45,000 COP",
+								cost_cop: 45000,
 								transport:
 									"👟 <strong>A pie</strong><br>En el centro de Filandia.",
 								comments:
@@ -770,7 +809,7 @@
 							{
 								time: "13:30 +",
 								activity: "Regreso y Tarde Libre",
-								cost: "Cena: 36,000 COP",
+								cost_cop: 36000,
 								transport:
 									"🚌 <strong>Bus (45 min)</strong><br>Regreso a Salento.",
 								comments:
@@ -797,7 +836,7 @@
 							{
 								time: "05:00 - 12:00",
 								activity: "Vuelo y Llegada a Bogotá",
-								cost: "Buseta: 7,200 + Taxi Aero: 25,000 COP",
+								cost_cop: 32200,
 								transport:
 									"✈️ <strong>Vuelo (1h) / 🚕 Taxi (20 min)</strong><br>Vuelo AXM-BOG y taxi a hotel en Salitre.",
 								comments: "Check-in y dejar equipaje.",
@@ -811,7 +850,7 @@
 							{
 								time: "12:00 - 14:00",
 								activity: "Almuerzo: Ajiaco Santafereño",
-								cost: "Taxi: 25,000 + Almuerzo: 29,000 COP",
+								cost_cop: 54000,
 								transport:
 									"🚕 <strong>Taxi (25-30 min)</strong><br>Desde Salitre a La Candelaria.",
 								comments:
@@ -826,7 +865,7 @@
 							{
 								time: "14:00 - 16:30",
 								activity: "Museo del Oro",
-								cost: "Entrada: 5,000 COP",
+								cost_cop: 5000,
 								transport:
 									"👟 <strong>A pie (5 min)</strong><br>Desde el restaurante.",
 								comments:
@@ -841,7 +880,7 @@
 							{
 								time: "16:30 +",
 								activity: "Plaza de Bolívar y Chorro de Quevedo",
-								cost: "Cena: 38,000 COP",
+								cost_cop: 38000,
 								transport:
 									"👟 <strong>A pie (10-15 min)</strong><br>Recorrido por el centro histórico.",
 								comments:
@@ -877,7 +916,7 @@
 							{
 								time: "07:45 - 11:00",
 								activity: "Cerro de Monserrate",
-								cost: "Taxi: 25,000 + Tiquete: 32,000 COP",
+								cost_cop: 57000,
 								transport:
 									"🚕 <strong>Taxi (30 min) / 🚠 Funicular</strong><br>Taxi desde hotel a base; funicular para ascender.",
 								comments:
@@ -896,11 +935,11 @@
 							{
 								time: "11:00 - 13:00",
 								activity: "Museo Botero",
-								cost: "Taxi: 20,000 + Entrada: Gratis",
+								cost_cop: 20000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Desde la base de Monserrate a La Candelaria.",
 								comments:
-									"Visitar la impresionante colección de arte donada por Fernando Botero.",
+									"Visitar la impresionante colección de arte donada por Fernando Botero (entrada gratuita).",
 								links: [
 									{
 										name: "Ubicación",
@@ -911,7 +950,7 @@
 							{
 								time: "13:00 +",
 								activity: "Almuerzo y Tarde/Noche en Zona G",
-								cost: "100,000 COP",
+								cost_cop: 100000,
 								transport:
 									"🚕 <strong>Taxi (25-30 min)</strong><br>Desde La Candelaria a Chapinero.",
 								comments:
@@ -943,7 +982,7 @@
 							{
 								time: "07:30 - 10:30",
 								activity: "Mercado de Paloquemao",
-								cost: "Taxi: 18,000 + Degustación: 15,000 COP",
+								cost_cop: 33000,
 								transport:
 									"🚕 <strong>Taxi (20 min)</strong><br>Desde el hotel.",
 								comments:
@@ -958,7 +997,7 @@
 							{
 								time: "10:30 +",
 								activity: 'Ruta "Betty, la Fea"',
-								cost: "Taxi: 15,000 + Almuerzo: 38,000 COP",
+								cost_cop: 53000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Desde Paloquemao al barrio Teusaquillo.",
 								comments:
@@ -990,7 +1029,7 @@
 							{
 								time: "07:30 - 13:30",
 								activity: "Excursión a la Catedral de Sal",
-								cost: "Transporte I/V: 40,000 + Entrada: 118,000 COP",
+								cost_cop: 158000,
 								transport:
 									"🚕 <strong>Taxi (10 min) / 🚌 Bus (1.5h)</strong><br>Taxi a Terminal Salitre y bus intermunicipal a Zipaquirá.",
 								comments:
@@ -1013,7 +1052,7 @@
 							{
 								time: "13:30 - 15:00",
 								activity: "Almuerzo en Zipaquirá",
-								cost: "33,000 COP",
+								cost_cop: 33000,
 								transport:
 									"👟 <strong>A pie</strong><br>En el centro de Zipaquirá.",
 								comments:
@@ -1023,7 +1062,7 @@
 							{
 								time: "15:00 +",
 								activity: "Regreso y Tarde Libre",
-								cost: "Variable",
+								cost_cop: 0,
 								transport:
 									"🚌 <strong>Bus (1.5h) / 🚕 Taxi (10 min)</strong><br>Regreso a Bogotá.",
 								comments:
@@ -1049,7 +1088,7 @@
 							{
 								time: "Mañana",
 								activity: "Desayuno y Check-out",
-								cost: "Variable",
+								cost_cop: 0,
 								transport: "👟 <strong>A pie</strong><br>En el hotel.",
 								comments:
 									"Disfrutar del último desayuno colombiano y realizar el check-out.",
@@ -1058,7 +1097,7 @@
 							{
 								time: "12:00",
 								activity: "Traslado al Aeropuerto (BOG)",
-								cost: "Taxi: ~25,000 COP",
+								cost_cop: 25000,
 								transport:
 									"🚕 <strong>Taxi (20 min)</strong><br>Desde el hotel al aeropuerto.",
 								comments: "Dirigirse al aeropuerto para el vuelo de regreso.",
@@ -1121,9 +1160,9 @@
                             <p class="font-semibold text-slate-800">${
 															item.activity
 														}</p>
-                            <p class="font-bold text-teal-600 text-sm mt-1">${
-															item.cost
-														}</p>
+                            <p class="font-bold text-teal-600 text-sm mt-1">${formatDualCurrency(
+															item.cost_cop
+														)}</p>
                         </td>
                         <td class="py-4 pr-3 align-top text-sm text-slate-500">${
 													item.transport
@@ -1157,14 +1196,9 @@
                             <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
                                 <p class="text-3xl mb-1">💰</p>
                                 <p class="text-sm font-semibold text-slate-500">Presupuesto</p>
-                                <p class="text-lg font-bold text-teal-600">${new Intl.NumberFormat(
-																	"es-CO",
-																	{
-																		style: "currency",
-																		currency: "COP",
-																		minimumFractionDigits: 0,
-																	}
-																).format(day.budget)}</p>
+                                <p class="text-lg font-bold text-teal-600">${formatDualCurrency(
+																	day.budget
+																)}</p>
                             </div>
                             <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
                                 <p class="text-3xl mb-1">💪</p>
@@ -1210,7 +1244,7 @@
                                         <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Actividad y Costo</th>
                                         <th class="py-2 pr-3 font-semibold text-sm w-[23%]">Cómo Llegar y Tiempos</th>
                                         <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Comentarios</th>
-                                        <th class="py-2 font-semibold text-sm w-[25%]">Recursos Externos</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[25%]">Recursos Externos</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1309,14 +1343,7 @@
 						plugins: {
 							legend: { display: false },
 							tooltip: {
-								callbacks: {
-									label: c =>
-										` ${new Intl.NumberFormat("es-CO", {
-											style: "currency",
-											currency: "COP",
-											minimumFractionDigits: 0,
-										}).format(c.parsed.x)}`,
-								},
+								callbacks: { label: c => ` ${formatCOP(c.parsed.x)}` },
 							},
 						},
 						scales: { x: { ticks: { callback: v => v / 1000 + "K" } } },
