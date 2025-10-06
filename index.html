@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Guía de Operaciones de Viaje: Colombia 2025</title>
+		<title>Guía Interactiva de Viaje: Colombia 2025</title>
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<link
@@ -11,13 +11,16 @@
 			rel="stylesheet"
 		/>
 		<!-- Chosen Palette: A Fresh & Earthy Palette -->
-		<!-- Application Structure Plan: The application is engineered as a comprehensive, single-page briefing document. It begins with a strategic overview section containing key metrics (total cost, duration) and high-level data visualizations (budget distribution, cost per destination) for quick situational awareness. The core architecture consists of 13 distinct, sequential sections, one for each day. Each section is a self-contained operational brief, providing a narrative summary, a tactical dossier (effort, weather, budget), critical logistics and advice, and a detailed chronological action plan (the itinerary table). This linear, scroll-based structure was selected for its robustness and ease of access, ensuring all critical mission data is available without user interaction, making it ideal for reference in the field. -->
+		<!-- Application Structure Plan: The application is designed as an interactive Single-Page Application (SPA). The top section provides a static, high-level strategic overview. Below this, a prominent tab-based navigation system allows users to switch between the 13 days of the trip. The main content area dynamically displays the selected day's full operational brief. This interactive architecture is optimized for quick, non-linear access to specific daily information on digital devices, with Day 1 loaded by default for immediate use. -->
 		<!-- Visualization & Content Choices: 
-    - Overall Budget Distribution: Report Info -> Budget percentages by category. Goal -> Compare composition of total expenditure. Viz -> Doughnut Chart. Interaction -> Hover for details. Justification -> Optimal for visualizing proportional contributions to a whole. Library -> Chart.js/Canvas.
-    - Daily Itinerary & Operations Table: Report Info -> Timed activities with costs, comments, transport logistics, and external links. Goal -> Organize and provide actionable intelligence. Viz -> Structured HTML table. Interaction -> Clickable external hyperlinks for navigation and supplier access. Justification -> Presents detailed operational data in a highly structured and scannable format, directly embedding all necessary resources. Method -> HTML/Tailwind.
-    - Daily Tactical Dossier: Report Info -> Key daily parameters (budget, physical effort, weather). Goal -> Inform and prepare. Viz -> Styled data cards in a banner format. Interaction -> None. Justification -> Provides at-a-glance situational data with high visual impact for daily preparation. Method -> HTML/Tailwind. -->
+    - Overall Budget Distribution: Report Info -> Budget percentages by category. Goal -> Compare composition of total expenditure. Viz -> Doughnut Chart (in static summary). Interaction -> Hover for details. Justification -> Optimal for visualizing proportional contributions to a whole. Library -> Chart.js/Canvas.
+    - Daily Itinerary Table: Report Info -> Timed activities with all details. Goal -> Organize and provide actionable intelligence. Viz -> Structured HTML table wrapped in a horizontally scrollable div (within each day's tab). Interaction -> Clickable external hyperlinks. Justification -> Presents detailed operational data in a structured, responsive format, directly embedding all necessary resources for the selected day. Method -> HTML/Tailwind.
+    - Daily Tactical Dossier: Report Info -> Key daily parameters. Goal -> Inform and prepare. Viz -> Styled data cards in a banner format (within each day's tab). Interaction -> None. Justification -> Provides at-a-glance situational data with high visual impact. Method -> HTML/Tailwind. -->
 		<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 		<style>
+			html {
+				scroll-behavior: smooth;
+			}
 			body {
 				font-family: "Inter", sans-serif;
 				background-color: #f8fafc;
@@ -36,13 +39,36 @@
 					height: 350px;
 				}
 			}
+			.tab-content {
+				display: none;
+			}
+			.tab-content.active {
+				display: block;
+			}
+			.tab.active {
+				background-color: #0d9488;
+				color: white;
+				box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+					0 2px 4px -2px rgb(0 0 0 / 0.1);
+			}
+			/* Style for scrollbar */
+			.tabs-container::-webkit-scrollbar {
+				height: 4px;
+			}
+			.tabs-container::-webkit-scrollbar-thumb {
+				background: #cbd5e1;
+				border-radius: 10px;
+			}
+			.tabs-container::-webkit-scrollbar-track {
+				background: #f1f5f9;
+			}
 		</style>
 	</head>
 	<body class="text-slate-800">
-		<header class="bg-white shadow-sm sticky top-0 z-10">
+		<header class="bg-white shadow-sm sticky top-0 z-20">
 			<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
 				<h1 class="text-2xl sm:text-3xl font-bold text-teal-700">
-					Guía de Operaciones de Viaje: Colombia 2025
+					Guía Interactiva de Viaje: Colombia 2025
 				</h1>
 				<p class="text-slate-500 mt-1 text-sm sm:text-base">
 					Dossier Táctico del 10 al 22 de Octubre.
@@ -51,7 +77,7 @@
 		</header>
 
 		<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-			<section id="summary" class="mb-12">
+			<section id="summary" class="mb-8">
 				<h2 class="text-3xl font-bold mb-6 text-slate-700 border-b pb-2">
 					Resumen Estratégico del Viaje
 				</h2>
@@ -61,9 +87,9 @@
 							Costo Total Estimado
 						</h3>
 						<p class="text-3xl font-bold text-teal-600 mt-2">
-							$6,250,000 <span class="text-xl text-slate-500">COP</span>
+							$7,550,000 <span class="text-xl text-slate-500">COP</span>
 						</p>
-						<p class="text-xl text-slate-500">~$37,500 MXN</p>
+						<p class="text-xl text-slate-500">~$45,300 MXN</p>
 					</div>
 					<div class="bg-white p-6 rounded-lg shadow-md text-center">
 						<h3 class="text-lg font-semibold text-slate-600">
@@ -104,19 +130,19 @@
 				</div>
 			</section>
 
-			<div id="daily-sections-container"></div>
-		</main>
-
-		<footer class="bg-white mt-12 py-6 border-t">
-			<div
-				class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500"
+			<nav
+				id="tabs-navigation"
+				class="p-2 rounded-lg mb-8 sticky top-[88px] z-10 bg-slate-100/80 backdrop-blur-sm"
 			>
-				<p>
-					&copy; 2025 Guía de Viaje a Colombia. Planificación estratégica para
-					una aventura inolvidable.
-				</p>
+				<div class="tabs-container overflow-x-auto whitespace-nowrap pb-2">
+					<!-- Day tabs will be inserted here -->
+				</div>
+			</nav>
+
+			<div id="content-container">
+				<!-- Daily content will be inserted here -->
 			</div>
-		</footer>
+		</main>
 
 		<script>
 			const tripData = {
@@ -1049,10 +1075,6 @@
 			};
 
 			const palette = {
-				primary: "#0d9488",
-				secondary: "#0f766e",
-				accent: "#f59e0b",
-				lightBg: "#f8fafc",
 				chartColors: [
 					"#14b8a6",
 					"#f59e0b",
@@ -1064,9 +1086,173 @@
 			};
 
 			document.addEventListener("DOMContentLoaded", () => {
+				const tabsContainer = document.querySelector(".tabs-container");
+				const contentContainer = document.getElementById("content-container");
+				const tabsNav = document.getElementById("tabs-navigation");
+
+				tripData.days.forEach(day => {
+					const tabButton = document.createElement("button");
+					tabButton.className =
+						"tab inline-block px-4 py-2 text-sm font-semibold rounded-md transition-colors mr-2 bg-white text-slate-600 hover:bg-slate-100 shadow-sm";
+					tabButton.textContent = `Día ${day.day}`;
+					tabButton.dataset.target = `day-${day.day}`;
+					tabsContainer.appendChild(tabButton);
+
+					const contentDiv = document.createElement("div");
+					contentDiv.id = `day-${day.day}`;
+					contentDiv.className = "tab-content";
+
+					const linksHTML = links =>
+						links
+							.map(
+								link =>
+									`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-800 hover:bg-teal-100 text-sm font-semibold mr-2 mb-2 px-3 py-1.5 rounded-full transition-colors">📍 ${link.name}</a>`
+							)
+							.join("");
+
+					const itineraryHTML = day.itinerary
+						.map(
+							item => `
+                    <tr class="border-b border-slate-200 last:border-b-0">
+                        <td class="py-4 pr-3 align-top text-sm font-semibold text-slate-600">${
+													item.time
+												}</td>
+                        <td class="py-4 pr-3 align-top">
+                            <p class="font-semibold text-slate-800">${
+															item.activity
+														}</p>
+                            <p class="font-bold text-teal-600 text-sm mt-1">${
+															item.cost
+														}</p>
+                        </td>
+                        <td class="py-4 pr-3 align-top text-sm text-slate-500">${
+													item.transport
+												}</td>
+                        <td class="py-4 pr-3 align-top text-sm text-slate-500">${
+													item.comments
+												}</td>
+                        <td class="py-4 align-top">${
+													item.links ? linksHTML(item.links) : ""
+												}</td>
+                    </tr>
+                `
+						)
+						.join("");
+
+					contentDiv.innerHTML = `
+                <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
+                    <div class="border-b-2 border-teal-600 pb-4 mb-6">
+                        <h2 class="text-3xl font-bold text-teal-700">${`Día ${day.day}: ${day.title}`}</h2>
+                        <p class="text-lg text-slate-500 mt-1">${day.date} - ${
+						day.city
+					}</p>
+                    </div>
+                    <div class="mb-8">
+                         <h3 class="text-xl font-bold mb-3 text-slate-700">Resumen Narrativo</h3>
+                         <p class="text-slate-600">${day.narrative}</p>
+                    </div>
+                    <div class="mb-8">
+                         <h3 class="text-xl font-bold mb-4 text-slate-700">Dossier Táctico del Día</h3>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">💰</p>
+                                <p class="text-sm font-semibold text-slate-500">Presupuesto</p>
+                                <p class="text-lg font-bold text-teal-600">${new Intl.NumberFormat(
+																	"es-CO",
+																	{
+																		style: "currency",
+																		currency: "COP",
+																		minimumFractionDigits: 0,
+																	}
+																).format(day.budget)}</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">💪</p>
+                                <p class="text-sm font-semibold text-slate-500">Esfuerzo Físico</p>
+                                <p class="text-lg font-bold text-teal-600">${
+																	day.effort
+																}</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">👟</p>
+                                <p class="text-sm font-semibold text-slate-500">Pasos Aprox.</p>
+                                <p class="text-lg font-bold text-teal-600">${
+																	day.steps
+																}</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+                                <p class="text-3xl mb-1">${
+																	day.city.includes("Cartagena")
+																		? "☀️"
+																		: day.city.includes("Medellín") ||
+																		  day.city.includes("Salento")
+																		? "🌦️"
+																		: "☁️"
+																}</p>
+                                <p class="text-sm font-semibold text-slate-500">Clima / Vestimenta</p>
+                                <p class="text-xs font-semibold text-teal-700 mt-1">${
+																	day.weather
+																}</p>
+                            </div>
+                         </div>
+                    </div>
+                     <div class="mb-8">
+                         <h3 class="text-xl font-bold mb-3 text-slate-700">Logística y Consejos</h3>
+                         <p class="text-slate-600">${day.logistics}</p>
+                    </div>
+                    <div>
+                         <h3 class="text-xl font-bold mb-4 text-slate-700">Plan de Acción Detallado</h3>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left min-w-[1000px]">
+                                <thead>
+                                    <tr class="border-b-2 border-slate-300">
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[12%]">Horario</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Actividad y Costo</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[23%]">Cómo Llegar y Tiempos</th>
+                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Comentarios</th>
+                                        <th class="py-2 font-semibold text-sm w-[25%]">Recursos Externos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${itineraryHTML}
+                                </tbody>
+                            </table>
+                         </div>
+                    </div>
+                </div>
+                `;
+					contentContainer.appendChild(contentDiv);
+				});
+
+				const tabs = document.querySelectorAll(".tab");
+				const tabContents = document.querySelectorAll(".tab-content");
+
+				tabs.forEach(tab => {
+					tab.addEventListener("click", () => {
+						const target = tab.dataset.target;
+
+						tabs.forEach(t => t.classList.remove("active"));
+						tab.classList.add("active");
+
+						tabContents.forEach(content => {
+							content.classList.remove("active");
+							if (content.id === target) {
+								content.classList.add("active");
+							}
+						});
+
+						tabsNav.scrollIntoView({ behavior: "smooth", block: "start" });
+					});
+				});
+
+				// Set default view to Day 1
+				document
+					.querySelector('.tab[data-target="day-1"]')
+					.classList.add("active");
+				document.getElementById("day-1").classList.add("active");
+
 				createBudgetDistributionChart();
 				createDailyCostChart();
-				createDailySections();
 			});
 
 			function createBudgetDistributionChart() {
@@ -1082,8 +1268,7 @@
 								label: "Distribución de Gastos",
 								data: tripData.general.budgetDistribution.data,
 								backgroundColor: palette.chartColors,
-								borderColor: palette.lightBg,
-								borderWidth: 2,
+								borderWidth: 0,
 								hoverOffset: 4,
 							},
 						],
@@ -1136,138 +1321,6 @@
 						},
 						scales: { x: { ticks: { callback: v => v / 1000 + "K" } } },
 					},
-				});
-			}
-
-			function createDailySections() {
-				const container = document.getElementById("daily-sections-container");
-				tripData.days.forEach(day => {
-					const section = document.createElement("section");
-					section.className =
-						"pt-12 bg-white p-6 sm:p-8 rounded-lg shadow-md mb-12";
-
-					const linksHTML = links =>
-						links
-							.map(
-								link =>
-									`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-700 hover:bg-teal-100 text-xs font-semibold mr-2 mb-2 px-2.5 py-1 rounded-full transition-colors">${link.name}</a>`
-							)
-							.join("");
-
-					const itineraryHTML = day.itinerary
-						.map(
-							item => `
-                    <tr class="border-b border-slate-200 last:border-b-0">
-                        <td class="py-4 pr-3 align-top text-sm font-semibold text-slate-600 w-[12%]">${
-													item.time
-												}</td>
-                        <td class="py-4 pr-3 align-top w-[20%]">
-                            <p class="font-semibold text-slate-800">${
-															item.activity
-														}</p>
-                            <p class="font-bold text-teal-600 text-sm mt-1">${
-															item.cost
-														}</p>
-                        </td>
-                        <td class="py-4 pr-3 align-top text-sm text-slate-500 w-[23%]">${
-													item.transport
-												}</td>
-                        <td class="py-4 pr-3 align-top text-sm text-slate-500 w-[20%]">${
-													item.comments
-												}</td>
-                        <td class="py-4 align-top w-[25%]">${
-													item.links ? linksHTML(item.links) : ""
-												}</td>
-                    </tr>
-                `
-						)
-						.join("");
-
-					section.innerHTML = `
-                    <div class="border-b-2 border-teal-600 pb-4 mb-6">
-                        <h2 class="text-3xl font-bold text-teal-700">${`Día ${day.day}: ${day.title}`}</h2>
-                        <p class="text-lg text-slate-500 mt-1">${day.date} - ${
-						day.city
-					}</p>
-                    </div>
-
-                    <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-3 text-slate-700">Resumen Narrativo</h3>
-                         <p class="text-slate-600">${day.narrative}</p>
-                    </div>
-                    
-                    <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-4 text-slate-700">Dossier Táctico del Día</h3>
-                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">💰</p>
-                                <p class="text-sm font-semibold text-slate-500">Presupuesto</p>
-                                <p class="text-lg font-bold text-teal-600">${new Intl.NumberFormat(
-																	"es-CO",
-																	{
-																		style: "currency",
-																		currency: "COP",
-																		minimumFractionDigits: 0,
-																	}
-																).format(day.budget)}</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">💪</p>
-                                <p class="text-sm font-semibold text-slate-500">Esfuerzo Físico</p>
-                                <p class="text-lg font-bold text-teal-600">${
-																	day.effort
-																}</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">👟</p>
-                                <p class="text-sm font-semibold text-slate-500">Pasos Aprox.</p>
-                                <p class="text-lg font-bold text-teal-600">${
-																	day.steps
-																}</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">${
-																	day.city.includes("Cartagena")
-																		? "☀️"
-																		: day.city.includes("Medellín") ||
-																		  day.city.includes("Salento")
-																		? "🌦️"
-																		: "☁️"
-																}</p>
-                                <p class="text-sm font-semibold text-slate-500">Clima / Vestimenta</p>
-                                <p class="text-xs font-semibold text-teal-700 mt-1">${
-																	day.weather
-																}</p>
-                            </div>
-                         </div>
-                    </div>
-                    
-                     <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-3 text-slate-700">Logística y Consejos</h3>
-                         <p class="text-slate-600">${day.logistics}</p>
-                    </div>
-
-                    <div>
-                         <h3 class="text-xl font-bold mb-4 text-slate-700">Plan de Acción Detallado</h3>
-                         <div class="overflow-x-auto">
-                            <table class="w-full text-left table-fixed">
-                                <thead>
-                                    <tr class="border-b-2 border-slate-300">
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[12%]">Horario</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Actividad y Costo</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[23%]">Cómo Llegar y Tiempos</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Comentarios</th>
-                                        <th class="py-2 font-semibold text-sm w-[25%]">Recursos Externos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${itineraryHTML}
-                                </tbody>
-                            </table>
-                         </div>
-                    </div>
-                `;
-					container.appendChild(section);
 				});
 			}
 		</script>
