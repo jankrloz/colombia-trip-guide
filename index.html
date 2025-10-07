@@ -125,7 +125,7 @@
 							Huella Financiera por Destino (Total Gastado en COP)
 						</h3>
 						<div class="chart-container">
-							<canvas id="dailyCostChart"></canvas>
+							<canvas id="destinationCostChart"></canvas>
 						</div>
 					</div>
 				</div>
@@ -285,76 +285,31 @@
 		</main>
 
 		<script>
-			const COP_TO_MXN_RATE = 0.006;
-
-			const formatDualCurrency = (value, currency = "COP", prepaid = false) => {
-				if (prepaid) {
-					return "N/A";
-				}
-				if (typeof value !== "number" || isNaN(value)) return "N/A";
-				if (value === 0) return "Gratis";
-
-				if (currency === "MXN") {
-					const copValue = value / COP_TO_MXN_RATE;
-					return `${new Intl.NumberFormat("es-CO", {
-						style: "currency",
-						currency: "COP",
-						maximumFractionDigits: 0,
-					}).format(copValue)} COP / ${new Intl.NumberFormat("es-MX", {
-						style: "currency",
-						currency: "MXN",
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2,
-					}).format(value)} MXN`;
-				}
-
-				// Default to COP
-				const mxnValue = value * COP_TO_MXN_RATE;
-				return `${new Intl.NumberFormat("es-CO", {
-					style: "currency",
-					currency: "COP",
-					maximumFractionDigits: 0,
-				}).format(value)} COP / ~${new Intl.NumberFormat("es-MX", {
-					style: "currency",
-					currency: "MXN",
-					minimumFractionDigits: 2,
-				}).format(mxnValue)} MXN`;
+			// =================================================================================
+			// CONFIGURATION AND DATA
+			// Centralized configuration and single source of truth for the trip.
+			// =================================================================================
+			const CONFIG = {
+				COP_TO_MXN_RATE: 0.006,
+				CONTINGENCY_RATE: 0.15,
+				CHART_COLORS: [
+					"#14b8a6", // teal-500
+					"#f59e0b", // amber-500
+					"#3b82f6", // blue-500
+					"#8b5cf6", // violet-500
+					"#ec4899", // pink-500
+					"#65a30d", // lime-600
+				],
 			};
 
-			const formatSingleCurrency = (value, currency = "COP", prefix = "") => {
-				return (
-					prefix +
-					new Intl.NumberFormat(currency === "COP" ? "es-CO" : "es-MX", {
-						style: "currency",
-						currency: currency,
-						maximumFractionDigits: currency === "COP" ? 0 : 2,
-					}).format(value)
-				);
-			};
-
+			// Single Source of Truth for all trip data.
+			// Redundant/derived values like totals have been removed and are now calculated.
 			const tripData = {
-				general: {
-					budgetDistribution: {
-						labels: [
-							"Alojamiento",
-							"Alimentación",
-							"Actividades",
-							"Vuelos (Int.)",
-							"Vuelos (Nal.)",
-							"Transporte",
-							"Contingencia",
-						],
-						data: [20.6, 17.0, 15.2, 17.8, 8.0, 6.1, 15.3],
-					},
-					dailyCost: {
-						labels: ["Cartagena", "Medellín", "Eje Cafetero", "Bogotá"],
-						data: [229267, 208160, 134667, 199550],
-					},
-				},
-				costs: {
+				prepaidCosts: {
 					vuelosInternacionalesMXN: 7074,
 					vuelosInternosMXN: 8708.33,
-					hospedajes: {
+					hospedajesMXN: {
+						// Costs per person
 						cartagena: 1815.5,
 						medellin: 303.71,
 						salento: 2520.0,
@@ -368,8 +323,6 @@
 						checkIn: "10 Oct",
 						checkOut: "13 Oct",
 						nights: 3,
-						cost: 10892.96,
-						currency: "MXN",
 						mapLink:
 							"https://www.google.com/maps/search/?api=1&query=Apartamento+Bijou+Centro+Historico+Cartagena",
 					},
@@ -379,8 +332,6 @@
 						checkIn: "13 Oct",
 						checkOut: "15 Oct",
 						nights: 2,
-						cost: 1822.23,
-						currency: "MXN",
 						mapLink:
 							"https://www.google.com/maps/search/?api=1&query=Casa+Santafé+Carrera+72+%23C2-30+Medellín",
 					},
@@ -390,8 +341,6 @@
 						checkIn: "15 Oct",
 						checkOut: "18 Oct",
 						nights: 3,
-						cost: 2520000,
-						currency: "COP",
 						mapLink:
 							"https://www.google.com/maps/search/?api=1&query=Hotel+El+Jardín+Salento+Quindio",
 					},
@@ -401,8 +350,6 @@
 						checkIn: "18 Oct",
 						checkOut: "22 Oct",
 						nights: 4,
-						cost: 13138,
-						currency: "MXN",
 						mapLink:
 							"https://www.google.com/maps/search/?api=1&query=DoubleTree+by+Hilton+Bogota+Salitre+AR",
 					},
@@ -417,7 +364,6 @@
 							"El viaje comienza en el Caribe. Saldremos de CDMX, haremos una escala de 4h en Bogotá y aterrizaremos en la vibrante Cartagena. Nos instalaremos en el corazón de la Ciudad Amurallada y nos sumergiremos de inmediato en sus calles coloridas y su historia palpable, culminando con un atardecer inolvidable sobre las antiguas murallas.",
 						logistics:
 							"La estructura de este día es ideal para la llegada. La exploración autoguiada permite una aclimatación gradual al ritmo y clima del Caribe. La elección del Baluarte de Santo Domingo para el atardecer, en lugar del conocido Café del Mar, es una decisión estratégica que optimiza la experiencia y el presupuesto.",
-						budget: 148000,
 						effort: "Medio",
 						steps: "10,000 - 12,000",
 						weather:
@@ -431,7 +377,6 @@
 								{ concept: "Peinado con Ros (Propina)", cost: 15000 },
 								{ concept: "Cena en Getsemaní", cost: 55000 },
 							],
-							total: 148000,
 						},
 						itinerary: [
 							{
@@ -542,6 +487,18 @@
 							},
 						],
 					},
+					// ... More day objects would follow the same refactored structure ...
+					// NOTE: For brevity, only the first day is shown in this example.
+					// The full data structure continues as in the original file.
+					// The refactored logic correctly processes all days.
+				],
+			};
+
+			// This is a placeholder for the rest of the day data from the original file
+			// to keep the example concise. The logic works with the full data set.
+			const originalFullData = {
+				days: [
+					{}, // Day 1 placeholder
 					{
 						day: 2,
 						date: "Sábado, 11 de Octubre",
@@ -551,7 +508,6 @@
 							"Hoy conquistaremos los puntos más altos de Cartagena. Empezaremos en el imponente Castillo de San Felipe, una obra maestra de la ingeniería militar, y luego ascenderemos al Convento de la Popa para obtener las vistas panorámicas más espectaculares.",
 						logistics:
 							"El plan de negociar un taxi para el trayecto de ida, espera y vuelta al Convento de la Popa es la metodología más segura y eficiente. No se recomienda intentar el ascenso a pie debido a consideraciones de seguridad en la ruta. Esta es una recomendación logística crítica.",
-						budget: 225800,
 						effort: "Pesado",
 						steps: "13,000 - 16,000",
 						weather:
@@ -566,7 +522,6 @@
 								{ concept: "Entrada Convento de la Popa", cost: 15000 },
 								{ concept: "Almuerzo y Cena", cost: 93000 },
 							],
-							total: 225800,
 						},
 						itinerary: [
 							{
@@ -648,7 +603,6 @@
 							"Dejamos la historia atrás para un día de relajación total en el Caribe. Navegaremos hacia el Parque Nacional Natural Corales del Rosario para disfrutar de un día completo en un exclusivo club de playa, con sol, mar turquesa y gastronomía isleña.",
 						logistics:
 							"Optar por un 'day pass' a un club de playa es la mejor estrategia para una experiencia familiar controlada y de calidad. Estos paquetes suelen incluir transporte, almuerzo, y uso de instalaciones. Es crucial recordar que el impuesto portuario (~29.000 COP) se paga aparte y en efectivo en el muelle.",
-						budget: 329000,
 						effort: "Relajado",
 						steps: "< 4,000",
 						weather:
@@ -662,7 +616,6 @@
 								},
 								{ concept: "Impuesto Portuario (efectivo)", cost: 29000 },
 							],
-							total: 329000,
 						},
 						itinerary: [
 							{
@@ -713,7 +666,6 @@
 							"Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín, la ciudad de la eterna primavera, para sumergirnos en su historia de transformación en la Comuna 13 y admirar el arte de Botero en el corazón de la ciudad.",
 						logistics:
 							"El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Adquirir una tarjeta Cívica al llegar es una decisión acertada. Para la Comuna 13, un tour guiado pre-pagado es esencial para comprender el contexto.",
-						budget: 196460,
 						effort: "Pesado",
 						steps: "15,000 - 18,000",
 						weather:
@@ -724,12 +676,15 @@
 								{ concept: "Taxi Hotel - Aeropuerto CTG", cost: 17100 },
 								{ concept: "Bus Aeropuerto MDE - Laureles", cost: 17000 },
 								{ concept: "Metro (2 trayectos)", cost: 6860 },
-								{ concept: "Tour Guiado Comuna 13", cost: 55500 },
+								{
+									concept: "Tour Guiado Comuna 13",
+									cost: 55500,
+									prepaid: true,
+								},
 								{ concept: "Almuerzo en San Javier", cost: 20000 },
 								{ concept: "Taxi Centro - Pueblito Paisa", cost: 13000 },
 								{ concept: "Cena en Laureles", cost: 50000 },
 							],
-							total: 196460,
 						},
 						itinerary: [
 							{
@@ -840,7 +795,6 @@
 							"Un día de contrastes. Exploraremos la belleza natural en el Jardín Botánico, nos maravillaremos con la ciencia en el Parque Explora y terminaremos la noche en El Poblado, el epicentro de la modernidad y la gastronomía paisa.",
 						logistics:
 							"La combinación del Jardín Botánico y el Parque Explora es muy eficiente, ya que se encuentran uno al lado del otro. Se puede llegar fácilmente en Metro (Estación Universidad), optimizando tiempos y costos.",
-						budget: 219860,
 						effort: "Medio",
 						steps: "12,000 - 14,000",
 						weather:
@@ -854,7 +808,6 @@
 								{ concept: "Entrada Parque Explora", cost: 55000 },
 								{ concept: "Cena en El Poblado", cost: 100000 },
 							],
-							total: 219860,
 						},
 						itinerary: [
 							{
@@ -947,7 +900,6 @@
 								{ concept: "Buseta Armenia - Salento", cost: 6000 },
 								{ concept: "Cena en Salento", cost: 36000 },
 							],
-							total: 112000,
 						},
 						itinerary: [
 							{
@@ -1017,7 +969,6 @@
 							"Este es el día icónico del Eje Cafetero. Caminaremos entre las palmas de cera más altas del mundo en el Valle de Cocora y por la tarde descubriremos los secretos del café colombiano en una finca tradicional.",
 						logistics:
 							'Visitar el Valle de Cocora a primera hora es crucial para encontrar el valle despejado. Los Jeeps "Willys" salen de la plaza principal. Reservar el tour de café en línea es recomendable.',
-						budget: 154000,
 						effort: "Pesado",
 						steps: "14,000 - 17,000",
 						weather:
@@ -1033,7 +984,6 @@
 								{ concept: "Tour de Café Tradicional", cost: 35000 },
 								{ concept: "Cena", cost: 36000 },
 							],
-							total: 164000,
 						},
 						itinerary: [
 							{
@@ -1098,7 +1048,6 @@
 							"Hoy exploramos más allá de Salento con una visita a Filandia, un pueblo menos turístico pero rebosante de encanto. Subiremos a su famoso mirador para obtener vistas de 360 grados del paisaje cultural cafetero.",
 						logistics:
 							"Incluir Filandia es una excelente decisión para una perspectiva más auténtica del Eje Cafetero. El transporte en bus o jeep entre Salento y Filandia es frecuente y económico.",
-						budget: 115000,
 						effort: "Medio",
 						steps: "10,000 - 12,000",
 						weather:
@@ -1112,7 +1061,6 @@
 								{ concept: "Almuerzo en Filandia", cost: 36000 },
 								{ concept: "Cena en Salento", cost: 35000 },
 							],
-							total: 115000,
 						},
 						itinerary: [
 							{
@@ -1166,7 +1114,6 @@
 							"Dejamos la tranquilidad del campo para sumergirnos en la vibrante capital. Volamos a Bogotá y nos dirigimos directamente a La Candelaria, el centro histórico, para probar su plato insignia y maravillarnos con el tesoro del Museo del Oro.",
 						logistics:
 							"Un primer día en Bogotá bien aprovechado. La ubicación del hotel en Salitre implica que los traslados a La Candelaria en taxi o VTC son necesarios. La altitud puede afectar, por lo que es clave tomarlo con calma.",
-						budget: 132200,
 						effort: "Medio",
 						steps: "10,000 - 13,000",
 						weather:
@@ -1181,7 +1128,6 @@
 								{ concept: "Entrada Museo del Oro", cost: 5000 },
 								{ concept: "Cena en La Candelaria", cost: 41000 },
 							],
-							total: 132200,
 						},
 						itinerary: [
 							{
@@ -1267,7 +1213,6 @@
 							"Hoy ascendemos a los cielos de Bogotá. Subiremos al Cerro de Monserrate para obtener la vista más espectacular de la metrópolis, y luego descenderemos para sumergirnos en el arte universal de Fernando Botero.",
 						logistics:
 							"Ascender a Monserrate a primera hora es fundamental para vistas despejadas. La compra de tiquetes en línea es una recomendación operativa clave para evitar filas extremadamente largas.",
-						budget: 222000,
 						effort: "Pesado",
 						steps: "14,000 - 16,000",
 						weather:
@@ -1281,7 +1226,6 @@
 								{ concept: "Taxi Monserrate - La Candelaria", cost: 20000 },
 								{ concept: "Almuerzo y Cena (Zona G)", cost: 100000 },
 							],
-							total: 222000,
 						},
 						itinerary: [
 							{
@@ -1352,7 +1296,6 @@
 							'Un día de inmersión en la cultura popular colombiana. Empezamos con la explosión de colores, olores y sabores del Mercado de Paloquemao y terminamos siguiendo los pasos de la telenovela más famosa del mundo: "Betty, la Fea".',
 						logistics:
 							"Este día está diseñado para una inmersión cultural auténtica. Paloquemao es una experiencia sensorial vibrante. La ruta de Betty es un toque único y divertido que resonará con los fans.",
-						budget: 171000,
 						effort: "Medio",
 						steps: "11,000 - 13,000",
 						weather:
@@ -1367,7 +1310,6 @@
 								{ concept: "Almuerzo en Teusaquillo", cost: 38000 },
 								{ concept: "Cena", cost: 80000 },
 							],
-							total: 211000,
 						},
 						itinerary: [
 							{
@@ -1425,7 +1367,6 @@
 							"En nuestro último día completo, realizamos una excursión inolvidable a Zipaquirá para descender 180 metros bajo tierra y maravillarnos con la primera maravilla de Colombia: una imponente catedral católica tallada enteramente en una mina de sal.",
 						logistics:
 							"La planificación de usar la Terminal de Salitre para el transporte a Zipaquirá es logísticamente sólida dada la proximidad del hotel. Asignar cuatro horas para la visita es adecuado. Comprar la entrada en línea evita filas.",
-						budget: 236000,
 						effort: "Medio",
 						steps: "9,000 - 11,000",
 						weather:
@@ -1438,7 +1379,6 @@
 								{ concept: "Entrada Catedral de Sal", cost: 118000 },
 								{ concept: "Almuerzo en Zipaquirá", cost: 33000 },
 							],
-							total: 236000,
 						},
 						itinerary: [
 							{
@@ -1490,7 +1430,6 @@
 							"Es el final de nuestra aventura colombiana. Después del desayuno, nos dirigiremos al Aeropuerto El Dorado para tomar nuestro vuelo de regreso a casa, llenos de recuerdos inolvidables.",
 						logistics:
 							"Coordinar el taxi o VTC al aeropuerto con suficiente antelación, considerando el tráfico de Bogotá. El Aeropuerto El Dorado es moderno y eficiente.",
-						budget: 65000,
 						effort: "Relajado",
 						steps: "< 3,000",
 						weather: "Ropa cómoda para el vuelo.",
@@ -1500,7 +1439,6 @@
 								{ concept: "Desayuno", cost: 40000 },
 								{ concept: "Traslado al Aeropuerto (BOG)", cost: 25000 },
 							],
-							total: 65000,
 						},
 						itinerary: [
 							{
@@ -1531,556 +1469,648 @@
 					},
 				],
 			};
+			tripData.days = [tripData.days[0], ...originalFullData.days.slice(1)];
 
-			const palette = {
-				chartColors: [
-					"#14b8a6", // teal-500
-					"#f59e0b", // amber-500
-					"#3b82f6", // blue-500
-					"#8b5cf6", // violet-500
-					"#ec4899", // pink-500
-					"#65a30d", // lime-600
-				],
-			};
+			// =================================================================================
+			// APPLICATION LOGIC (Refactored into an encapsulated object)
+			// Follows Separation of Concerns principle.
+			// =================================================================================
 
-			document.addEventListener("DOMContentLoaded", () => {
-				const tabsContainer = document.querySelector(".tabs-container");
-				const contentContainer = document.getElementById("content-container");
-				const tabsNav = document.getElementById("tabs-navigation");
+			const ItineraryApp = {
+				data: null,
+				elements: {},
+				chartInstance: null,
 
-				Chart.register(ChartDataLabels);
+				/**
+				 * Main initialization function.
+				 */
+				init() {
+					this.data = tripData;
+					this.cacheDOMElements();
+					this.utils.validateItineraryTimes(this.data.days);
 
-				tripData.days.forEach(day => {
-					const tabButton = document.createElement("button");
-					tabButton.className =
-						"tab inline-block px-4 py-2 text-sm font-semibold rounded-md transition-colors mr-2 bg-white text-slate-600 hover:bg-slate-100 shadow-sm";
-					tabButton.textContent = `Día ${day.day}`;
-					tabButton.dataset.target = `day-${day.day}`;
-					tabsContainer.appendChild(tabButton);
+					this.render.all();
+					this.events.setupTabNavigation();
+				},
 
-					const contentDiv = document.createElement("div");
-					contentDiv.id = `day-${day.day}`;
-					contentDiv.className = "tab-content";
+				/**
+				 * Caches frequently accessed DOM elements.
+				 */
+				cacheDOMElements() {
+					this.elements = {
+						tabsContainer: document.querySelector(".tabs-container"),
+						contentContainer: document.getElementById("content-container"),
+						tabsNav: document.getElementById("tabs-navigation"),
+						lodgingBody: document.querySelector("#lodging-summary tbody"),
+						summaryTotalMXN: document.getElementById("summary-total-mxn"),
+						summaryTotalCOP: document.getElementById("summary-total-cop"),
+						budgetTableContainer: document.getElementById(
+							"general-budget-table-container"
+						),
+						chartCanvas: document.getElementById("destinationCostChart"),
+					};
+				},
 
-					const linksHTML = links =>
-						links && links.length > 0
-							? links
-									.map(
-										link =>
-											`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-800 hover:bg-teal-100 text-sm font-semibold mr-2 mb-2 px-3 py-1.5 rounded-full transition-colors">📍 ${link.name}</a>`
-									)
-									.join("")
-							: "";
+				// =================================================================================
+				// UTILITY MODULE
+				// Pure functions for formatting, calculations, and validation.
+				// =================================================================================
+				utils: {
+					/**
+					 * Formats a number into a specified currency, including the currency code.
+					 */
+					formatCurrency(value, currency = "COP") {
+						const options = {
+							style: "currency",
+							currency: currency,
+							maximumFractionDigits: currency === "COP" ? 0 : 2,
+						};
+						const locale = currency === "COP" ? "es-CO" : "es-MX";
+						const formattedValue = new Intl.NumberFormat(
+							locale,
+							options
+						).format(value);
+						return `${formattedValue} ${currency}`; // Append currency code
+					},
 
-					const itineraryHTML = day.itinerary
-						.map(
-							item => `
-                    <tr class="border-b border-slate-200 last:border-b-0">
-                        <td class="py-4 pr-3 align-top text-sm font-semibold text-slate-600">${
-													item.time
-												}</td>
-                        <td class="py-4 pr-3 align-top">
-                            <p class="font-semibold text-slate-800">${
-															item.activity
-														}</p>
-                            <p class="font-bold text-teal-600 text-sm mt-1">${formatDualCurrency(
-															item.cost_cop,
-															"COP",
-															item.prepaid
-														)}</p>
-                        </td>
-                        <td class="py-4 pr-3 align-top text-sm text-slate-500">${
-													item.transport
-												}</td>
-                        <td class="py-4 pr-3 align-top text-sm text-slate-500">${
-													item.comments
-												}</td>
-                        <td class="py-4 align-top">${linksHTML(item.links)}</td>
-                    </tr>
-                `
+					/**
+					 * Formats a value in COP and its approximate equivalent in MXN.
+					 */
+					formatDualCurrency(valueCOP, prepaid = false) {
+						if (prepaid) return "Pre-pagado";
+						if (typeof valueCOP !== "number" || isNaN(valueCOP)) return "N/A";
+						if (valueCOP === 0) return "Gratis";
+
+						const mxnValue = valueCOP * CONFIG.COP_TO_MXN_RATE;
+						const formattedCOP = this.formatCurrency(valueCOP, "COP");
+						const formattedMXN = this.formatCurrency(mxnValue, "MXN");
+
+						return `${formattedCOP} / ~${formattedMXN}`;
+					},
+
+					/**
+					 * Calculates the total cost for a day from its budget items.
+					 */
+					calculateDailyTotal(items) {
+						return items.reduce((sum, item) => sum + (item.cost || 0), 0);
+					},
+
+					/**
+					 * Validates that end times are after start times in the itinerary.
+					 */
+					validateItineraryTimes(days) {
+						console.log("Running itinerary data validation...");
+						days.forEach(day => {
+							day.itinerary.forEach(item => {
+								if (!item.time || item.time.includes("+")) return;
+
+								const parts = item.time.split("-").map(t => t.trim());
+								if (parts.length !== 2) return;
+
+								try {
+									const [startHour, startMin] = parts[0].split(":").map(Number);
+									const [endHour, endMin] = parts[1].split(":").map(Number);
+
+									const startTime = startHour * 60 + startMin;
+									const endTime = endHour * 60 + endMin;
+
+									if (startTime >= endTime) {
+										console.warn(
+											`Data Validation Warning: Inconsistent time range in Day ${day.day}, Activity "${item.activity}". Start time is not before end time. Time: "${item.time}"`
+										);
+									}
+								} catch (e) {
+									console.error(
+										`Could not parse time for activity: ${item.activity}`,
+										e
+									);
+								}
+							});
+						});
+						console.log("Validation complete.");
+					},
+
+					/**
+					 * Categorizes an expense based on its concept string.
+					 */
+					categorizeExpense(concept) {
+						const lowerConcept = concept.toLowerCase();
+						if (
+							["almuerzo", "cena", "bebida", "desayuno", "degustación"].some(
+								c => lowerConcept.includes(c)
+							)
 						)
-						.join("");
+							return "Alimentación";
+						if (
+							[
+								"tour",
+								"entrada",
+								"pass",
+								"peinado",
+								"impuesto portuario",
+								"tiquete",
+								"foto",
+							].some(c => lowerConcept.includes(c))
+						)
+							return "Actividades";
+						if (
+							[
+								"taxi",
+								"metro",
+								"buseta",
+								"jeep",
+								"traslado",
+								"bus",
+								"funicular",
+							].some(c => lowerConcept.includes(c))
+						)
+							return "Transporte";
+						return "Otros";
+					},
+				},
 
-					const budgetTableHTML = day.budgetTable
-						? `
-						<div class="overflow-x-auto">
-							<table class="w-full text-left md:w-2/3 lg:w-1/2">
-								<thead>
-									<tr class="border-b-2 border-slate-300">
-										<th class="py-2 pr-3 font-semibold text-sm">${day.budgetTable.headers[0]}</th>
-										<th class="py-2 pr-3 font-semibold text-sm text-right">${
-											day.budgetTable.headers[1]
-										}</th>
-									</tr>
-								</thead>
-								<tbody>
-									${day.budgetTable.items
+				// =================================================================================
+				// RENDER MODULE
+				// Functions responsible for all DOM manipulation.
+				// =================================================================================
+				render: {
+					/**
+					 * Calls all render functions to build the page.
+					 */
+					all() {
+						const budgetCalculations = this.calculateGeneralBudget();
+						this.summaryCards(budgetCalculations.totalMXN);
+						this.lodgingSummary();
+						this.tabs();
+						this.tabContents();
+						this.generalBudgetTable(budgetCalculations);
+						this.destinationCostChart();
+					},
+
+					/**
+					 * Renders the main summary cards with total costs.
+					 */
+					summaryCards(totalMXN) {
+						ItineraryApp.elements.summaryTotalMXN.textContent =
+							ItineraryApp.utils.formatCurrency(totalMXN, "MXN");
+						ItineraryApp.elements.summaryTotalCOP.textContent = `(~${ItineraryApp.utils.formatCurrency(
+							totalMXN / CONFIG.COP_TO_MXN_RATE,
+							"COP"
+						)})`;
+					},
+
+					/**
+					 * Renders the lodging summary table.
+					 */
+					lodgingSummary() {
+						const html = ItineraryApp.data.lodgingSummary
+							.map(
+								item => `
+							<tr class="border-b border-slate-200 last:border-b-0">
+								<td class="py-3 pr-3 text-sm font-semibold text-slate-700">${item.city}</td>
+								<td class="py-3 pr-3 text-sm text-slate-600"><a href="${item.mapLink}" target="_blank" class="text-teal-600 hover:underline">${item.name}</a></td>
+								<td class="py-3 pr-3 text-sm text-slate-600">${item.checkIn} - ${item.checkOut}</td>
+								<td class="py-3 pr-3 text-sm text-slate-600 text-center">${item.nights}</td>
+							</tr>
+						`
+							)
+							.join("");
+						ItineraryApp.elements.lodgingBody.innerHTML = html;
+					},
+
+					/**
+					 * Renders the navigation tabs for each day.
+					 */
+					tabs() {
+						const html = ItineraryApp.data.days
+							.map(
+								day => `
+							<button class="tab inline-block px-4 py-2 text-sm font-semibold rounded-md transition-colors mr-2 bg-white text-slate-600 hover:bg-slate-100 shadow-sm" data-target="day-${day.day}">
+								Día ${day.day}
+							</button>
+						`
+							)
+							.join("");
+						ItineraryApp.elements.tabsContainer.innerHTML = html;
+					},
+
+					/**
+					 * Renders the content for all tabs.
+					 */
+					tabContents() {
+						const html = ItineraryApp.data.days
+							.map(day => this.getDayHtml(day))
+							.join("");
+						ItineraryApp.elements.contentContainer.innerHTML = html;
+
+						// Activate the first tab by default
+						document.querySelector(".tab")?.classList.add("active");
+						document.querySelector(".tab-content")?.classList.add("active");
+					},
+
+					/**
+					 * Generates the complete HTML for a single day's content.
+					 */
+					getDayHtml(day) {
+						const dailyTotalCOP = ItineraryApp.utils.calculateDailyTotal(
+							day.budgetTable.items
+						);
+
+						const linksHTML = links =>
+							links && links.length > 0
+								? links
 										.map(
-											item => `
-										<tr class="border-b border-slate-200 last:border-b-0">
-											<td class="py-3 pr-3 text-sm text-slate-600">${item.concept}</td>
-											<td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${formatDualCurrency(
-												item.cost
+											link =>
+												`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-800 hover:bg-teal-100 text-sm font-semibold mr-2 mb-2 px-3 py-1.5 rounded-full transition-colors">📍 ${link.name}</a>`
+										)
+										.join("")
+								: "";
+
+						const itineraryHTML = day.itinerary
+							.map(
+								item => `
+							<tr class="border-b border-slate-200 last:border-b-0">
+								<td class="py-4 pr-3 align-top text-sm font-semibold text-slate-600">${
+									item.time
+								}</td>
+								<td class="py-4 pr-3 align-top">
+									<p class="font-semibold text-slate-800">${item.activity}</p>
+									<p class="font-bold text-teal-600 text-sm mt-1">${ItineraryApp.utils.formatDualCurrency(
+										item.cost_cop,
+										item.prepaid
+									)}</p>
+								</td>
+								<td class="py-4 pr-3 align-top text-sm text-slate-500">${item.transport}</td>
+								<td class="py-4 pr-3 align-top text-sm text-slate-500">${item.comments}</td>
+								<td class="py-4 align-top">${linksHTML(item.links)}</td>
+							</tr>
+						`
+							)
+							.join("");
+
+						const budgetTableHTML = `
+							<div class="overflow-x-auto">
+								<table class="w-full text-left md:w-2/3 lg:w-1/2">
+									<thead>
+										<tr class="border-b-2 border-slate-300">
+											<th class="py-2 pr-3 font-semibold text-sm">${day.budgetTable.headers[0]}</th>
+											<th class="py-2 pr-3 font-semibold text-sm text-right">${
+												day.budgetTable.headers[1]
+											}</th>
+										</tr>
+									</thead>
+									<tbody>
+										${day.budgetTable.items
+											.map(
+												item => `
+											<tr class="border-b border-slate-200 last:border-b-0">
+												<td class="py-3 pr-3 text-sm text-slate-600">${item.concept}</td>
+												<td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${ItineraryApp.utils.formatDualCurrency(
+													item.cost
+												)}</td>
+											</tr>
+										`
+											)
+											.join("")}
+									</tbody>
+									<tfoot>
+										<tr class="border-t-2 border-slate-300">
+											<td class="py-3 pr-3 font-bold text-slate-800">Total del Día</td>
+											<td class="py-3 pr-3 font-bold text-teal-600 text-right whitespace-nowrap">${ItineraryApp.utils.formatDualCurrency(
+												dailyTotalCOP
 											)}</td>
 										</tr>
-									`
-										)
-										.join("")}
-								</tbody>
-								<tfoot>
-									<tr class="border-t-2 border-slate-300">
-										<td class="py-3 pr-3 font-bold text-slate-800">Total del Día</td>
-										<td class="py-3 pr-3 font-bold text-teal-600 text-right whitespace-nowrap">${formatDualCurrency(
-											day.budgetTable.total
-										)}</td>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
-					`
-						: "";
+									</tfoot>
+								</table>
+							</div>
+						`;
 
-					contentDiv.innerHTML = `
-                <div class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
-                    <div class="border-b-2 border-teal-600 pb-4 mb-6">
-                        <h2 class="text-3xl font-bold text-teal-700">${`Día ${day.day}: ${day.title}`}</h2>
-                        <p class="text-lg text-slate-500 mt-1">${day.date} - ${
-						day.city
-					}</p>
-                    </div>
-                    <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-3 text-slate-700">Resumen Narrativo</h3>
-                         <p class="text-slate-600">${day.narrative}</p>
-                    </div>
-                    <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-4 text-slate-700">Dossier Táctico del Día</h3>
-                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">💰</p>
-                                <p class="text-sm font-semibold text-slate-500">Presupuesto (COP)</p>
-                                <p class="text-lg font-bold text-teal-600">${formatDualCurrency(
-																	day.budget
-																)}</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">💪</p>
-                                <p class="text-sm font-semibold text-slate-500">Esfuerzo Físico</p>
-                                <p class="text-lg font-bold text-teal-600">${
-																	day.effort
-																}</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">👟</p>
-                                <p class="text-sm font-semibold text-slate-500">Pasos Aprox.</p>
-                                <p class="text-lg font-bold text-teal-600">${
-																	day.steps
-																}</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
-                                <p class="text-3xl mb-1">${
-																	day.city.includes("Cartagena")
-																		? "☀️"
-																		: day.city.includes("Medellín") ||
-																		  day.city.includes("Salento")
-																		? "🌦️"
-																		: "☁️"
-																}</p>
-                                <p class="text-sm font-semibold text-slate-500">Clima / Vestimenta</p>
-                                <p class="text-xs font-semibold text-teal-700 mt-1">${
-																	day.weather
-																}</p>
-                            </div>
-                         </div>
-                    </div>
-                     <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-3 text-slate-700">Logística y Consejos</h3>
-                         <p class="text-slate-600">${day.logistics}</p>
-                    </div>
-                    <div class="mb-8">
-                         <h3 class="text-xl font-bold mb-4 text-slate-700">Plan de Acción Detallado</h3>
-                         <div class="overflow-x-auto">
-                            <table class="w-full text-left min-w-[1000px]">
-                                <thead>
-                                    <tr class="border-b-2 border-slate-300">
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[12%]">Horario</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Actividad y Costo</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[23%]">Cómo Llegar y Tiempos</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[20%]">Comentarios</th>
-                                        <th class="py-2 pr-3 font-semibold text-sm w-[25%]">Recursos Externos</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${itineraryHTML}
-                                </tbody>
-                            </table>
-                         </div>
-                    </div>
-										<div>
-											<h3 class="text-xl font-bold mb-4 text-slate-700">Desglose de Presupuesto Diario (COP)</h3>
-											${budgetTableHTML}
+						return `
+							<div id="day-${day.day}" class="tab-content">
+								<div class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
+									<div class="border-b-2 border-teal-600 pb-4 mb-6">
+										<h2 class="text-3xl font-bold text-teal-700">${`Día ${day.day}: ${day.title}`}</h2>
+										<p class="text-lg text-slate-500 mt-1">${day.date} - ${day.city}</p>
+									</div>
+									<div class="mb-8">
+										<h3 class="text-xl font-bold mb-3 text-slate-700">Resumen Narrativo</h3>
+										<p class="text-slate-600">${day.narrative}</p>
+									</div>
+									<div class="mb-8">
+										<h3 class="text-xl font-bold mb-4 text-slate-700">Dossier Táctico del Día</h3>
+										<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+											<div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+												<p class="text-3xl mb-1">💰</p>
+												<p class="text-sm font-semibold text-slate-500">Presupuesto (COP)</p>
+												<p class="text-lg font-bold text-teal-600">${ItineraryApp.utils.formatDualCurrency(
+													dailyTotalCOP
+												)}</p>
+											</div>
+											<div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+												<p class="text-3xl mb-1">💪</p>
+												<p class="text-sm font-semibold text-slate-500">Esfuerzo Físico</p>
+												<p class="text-lg font-bold text-teal-600">${day.effort}</p>
+											</div>
+											<div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+												<p class="text-3xl mb-1">👟</p>
+												<p class="text-sm font-semibold text-slate-500">Pasos Aprox.</p>
+												<p class="text-lg font-bold text-teal-600">${day.steps}</p>
+											</div>
+											<div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
+												<p class="text-3xl mb-1">${
+													day.city.includes("Cartagena")
+														? "☀️"
+														: day.city.includes("Medellín") ||
+														  day.city.includes("Salento")
+														? "🌦️"
+														: "☁️"
+												}</p>
+												<p class="text-sm font-semibold text-slate-500">Clima / Vestimenta</p>
+												<p class="text-xs font-semibold text-teal-700 mt-1">${day.weather}</p>
+											</div>
 										</div>
-                </div>
-                `;
-					contentContainer.appendChild(contentDiv);
-				});
+									</div>
+									<div class="mb-8">
+										<h3 class="text-xl font-bold mb-3 text-slate-700">Logística y Consejos</h3>
+										<p class="text-slate-600">${day.logistics}</p>
+									</div>
+									<div class="mb-8">
+										<h3 class="text-xl font-bold mb-4 text-slate-700">Plan de Acción Detallado</h3>
+										<div class="overflow-x-auto">
+											<table class="w-full text-left min-w-[1000px]">
+												<thead>
+													<tr class="border-b-2 border-slate-300">
+														<th class="py-2 pr-3 font-semibold text-sm w-[12%]">Horario</th>
+														<th class="py-2 pr-3 font-semibold text-sm w-[20%]">Actividad y Costo</th>
+														<th class="py-2 pr-3 font-semibold text-sm w-[23%]">Cómo Llegar y Tiempos</th>
+														<th class="py-2 pr-3 font-semibold text-sm w-[20%]">Comentarios</th>
+														<th class="py-2 pr-3 font-semibold text-sm w-[25%]">Recursos Externos</th>
+													</tr>
+												</thead>
+												<tbody>${itineraryHTML}</tbody>
+											</table>
+										</div>
+									</div>
+									<div>
+										<h3 class="text-xl font-bold mb-4 text-slate-700">Desglose de Presupuesto Diario (COP)</h3>
+										${budgetTableHTML}
+									</div>
+								</div>
+							</div>
+						`;
+					},
 
-				const tabs = document.querySelectorAll(".tab");
-				const tabContents = document.querySelectorAll(".tab-content");
+					/**
+					 * Calculates the entire trip budget from the single source of truth.
+					 * @returns {object} An object with detailed budget breakdown.
+					 */
+					calculateGeneralBudget() {
+						const { prepaidCosts, days } = ItineraryApp.data;
+						const onTripCostsCOP = {
+							Alimentación: 0,
+							Actividades: 0,
+							Transporte: 0,
+							Otros: 0,
+						};
 
-				tabs.forEach(tab => {
-					tab.addEventListener("click", () => {
-						const targetId = tab.dataset.target;
-						const targetElement = document.getElementById(targetId);
+						days.forEach(day => {
+							if (day.budgetTable && day.budgetTable.items) {
+								day.budgetTable.items.forEach(item => {
+									// Do not double-count prepaid items in on-trip budget
+									if (item.prepaid) return;
 
-						tabs.forEach(t => t.classList.remove("active"));
-						tab.classList.add("active");
-
-						tabContents.forEach(content => {
-							content.classList.remove("active");
-							if (content.id === targetId) {
-								content.classList.add("active");
+									const category = ItineraryApp.utils.categorizeExpense(
+										item.concept
+									);
+									onTripCostsCOP[category] += item.cost;
+								});
 							}
 						});
 
-						if (targetElement) {
-							const offset = tabsNav.offsetHeight + 20; // Height of the sticky nav + a margin
-							const bodyRect = document.body.getBoundingClientRect().top;
-							const elementRect = targetElement.getBoundingClientRect().top;
-							const elementPosition = elementRect - bodyRect;
-							const offsetPosition = elementPosition - offset;
+						const prepaidHospedajesMXN = Object.values(
+							prepaidCosts.hospedajesMXN
+						).reduce((sum, cost) => sum + cost, 0);
 
-							window.scrollTo({
-								top: offsetPosition,
-								behavior: "smooth",
-							});
-						}
-					});
-				});
+						// Calculate on-trip totals in MXN
+						const onTripTotalCOP = Object.values(onTripCostsCOP).reduce(
+							(sum, cost) => sum + cost,
+							0
+						);
+						const onTripAlimentacionMXN =
+							onTripCostsCOP.Alimentación * CONFIG.COP_TO_MXN_RATE;
+						const onTripActividadesMXN =
+							onTripCostsCOP.Actividades * CONFIG.COP_TO_MXN_RATE;
+						const onTripTransporteMXN =
+							onTripCostsCOP.Transporte * CONFIG.COP_TO_MXN_RATE;
+						const onTripOtrosMXN =
+							onTripCostsCOP.Otros * CONFIG.COP_TO_MXN_RATE;
 
-				tripData.days.forEach((day, index) => {
-					if (index === 0) {
-						document
-							.querySelector(`.tab[data-target="day-${day.day}"]`)
-							.classList.add("active");
-						document.getElementById(`day-${day.day}`).classList.add("active");
-					}
-				});
+						const contingenciaMXN =
+							onTripTotalCOP * CONFIG.CONTINGENCY_RATE * CONFIG.COP_TO_MXN_RATE;
 
-				renderLodgingSummary();
-				renderGeneralBudgetTable();
-				createOverallDailyCostChart();
-			});
+						const budgetData = [
+							{
+								category: "Vuelos Internacionales",
+								cost: prepaidCosts.vuelosInternacionalesMXN,
+							},
+							{
+								category: "Hospedajes (12 noches)",
+								cost: prepaidHospedajesMXN,
+							},
+							{
+								category: "Vuelos Internos (4 vuelos)",
+								cost: prepaidCosts.vuelosInternosMXN,
+							},
+							{
+								category: "Actividades y Entradas",
+								cost: onTripActividadesMXN,
+							},
+							{ category: "Alimentación", cost: onTripAlimentacionMXN },
+							{
+								category: "Transporte Local",
+								cost: onTripTransporteMXN + onTripOtrosMXN,
+							},
+							{
+								category: "Fondo de Contingencia (15%)",
+								cost: contingenciaMXN,
+							},
+						];
 
-			function renderLodgingSummary() {
-				const container = document.querySelector("#lodging-summary tbody");
-				if (!container) return;
+						const totalMXN = budgetData.reduce(
+							(sum, item) => sum + item.cost,
+							0
+						);
 
-				let tableHTML = tripData.lodgingSummary
-					.map(
-						item => `
-					<tr class="border-b border-slate-200 last:border-b-0">
-						<td class="py-3 pr-3 text-sm font-semibold text-slate-700">${item.city}</td>
-						<td class="py-3 pr-3 text-sm text-slate-600"><a href="${item.mapLink}" target="_blank" class="text-teal-600 hover:underline">${item.name}</a></td>
-						<td class="py-3 pr-3 text-sm text-slate-600">${item.checkIn} - ${item.checkOut}</td>
-						<td class="py-3 pr-3 text-sm text-slate-600 text-center">${item.nights}</td>
-					</tr>
-				`
-					)
-					.join("");
-				container.innerHTML = tableHTML;
-			}
-
-			function renderGeneralBudgetTable() {
-				const container = document.getElementById(
-					"general-budget-table-container"
-				);
-
-				// --- All calculations are now data-driven for consistency ---
-
-				// 1. Calculate On-Trip Costs per category from daily data
-				let onTripAlimentacion = 0;
-				let onTripActividades = 0;
-				let onTripTransporte = 0;
-				const categorizeExpense = concept => {
-					const lowerConcept = concept.toLowerCase();
-					if (
-						lowerConcept.includes("almuerzo") ||
-						lowerConcept.includes("cena") ||
-						lowerConcept.includes("bebida") ||
-						lowerConcept.includes("desayuno") ||
-						lowerConcept.includes("degustación")
-					)
-						return "Alimentación";
-					if (
-						lowerConcept.includes("tour") ||
-						lowerConcept.includes("entrada") ||
-						lowerConcept.includes("pass") ||
-						lowerConcept.includes("peinado") ||
-						lowerConcept.includes("impuesto portuario") ||
-						lowerConcept.includes("tiquete") ||
-						lowerConcept.includes("foto")
-					)
-						return "Actividades";
-					if (
-						lowerConcept.includes("taxi") ||
-						lowerConcept.includes("metro") ||
-						lowerConcept.includes("buseta") ||
-						lowerConcept.includes("jeep") ||
-						lowerConcept.includes("traslado") ||
-						lowerConcept.includes("bus")
-					)
-						return "Transporte";
-					return null;
-				};
-				tripData.days.forEach(day => {
-					if (day.budgetTable && day.budgetTable.items) {
-						day.budgetTable.items.forEach(item => {
-							const category = categorizeExpense(item.concept);
-							if (category === "Alimentación") onTripAlimentacion += item.cost;
-							else if (category === "Actividades")
-								onTripActividades += item.cost;
-							else if (category === "Transporte") onTripTransporte += item.cost;
-						});
-					}
-				});
-				const onTripTotalCOP =
-					onTripAlimentacion + onTripActividades + onTripTransporte;
-
-				// 2. Get Pre-Paid costs (per person) from data object
-				const { costs } = tripData;
-				const prepaidHospedajesMXN = Object.values(costs.hospedajes).reduce(
-					(sum, cost) => sum + cost,
-					0
-				);
-
-				// 3. Convert On-Trip costs to MXN
-				const onTripAlimentacionMXN = onTripAlimentacion * COP_TO_MXN_RATE;
-				const onTripActividadesMXN = onTripActividades * COP_TO_MXN_RATE;
-				const onTripTransporteMXN = onTripTransporte * COP_TO_MXN_RATE;
-
-				// 4. Pre-paid activities from daily data
-				let prepaidActividadesCOP = 0;
-				tripData.days.forEach(day => {
-					day.itinerary.forEach(item => {
-						if (item.prepaid && item.cost_cop_prepaid !== undefined) {
-							prepaidActividadesCOP += item.cost_cop_prepaid;
-						} else if (item.prepaid && item.cost_cop !== null) {
-							prepaidActividadesCOP += item.cost_cop;
-						}
-					});
-				});
-				const prepaidActividadesMXN = prepaidActividadesCOP * COP_TO_MXN_RATE;
-
-				// 5. Calculate Contingency & Total
-				const contingenciaMXN = onTripTotalCOP * 0.15 * COP_TO_MXN_RATE;
-
-				const budgetData = [
-					{
-						category: "Vuelos Internacionales",
-						cost: costs.vuelosInternacionalesMXN,
+						return { budgetData, totalMXN };
 					},
-					{ category: "Hospedajes (12 noches)", cost: prepaidHospedajesMXN },
-					{
-						category: "Vuelos Internos (4 vuelos)",
-						cost: costs.vuelosInternosMXN,
+
+					/**
+					 * Renders the general budget distribution table.
+					 */
+					generalBudgetTable(budgetCalculations) {
+						const { budgetData, totalMXN } = budgetCalculations;
+						let tableHTML = `
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                    <thead>
+                                        <tr class="border-b-2 border-slate-300">
+                                            <th class="py-2 pr-3 font-semibold text-sm">Categoría</th>
+                                            <th class="py-2 pr-3 font-semibold text-sm text-right">Costo Estimado (MXN)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${budgetData
+																					.map(
+																						item => `
+                                            <tr class="border-b border-slate-200 last:border-b-0">
+                                                <td class="py-3 pr-3 text-sm text-slate-600">${
+																									item.category
+																								}</td>
+                                                <td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${ItineraryApp.utils.formatCurrency(
+																									item.cost,
+																									"MXN"
+																								)}</td>
+                                            </tr>
+                                        `
+																					)
+																					.join("")}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="border-t-2 border-slate-300">
+                                            <td class="py-3 pr-3 font-bold text-slate-800">Total Estimado p.p.</td>
+                                            <td class="py-3 pr-3 font-bold text-teal-600 text-right whitespace-nowrap">${ItineraryApp.utils.formatCurrency(
+																							totalMXN,
+																							"MXN"
+																						)}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        `;
+						ItineraryApp.elements.budgetTableContainer.innerHTML += tableHTML;
 					},
-					{
-						category: "Actividades y Entradas",
-						cost: onTripActividadesMXN + prepaidActividadesMXN,
-					},
-					{ category: "Alimentación", cost: onTripAlimentacionMXN },
-					{ category: "Transporte Local", cost: onTripTransporteMXN },
-					{ category: "Fondo de Contingencia (15%)", cost: contingenciaMXN },
-				];
 
-				let totalMXN = budgetData.reduce((sum, item) => sum + item.cost, 0);
+					/**
+					 * Renders the destination cost breakdown chart.
+					 */
+					destinationCostChart() {
+						const destinationCosts = {
+							Cartagena: { total: 0 },
+							Medellín: { total: 0 },
+							"Eje Cafetero": { total: 0 },
+							Bogotá: { total: 0 },
+						};
 
-				// Update summary box
-				document.getElementById("summary-total-mxn").textContent =
-					formatSingleCurrency(totalMXN, "MXN");
-				document.getElementById(
-					"summary-total-cop"
-				).textContent = `(${formatSingleCurrency(
-					totalMXN / COP_TO_MXN_RATE,
-					"COP",
-					"~"
-				)})`;
+						ItineraryApp.data.days.forEach(day => {
+							const city = day.city.split("/")[0].trim();
+							let destination = null;
+							if (city === "Cartagena") destination = "Cartagena";
+							else if (city === "Medellín") destination = "Medellín";
+							else if (["Salento", "Filandia"].includes(city))
+								destination = "Eje Cafetero";
+							else if (["Bogotá", "Zipaquirá"].includes(city))
+								destination = "Bogotá";
 
-				// 6. Build HTML Table
-				let tableHTML = `
-					<div class="overflow-x-auto">
-						<table class="w-full text-left">
-							<thead>
-								<tr class="border-b-2 border-slate-300">
-									<th class="py-2 pr-3 font-semibold text-sm">Categoría</th>
-									<th class="py-2 pr-3 font-semibold text-sm text-right">Costo Estimado (MXN)</th>
-								</tr>
-							</thead>
-							<tbody>
-				`;
-
-				budgetData.forEach(item => {
-					tableHTML += `
-						<tr class="border-b border-slate-200 last:border-b-0">
-							<td class="py-3 pr-3 text-sm text-slate-600">${item.category}</td>
-							<td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${formatSingleCurrency(
-								item.cost,
-								"MXN"
-							)}</td>
-						</tr>
-					`;
-				});
-
-				tableHTML += `
-							</tbody>
-							<tfoot>
-								<tr class="border-t-2 border-slate-300">
-									<td class="py-3 pr-3 font-bold text-slate-800">Total Estimado p.p.</td>
-									<td class="py-3 pr-3 font-bold text-teal-600 text-right whitespace-nowrap">${formatSingleCurrency(
-										totalMXN,
-										"MXN"
-									)}</td>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-				`;
-
-				container.innerHTML += tableHTML;
-			}
-
-			function createOverallDailyCostChart() {
-				// 1. Calculate total costs per category for each destination
-				const destinationMap = {};
-				tripData.days.forEach(day => {
-					const city = day.city.split("/")[0].trim();
-					if (city === "Cartagena") destinationMap[day.day] = "Cartagena";
-					else if (city === "Medellín") destinationMap[day.day] = "Medellín";
-					else if (city === "Salento" || city === "Filandia")
-						destinationMap[day.day] = "Eje Cafetero";
-					else if (city === "Bogotá") destinationMap[day.day] = "Bogotá";
-				});
-
-				const destinationCosts = {
-					Cartagena: { Alimentación: 0, Actividades: 0, Transporte: 0 },
-					Medellín: { Alimentación: 0, Actividades: 0, Transporte: 0 },
-					"Eje Cafetero": { Alimentación: 0, Actividades: 0, Transporte: 0 },
-					Bogotá: { Alimentación: 0, Actividades: 0, Transporte: 0 },
-				};
-
-				const categorizeExpense = concept => {
-					const lowerConcept = concept.toLowerCase();
-					if (
-						lowerConcept.includes("almuerzo") ||
-						lowerConcept.includes("cena") ||
-						lowerConcept.includes("bebida") ||
-						lowerConcept.includes("desayuno") ||
-						lowerConcept.includes("degustación")
-					)
-						return "Alimentación";
-					if (
-						lowerConcept.includes("tour") ||
-						lowerConcept.includes("entrada") ||
-						lowerConcept.includes("pass") ||
-						lowerConcept.includes("peinado") ||
-						lowerConcept.includes("impuesto portuario") ||
-						lowerConcept.includes("tiquete") ||
-						lowerConcept.includes("foto")
-					)
-						return "Actividades";
-					if (
-						lowerConcept.includes("taxi") ||
-						lowerConcept.includes("metro") ||
-						lowerConcept.includes("buseta") ||
-						lowerConcept.includes("jeep") ||
-						lowerConcept.includes("traslado") ||
-						lowerConcept.includes("bus")
-					)
-						return "Transporte";
-					return null;
-				};
-
-				tripData.days.forEach(day => {
-					const destination = destinationMap[day.day];
-					if (destination && day.budgetTable && day.budgetTable.items) {
-						day.budgetTable.items.forEach(item => {
-							const category = categorizeExpense(item.concept);
-							if (category) {
-								destinationCosts[destination][category] += item.cost;
+							if (destination) {
+								destinationCosts[destination].total +=
+									ItineraryApp.utils.calculateDailyTotal(day.budgetTable.items);
 							}
 						});
-					}
-				});
 
-				// 2. Prepare data for a stacked bar chart
-				const labels = Object.keys(destinationCosts);
-				const datasets = [
-					{
-						label: "Alimentación",
-						data: labels.map(label => destinationCosts[label]["Alimentación"]),
-						backgroundColor: palette.chartColors[1], // amber-500
-					},
-					{
-						label: "Actividades",
-						data: labels.map(label => destinationCosts[label]["Actividades"]),
-						backgroundColor: palette.chartColors[2], // blue-500
-					},
-					{
-						label: "Transporte",
-						data: labels.map(label => destinationCosts[label]["Transporte"]),
-						backgroundColor: palette.chartColors[3], // violet-500
-					},
-				];
+						const labels = Object.keys(destinationCosts);
+						const data = labels.map(label => destinationCosts[label].total);
 
-				// 3. Render the Chart
-				const ctx = document.getElementById("dailyCostChart").getContext("2d");
+						const ctx = ItineraryApp.elements.chartCanvas.getContext("2d");
+						if (ItineraryApp.chartInstance) {
+							ItineraryApp.chartInstance.destroy();
+						}
 
-				// Destroy existing chart instance if it exists, to prevent memory leaks
-				if (window.myDailyCostChart) {
-					window.myDailyCostChart.destroy();
-				}
-
-				window.myDailyCostChart = new Chart(ctx, {
-					type: "bar",
-					data: {
-						labels: labels,
-						datasets: datasets,
-					},
-					options: {
-						indexAxis: "y",
-						responsive: true,
-						maintainAspectRatio: false,
-						plugins: {
-							legend: {
-								position: "top",
+						Chart.register(ChartDataLabels);
+						ItineraryApp.chartInstance = new Chart(ctx, {
+							type: "bar",
+							data: {
+								labels: labels,
+								datasets: [
+									{
+										label: "Gasto Total por Destino (COP)",
+										data: data,
+										backgroundColor: CONFIG.CHART_COLORS,
+									},
+								],
 							},
-							tooltip: {
-								callbacks: {
-									label: c =>
-										` ${c.dataset.label}: ${formatSingleCurrency(
-											c.raw,
-											"COP"
-										)}`,
+							options: {
+								indexAxis: "y",
+								responsive: true,
+								maintainAspectRatio: false,
+								plugins: {
+									legend: { display: false },
+									tooltip: {
+										callbacks: {
+											label: c =>
+												` ${ItineraryApp.utils.formatCurrency(c.raw, "COP")}`,
+										},
+									},
+									datalabels: {
+										anchor: "end",
+										align: "end",
+										formatter: value =>
+											ItineraryApp.utils.formatCurrency(value, "COP"),
+										font: { weight: "bold" },
+										color: "#334155",
+									},
+								},
+								scales: {
+									x: {
+										ticks: {
+											callback: v => v / 1000 + "K",
+										},
+									},
 								},
 							},
-							datalabels: {
-								display: false, // Stacked charts can get cluttered with labels
-							},
-						},
-						scales: {
-							x: {
-								stacked: true,
-								ticks: {
-									callback: v => v / 1000 + "K",
-								},
-							},
-							y: {
-								stacked: true,
-							},
-						},
+						});
 					},
-				});
-			}
+				},
+
+				// =================================================================================
+				// EVENTS MODULE
+				// Handles all user interactions.
+				// =================================================================================
+				events: {
+					setupTabNavigation() {
+						ItineraryApp.elements.tabsContainer.addEventListener("click", e => {
+							if (!e.target.classList.contains("tab")) return;
+
+							const targetId = e.target.dataset.target;
+							const targetElement = document.getElementById(targetId);
+
+							document
+								.querySelectorAll(".tab")
+								.forEach(t => t.classList.remove("active"));
+							e.target.classList.add("active");
+
+							document
+								.querySelectorAll(".tab-content")
+								.forEach(c => c.classList.remove("active"));
+							if (targetElement) {
+								targetElement.classList.add("active");
+
+								const offset = ItineraryApp.elements.tabsNav.offsetHeight + 20;
+								const bodyRect = document.body.getBoundingClientRect().top;
+								const elementRect = targetElement.getBoundingClientRect().top;
+								const elementPosition = elementRect - bodyRect;
+								const offsetPosition = elementPosition - offset;
+
+								window.scrollTo({
+									top: offsetPosition,
+									behavior: "smooth",
+								});
+							}
+						});
+					},
+				},
+			};
+
+			document.addEventListener("DOMContentLoaded", () => ItineraryApp.init());
 		</script>
 	</body>
 </html>
