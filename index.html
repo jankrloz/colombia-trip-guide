@@ -83,12 +83,13 @@
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 					<div class="bg-white p-6 rounded-lg shadow-md text-center">
 						<h3 class="text-lg font-semibold text-slate-600">
-							Costo Total Estimado
+							Costo Total Estimado (p.p)
 						</h3>
-						<p class="text-3xl font-bold text-teal-600 mt-2">
-							$7.500.000 <span class="text-xl text-slate-500">COP</span>
-						</p>
-						<p class="text-xl text-slate-500">~$45.000,00 MXN</p>
+						<p
+							class="text-3xl font-bold text-teal-600 mt-2"
+							id="summary-total-mxn"
+						></p>
+						<p class="text-xl text-slate-500" id="summary-total-cop"></p>
 					</div>
 					<div class="bg-white p-6 rounded-lg shadow-md text-center">
 						<h3 class="text-lg font-semibold text-slate-600">
@@ -121,7 +122,7 @@
 					</div>
 					<div class="bg-white p-6 rounded-lg shadow-md">
 						<h3 class="text-xl font-semibold mb-4 text-center text-slate-700">
-							Huella Financiera por Destino (Prom. Diario en COP)
+							Huella Financiera por Destino (Total Gastado en COP)
 						</h3>
 						<div class="chart-container">
 							<canvas id="dailyCostChart"></canvas>
@@ -213,9 +214,8 @@
 								<th class="py-2 pr-3 font-semibold text-sm">Ciudad</th>
 								<th class="py-2 pr-3 font-semibold text-sm">Alojamiento</th>
 								<th class="py-2 pr-3 font-semibold text-sm">Fechas</th>
-								<th class="py-2 pr-3 font-semibold text-sm">Noches</th>
-								<th class="py-2 pr-3 font-semibold text-sm">
-									Costo Total (6p)
+								<th class="py-2 pr-3 font-semibold text-sm text-center">
+									Noches
 								</th>
 							</tr>
 						</thead>
@@ -287,49 +287,48 @@
 		<script>
 			const COP_TO_MXN_RATE = 0.006;
 
-			const formatDualCurrency = (copValue, currency = "COP") => {
-				if (typeof copValue !== "number" || isNaN(copValue))
-					return "Pre-pagado";
-				if (copValue === 0) return "Gratis";
-
-				let localValue, foreignValue;
-				if (currency === "MXN") {
-					localValue = copValue;
-					foreignValue = copValue / COP_TO_MXN_RATE;
-					return `${new Intl.NumberFormat("es-CO", {
-						style: "currency",
-						currency: "COP",
-						maximumFractionDigits: 0,
-					}).format(foreignValue)} COP / ${new Intl.NumberFormat("es-MX", {
-						style: "currency",
-						currency: "MXN",
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2,
-					}).format(localValue)} MXN`;
-				} else {
-					// Default to COP
-					localValue = copValue;
-					foreignValue = copValue * COP_TO_MXN_RATE;
-					return `${new Intl.NumberFormat("es-CO", {
-						style: "currency",
-						currency: "COP",
-						maximumFractionDigits: 0,
-					}).format(localValue)} COP / ${new Intl.NumberFormat("es-MX", {
-						style: "currency",
-						currency: "MXN",
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2,
-					}).format(foreignValue)} MXN`;
+			const formatDualCurrency = (value, currency = "COP", prepaid = false) => {
+				if (prepaid) {
+					return "N/A";
 				}
+				if (typeof value !== "number" || isNaN(value)) return "N/A";
+				if (value === 0) return "Gratis";
+
+				if (currency === "MXN") {
+					const copValue = value / COP_TO_MXN_RATE;
+					return `${new Intl.NumberFormat("es-CO", {
+						style: "currency",
+						currency: "COP",
+						maximumFractionDigits: 0,
+					}).format(copValue)} COP / ${new Intl.NumberFormat("es-MX", {
+						style: "currency",
+						currency: "MXN",
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2,
+					}).format(value)} MXN`;
+				}
+
+				// Default to COP
+				const mxnValue = value * COP_TO_MXN_RATE;
+				return `${new Intl.NumberFormat("es-CO", {
+					style: "currency",
+					currency: "COP",
+					maximumFractionDigits: 0,
+				}).format(value)} COP / ~${new Intl.NumberFormat("es-MX", {
+					style: "currency",
+					currency: "MXN",
+					minimumFractionDigits: 2,
+				}).format(mxnValue)} MXN`;
 			};
 
-			const formatCOP = value => {
+			const formatSingleCurrency = (value, currency = "COP", prefix = "") => {
 				return (
-					new Intl.NumberFormat("es-CO", {
+					prefix +
+					new Intl.NumberFormat(currency === "COP" ? "es-CO" : "es-MX", {
 						style: "currency",
-						currency: "COP",
-						maximumFractionDigits: 0,
-					}).format(value) + " COP"
+						currency: currency,
+						maximumFractionDigits: currency === "COP" ? 0 : 2,
+					}).format(value)
 				);
 			};
 
@@ -350,6 +349,16 @@
 					dailyCost: {
 						labels: ["Cartagena", "Medellín", "Eje Cafetero", "Bogotá"],
 						data: [229267, 208160, 134667, 199550],
+					},
+				},
+				costs: {
+					vuelosInternacionalesMXN: 7074,
+					vuelosInternosMXN: 8708.33,
+					hospedajes: {
+						cartagena: 1815.5,
+						medellin: 303.71,
+						salento: 2520.0,
+						bogota: 2189.67,
 					},
 				},
 				lodgingSummary: [
@@ -405,7 +414,7 @@
 						title: "Llegada e Inmersión en la Ciudad Amurallada",
 						city: "Cartagena",
 						narrative:
-							"El viaje comienza en el Caribe. Aterrizaremos en la vibrante Cartagena, nos instalaremos en el corazón de la Ciudad Amurallada y nos sumergiremos de inmediato en sus calles coloridas y su historia palpable, culminando con un atardecer inolvidable sobre las antiguas murallas.",
+							"El viaje comienza en el Caribe. Saldremos de CDMX, haremos una escala de 4h en Bogotá y aterrizaremos en la vibrante Cartagena. Nos instalaremos en el corazón de la Ciudad Amurallada y nos sumergiremos de inmediato en sus calles coloridas y su historia palpable, culminando con un atardecer inolvidable sobre las antiguas murallas.",
 						logistics:
 							"La estructura de este día es ideal para la llegada. La exploración autoguiada permite una aclimatación gradual al ritmo y clima del Caribe. La elección del Baluarte de Santo Domingo para el atardecer, en lugar del conocido Café del Mar, es una decisión estratégica que optimiza la experiencia y el presupuesto.",
 						budget: 148000,
@@ -414,7 +423,7 @@
 						weather:
 							"Ropa muy ligera (lino, algodón), sandalias cómodas, sombrero y protector solar.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Taxi Aeropuerto - Centro", cost: 20000 },
 								{ concept: "Almuerzo de Bienvenida", cost: 28000 },
@@ -432,7 +441,7 @@
 								transport:
 									"🚕 <strong>Taxi (15-20 min)</strong><br>Desde el Aeropuerto CTG al Centro Histórico.",
 								comments:
-									"Nuestro hospedaje está en el corazón de la Ciudad Amurallada, la tarifa de taxi está regulada.<br><strong>Consejo Táctico:</strong> Confirmar el precio antes de abordar. El pago suele ser en efectivo.",
+									"Llegada de CDMX a Bogotá (BOG), escala de 4h y vuelo a Cartagena (CTG). Nuestro hospedaje está en el corazón de la Ciudad Amurallada, la tarifa de taxi está regulada.<br><strong>Consejo Táctico:</strong> Confirmar el precio antes de abordar. El pago suele ser en efectivo.",
 								links: [
 									{
 										name: "Ubicación: Aeropuerto CTG",
@@ -465,7 +474,7 @@
 							},
 							{
 								time: "14:30 - 17:30",
-								activity: "🚶‍♂️ Ciudad Amurallada (Zona Norte)",
+								activity: "🚶‍♂️ Explorar Ciudad Amurallada (Zona Norte)",
 								cost_cop: 0,
 								transport:
 									"👟 <strong>A pie</strong><br>Recorrido por la zona norte.",
@@ -548,7 +557,7 @@
 						weather:
 							"Caluroso y húmedo. Calzado extremadamente cómodo para subir rampas y escaleras, gorra indispensable.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno", cost: 20000 },
 								{ concept: "Taxi a Castillo", cost: 11800 },
@@ -562,7 +571,7 @@
 						itinerary: [
 							{
 								time: "09:00 - 12:00",
-								activity: "🏰 Castillo de San Felipe",
+								activity: "🏰 Explorar Castillo de San Felipe",
 								cost_cop: 47800,
 								transport:
 									"🚕 <strong>Taxi (10 min)</strong><br>Desde Getsemaní.",
@@ -710,21 +719,21 @@
 						weather:
 							"Templado, alta probabilidad de lluvia. Calzado muy cómodo y chaqueta ligera indispensable.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
-								{ concept: "Traslado Aeropuerto CTG", cost: 17100 },
-								{ concept: "Traslado Aeropuerto MDE - Laureles", cost: 17000 },
+								{ concept: "Taxi Hotel - Aeropuerto CTG", cost: 17100 },
+								{ concept: "Bus Aeropuerto MDE - Laureles", cost: 17000 },
 								{ concept: "Metro (2 trayectos)", cost: 6860 },
 								{ concept: "Tour Guiado Comuna 13", cost: 55500 },
 								{ concept: "Almuerzo en San Javier", cost: 20000 },
-								{ concept: "Taxi Centro - Pueblito Paisa", cost: 15000 },
-								{ concept: "Cena en Laureles", cost: 65000 },
+								{ concept: "Taxi Centro - Pueblito Paisa", cost: 13000 },
+								{ concept: "Cena en Laureles", cost: 50000 },
 							],
 							total: 196460,
 						},
 						itinerary: [
 							{
-								time: "07:00 - 10:00",
+								time: "07:00 - 11:00",
 								activity: "✈️ Vuelo y Llegada a Medellín",
 								cost_cop: 34100,
 								transport:
@@ -745,11 +754,12 @@
 							{
 								time: "11:00 - 14:30",
 								activity: "🎨 Tour Guiado Comuna 13",
+								prepaid: true,
 								cost_cop: 62360,
 								transport:
 									"🚇 <strong>Metro y Metrocable (40 min)</strong><br>Desde Est. Estadio a Est. San Javier.",
 								comments:
-									"Un tour guiado es clave para entender la resiliencia del barrio. El costo (55,500 COP) incluye snacks y Metrocable (6,860 COP).<br><strong>Consejo Táctico:</strong> Es una experiencia cultural y social muy potente. Reservar con antelación.",
+									"Un tour guiado es clave para entender la resiliencia del barrio. El costo incluye snacks y Metrocable.<br><strong>Consejo Táctico:</strong> Es una experiencia cultural y social muy potente. Reservar con antelación.",
 								links: [
 									{
 										name: "Ubicación: Estación San Javier",
@@ -772,12 +782,12 @@
 							},
 							{
 								time: "15:30 - 17:00",
-								activity: "🎨 Plaza Botero",
-								cost_cop: 0,
+								activity: "🗿 Plaza Botero",
+								cost_cop: 6860,
 								transport:
 									"🚇 <strong>Metro (20 min)</strong><br>Desde San Javier a Parque Berrío.",
 								comments:
-									"Visitar el famoso museo al aire libre con las esculturas de Botero.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona céntrica y concurrida.",
+									"Visitar el famoso museo al aire libre con las esculturas de Botero. El costo es del transporte.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona céntrica y concurrida.",
 								links: [
 									{
 										name: "Ubicación: Plaza Botero",
@@ -787,7 +797,7 @@
 							},
 							{
 								time: "17:00 - 18:30",
-								activity: "🏘️ Pueblito Paisa",
+								activity: "🏘️ Subir al Pueblito Paisa",
 								cost_cop: 15000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Desde el centro de la ciudad.",
@@ -836,7 +846,7 @@
 						weather:
 							"Clima templado. Atuendo cómodo. Opcional un atuendo más arreglado para la noche en El Poblado.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno", cost: 20000 },
 								{ concept: "Metro (2 trayectos)", cost: 6860 },
@@ -849,12 +859,12 @@
 						itinerary: [
 							{
 								time: "09:00 - 12:00",
-								activity: "🌳 Jardín Botánico",
-								cost_cop: 0,
+								activity: "🌳 Visitar Jardín Botánico",
+								cost_cop: 3430,
 								transport:
 									"🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Universidad.",
 								comments:
-									"La entrada es gratuita. No perderse el Orquideorama, una maravilla arquitectónica.<br><strong>Consejo Táctico:</strong> Es un lugar perfecto para una mañana tranquila y fotos espectaculares.",
+									"La entrada es gratuita. No perderse el Orquideorama, una maravilla arquitectónica. Costo es del transporte.<br><strong>Consejo Táctico:</strong> Es un lugar perfecto para una mañana tranquila y fotos espectaculares.",
 								links: [
 									{
 										name: "Ubicación: Jardín Botánico",
@@ -877,12 +887,12 @@
 							},
 							{
 								time: "13:30 - 17:00",
-								activity: "🔬 Parque Explora",
-								cost_cop: 61860,
+								activity: "🔬 Recorrer Parque Explora",
+								cost_cop: 40000,
 								transport:
 									"👟 <strong>A pie (2 min)</strong><br>Cruzando la calle desde el Jardín Botánico.",
 								comments:
-									"Entrada: 55,000 COP. Ideal para la adolescente del grupo por sus exhibiciones interactivas.<br><strong>Consejo Táctico:</strong> Comprar entradas online para elegir un horario de ingreso.",
+									"Entrada: ~40,000 COP. Ideal para la adolescente del grupo por sus exhibiciones interactivas.<br><strong>Consejo Táctico:</strong> Comprar entradas online para elegir un horario de ingreso.",
 								links: [
 									{
 										name: "Ubicación: Parque Explora",
@@ -896,12 +906,12 @@
 							},
 							{
 								time: "18:00 +",
-								activity: "🌆 Explorar El Poblado",
-								cost_cop: 100000,
+								activity: "🌆 Noche en El Poblado",
+								cost_cop: 83430,
 								transport:
 									"🚇 <strong>Metro (30 min)</strong><br>Desde Est. Universidad a Est. Poblado.",
 								comments:
-									"Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna.",
+									"Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna. Costo incluye cena y transporte.",
 								links: [
 									{
 										name: "Ubicación: Parque Lleras",
@@ -930,7 +940,7 @@
 						weather:
 							"Templado y húmedo. Alta probabilidad de lluvia. Chaqueta ligera para la noche es indispensable.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Almuerzo en Medellín", cost: 30000 },
 								{ concept: "Traslado al Aeropuerto MDE", cost: 40000 },
@@ -949,7 +959,7 @@
 								links: [],
 							},
 							{
-								time: "Tarde",
+								time: "13:00 - 18:00",
 								activity: "✈️ Vuelo y Traslado a Salento",
 								cost_cop: 46000,
 								transport:
@@ -968,7 +978,7 @@
 								],
 							},
 							{
-								time: "20:00 - 21:00",
+								time: "19:00 - 20:00",
 								activity: "🚶‍♀️ Exploración de Salento",
 								cost_cop: 0,
 								transport: "👟 <strong>A pie</strong><br>Desde el hotel.",
@@ -982,7 +992,7 @@
 								],
 							},
 							{
-								time: "21:00 +",
+								time: "20:00 +",
 								activity: "🍽️ Cena en Salento",
 								cost_cop: 36000,
 								transport:
@@ -1007,13 +1017,13 @@
 							"Este es el día icónico del Eje Cafetero. Caminaremos entre las palmas de cera más altas del mundo en el Valle de Cocora y por la tarde descubriremos los secretos del café colombiano en una finca tradicional.",
 						logistics:
 							'Visitar el Valle de Cocora a primera hora es crucial para encontrar el valle despejado. Los Jeeps "Willys" salen de la plaza principal. Reservar el tour de café en línea es recomendable.',
-						budget: 164000,
+						budget: 154000,
 						effort: "Pesado",
 						steps: "14,000 - 17,000",
 						weather:
 							"Prepararse para lluvia y posible barro. Calzado resistente e impermeable (o botas de hule) es esencial. Vestir en capas.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno", cost: 17000 },
 								{ concept: 'Jeep "Willy" a Cocora (I/V)', cost: 10000 },
@@ -1044,7 +1054,7 @@
 							{
 								time: "12:30 - 14:00",
 								activity: "🍽️ Almuerzo en Salento",
-								cost_cop: 33000,
+								cost_cop: 32000,
 								transport:
 									'🚙 <strong>Jeep "Willy" (30 min)</strong><br>Regreso desde Cocora.',
 								comments: "Recargar energías antes de la siguiente actividad.",
@@ -1057,7 +1067,7 @@
 								transport:
 									'🚙 <strong>Jeep "Willy" (20 min)</strong><br>Desde Salento.',
 								comments:
-									"Tour: 35,000 COP. Transporte: 8,000 COP. Es una experiencia muy educativa y sensorial.<br><strong>Consejo Táctico:</strong> Reservar el tour con anticipación, especialmente en temporada alta.",
+									"Tour: 35,000 COP. Transporte I/V: 8,000 COP. Es una experiencia muy educativa y sensorial.<br><strong>Consejo Táctico:</strong> Reservar el tour con anticipación, especialmente en temporada alta.",
 								links: [
 									{
 										name: "Ubicación: Finca El Ocaso",
@@ -1074,7 +1084,7 @@
 								activity: "🌙 Tarde Libre y Cena",
 								cost_cop: 53000,
 								transport: "👟 <strong>A pie</strong><br>En Salento.",
-								comments: "Tiempo para descansar y cenar.",
+								comments: "Tiempo para descansar, comprar souvenirs y cenar.",
 								links: [],
 							},
 						],
@@ -1088,31 +1098,31 @@
 							"Hoy exploramos más allá de Salento con una visita a Filandia, un pueblo menos turístico pero rebosante de encanto. Subiremos a su famoso mirador para obtener vistas de 360 grados del paisaje cultural cafetero.",
 						logistics:
 							"Incluir Filandia es una excelente decisión para una perspectiva más auténtica del Eje Cafetero. El transporte en bus o jeep entre Salento y Filandia es frecuente y económico.",
-						budget: 128000,
+						budget: 115000,
 						effort: "Medio",
 						steps: "10,000 - 12,000",
 						weather:
 							"Similar a Salento. Estar preparado para la lluvia intermitente y llevar una chaqueta ligera.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno", cost: 17000 },
 								{ concept: "Transporte a Filandia (I/V)", cost: 15000 },
-								{ concept: "Entrada Mirador", cost: 15000 },
-								{ concept: "Almuerzo en Filandia", cost: 45000 },
-								{ concept: "Cena en Salento", cost: 36000 },
+								{ concept: "Entrada Mirador", cost: 12000 },
+								{ concept: "Almuerzo en Filandia", cost: 36000 },
+								{ concept: "Cena en Salento", cost: 35000 },
 							],
-							total: 128000,
+							total: 115000,
 						},
 						itinerary: [
 							{
 								time: "09:00 - 12:00",
 								activity: "🏞️ Visita a Filandia y Mirador",
-								cost_cop: 30000,
+								cost_cop: 27000,
 								transport:
 									"🚌 <strong>Bus (45 min)</strong><br>Desde la terminal de Salento.",
 								comments:
-									'Transporte I/V: 15,000 COP. Entrada "Mirador Colina Iluminada": 15,000 COP.',
+									'Transporte I/V: 15,000 COP. Entrada "Mirador Colina Iluminada": 12,000 COP.',
 								links: [
 									{
 										name: "Ubicación: Mirador Colina Iluminada",
@@ -1123,7 +1133,7 @@
 							{
 								time: "12:00 - 13:30",
 								activity: "🍽️ Almuerzo en Filandia",
-								cost_cop: 45000,
+								cost_cop: 36000,
 								transport:
 									"👟 <strong>A pie</strong><br>En el centro de Filandia.",
 								comments:
@@ -1137,12 +1147,12 @@
 							},
 							{
 								time: "13:30 +",
-								activity: "🌙 Regreso y Tarde Libre",
-								cost_cop: 53000,
+								activity: "🛍️ Regreso y Tarde Libre",
+								cost_cop: 52000,
 								transport:
 									"🚌 <strong>Bus (45 min)</strong><br>Regreso a Salento.",
 								comments:
-									"Últimas compras de artesanías y disfrutar del ambiente del pueblo.",
+									"Últimas compras de artesanías y disfrutar del ambiente del pueblo antes de la cena.",
 								links: [],
 							},
 						],
@@ -1156,26 +1166,26 @@
 							"Dejamos la tranquilidad del campo para sumergirnos en la vibrante capital. Volamos a Bogotá y nos dirigimos directamente a La Candelaria, el centro histórico, para probar su plato insignia y maravillarnos con el tesoro del Museo del Oro.",
 						logistics:
 							"Un primer día en Bogotá bien aprovechado. La ubicación del hotel en Salitre implica que los traslados a La Candelaria en taxi o VTC son necesarios. La altitud puede afectar, por lo que es clave tomarlo con calma.",
-						budget: 129200,
+						budget: 132200,
 						effort: "Medio",
 						steps: "10,000 - 13,000",
 						weather:
 							"Clima fresco. Necesitará chaqueta. El clima puede ser muy variable, con sol y lluvia en el mismo día.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Buseta Salento - Armenia", cost: 7200 },
 								{ concept: "Taxi Aeropuerto BOG - Salitre", cost: 25000 },
 								{ concept: "Taxi Salitre - La Candelaria", cost: 25000 },
 								{ concept: "Almuerzo (Ajiaco)", cost: 29000 },
 								{ concept: "Entrada Museo del Oro", cost: 5000 },
-								{ concept: "Cena en La Candelaria", cost: 38000 },
+								{ concept: "Cena en La Candelaria", cost: 41000 },
 							],
-							total: 129200,
+							total: 132200,
 						},
 						itinerary: [
 							{
-								time: "05:00 - 12:00",
+								time: "08:00 - 12:00",
 								activity: "✈️ Vuelo y Llegada a Bogotá",
 								cost_cop: 32200,
 								transport:
@@ -1194,8 +1204,8 @@
 								],
 							},
 							{
-								time: "12:00 - 14:00",
-								activity: "🍽️ Almuerzo: Ajiaco Santafereño",
+								time: "13:00 - 14:30",
+								activity: "🍲 Almuerzo: Ajiaco Santafereño",
 								cost_cop: 54000,
 								transport:
 									"🚕 <strong>Taxi (25-30 min)</strong><br>Desde Salitre a La Candelaria.",
@@ -1209,8 +1219,8 @@
 								],
 							},
 							{
-								time: "14:00 - 16:30",
-								activity: "🏛️ Museo del Oro",
+								time: "14:30 - 16:30",
+								activity: "🏛️ Visitar Museo del Oro",
 								cost_cop: 5000,
 								transport:
 									"👟 <strong>A pie (5 min)</strong><br>Desde el restaurante.",
@@ -1230,7 +1240,7 @@
 							{
 								time: "16:30 +",
 								activity: "🚶‍♀️ Plaza de Bolívar y Chorro de Quevedo",
-								cost_cop: 38000,
+								cost_cop: 41000,
 								transport:
 									"👟 <strong>A pie (10-15 min)</strong><br>Recorrido por el centro histórico.",
 								comments:
@@ -1263,7 +1273,7 @@
 						weather:
 							"Notablemente más frío en Monserrate (3,152m). Una chaqueta abrigada es esencial. Vestir en capas.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno en el hotel", cost: 45000 },
 								{ concept: "Taxi Hotel - Monserrate", cost: 25000 },
@@ -1295,7 +1305,7 @@
 							},
 							{
 								time: "11:00 - 13:00",
-								activity: "🎨 Museo Botero",
+								activity: "🎨 Visitar Museo Botero",
 								cost_cop: 20000,
 								transport:
 									"🚕 <strong>Taxi (15 min)</strong><br>Desde la base de Monserrate a La Candelaria.",
@@ -1319,7 +1329,7 @@
 								transport:
 									"🚕 <strong>Taxi (25-30 min)</strong><br>Desde La Candelaria a Chapinero.",
 								comments:
-									"Trasladarse a la exclusiva Zona Gastronómica para almorzar y pasar la tarde.<br><strong>Consejo Táctico:</strong> La 'G' es de Gourmet. Se recomienda reservar si se elige un restaurante específico.",
+									"Trasladarse a la exclusiva Zona Gastronómica para almorzar y pasar la tarde/noche. Costo incluye taxi y comidas.<br><strong>Consejo Táctico:</strong> La 'G' es de Gourmet. Se recomienda reservar si se elige un restaurante específico.",
 								links: [
 									{
 										name: "Ubicación: Zona G, Chapinero",
@@ -1342,13 +1352,13 @@
 							'Un día de inmersión en la cultura popular colombiana. Empezamos con la explosión de colores, olores y sabores del Mercado de Paloquemao y terminamos siguiendo los pasos de la telenovela más famosa del mundo: "Betty, la Fea".',
 						logistics:
 							"Este día está diseñado para una inmersión cultural auténtica. Paloquemao es una experiencia sensorial vibrante. La ruta de Betty es un toque único y divertido que resonará con los fans.",
-						budget: 211000,
+						budget: 171000,
 						effort: "Medio",
 						steps: "11,000 - 13,000",
 						weather:
 							"Atuendo estándar de Bogotá. Calzado cómodo y cerrado es recomendable para el mercado.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno en el hotel", cost: 45000 },
 								{ concept: "Taxi Hotel - Paloquemao", cost: 18000 },
@@ -1386,16 +1396,17 @@
 								links: [
 									{
 										name: "Ubicación: Casa de Betty",
-										url: "https://www.google.com/maps/search/?api=1&query=Carrera+18a+%2343a-59+Bogotá",
+										url: "https://maps.app.goo.gl/x2Qy7Y8v1kX3fJgP9",
 									},
 								],
 							},
 							{
 								time: "19:00 +",
 								activity: "🍽️ Cena de Despedida",
-								cost_cop: 125000,
+								cost_cop: 85000,
 								transport: "🚕 <strong>Taxi</strong>",
-								comments: "Cena final en un restaurante especial.",
+								comments:
+									"Cena final en Andrés Carne de Res (requiere viaje largo y costoso) o una opción más céntrica.",
 								links: [
 									{
 										name: "Restaurante Andrés Carne de Res (Chía)",
@@ -1420,7 +1431,7 @@
 						weather:
 							"Vestir en capas. Llevar chaqueta abrigada para la catedral (temperatura interior de ~14°C).",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno en el hotel", cost: 45000 },
 								{ concept: "Transporte a Zipaquirá (I/V)", cost: 40000 },
@@ -1484,7 +1495,7 @@
 						steps: "< 3,000",
 						weather: "Ropa cómoda para el vuelo.",
 						budgetTable: {
-							headers: ["Concepto", "Costo por Persona"],
+							headers: ["Concepto", "Costo por Persona (COP)"],
 							items: [
 								{ concept: "Desayuno", cost: 40000 },
 								{ concept: "Traslado al Aeropuerto (BOG)", cost: 25000 },
@@ -1523,12 +1534,12 @@
 
 			const palette = {
 				chartColors: [
-					"#14b8a6",
-					"#f59e0b",
-					"#3b82f6",
-					"#8b5cf6",
-					"#ec4899",
-					"#65a30d",
+					"#14b8a6", // teal-500
+					"#f59e0b", // amber-500
+					"#3b82f6", // blue-500
+					"#8b5cf6", // violet-500
+					"#ec4899", // pink-500
+					"#65a30d", // lime-600
 				],
 			};
 
@@ -1552,12 +1563,14 @@
 					contentDiv.className = "tab-content";
 
 					const linksHTML = links =>
-						links
-							.map(
-								link =>
-									`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-800 hover:bg-teal-100 text-sm font-semibold mr-2 mb-2 px-3 py-1.5 rounded-full transition-colors">📍 ${link.name}</a>`
-							)
-							.join("");
+						links && links.length > 0
+							? links
+									.map(
+										link =>
+											`<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-teal-50 text-teal-800 hover:bg-teal-100 text-sm font-semibold mr-2 mb-2 px-3 py-1.5 rounded-full transition-colors">📍 ${link.name}</a>`
+									)
+									.join("")
+							: "";
 
 					const itineraryHTML = day.itinerary
 						.map(
@@ -1571,7 +1584,9 @@
 															item.activity
 														}</p>
                             <p class="font-bold text-teal-600 text-sm mt-1">${formatDualCurrency(
-															item.cost_cop
+															item.cost_cop,
+															"COP",
+															item.prepaid
 														)}</p>
                         </td>
                         <td class="py-4 pr-3 align-top text-sm text-slate-500">${
@@ -1580,9 +1595,7 @@
                         <td class="py-4 pr-3 align-top text-sm text-slate-500">${
 													item.comments
 												}</td>
-                        <td class="py-4 align-top">${
-													item.links ? linksHTML(item.links) : ""
-												}</td>
+                        <td class="py-4 align-top">${linksHTML(item.links)}</td>
                     </tr>
                 `
 						)
@@ -1644,7 +1657,7 @@
                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div class="bg-slate-50 p-4 rounded-lg shadow-sm text-center flex flex-col justify-center">
                                 <p class="text-3xl mb-1">💰</p>
-                                <p class="text-sm font-semibold text-slate-500">Presupuesto</p>
+                                <p class="text-sm font-semibold text-slate-500">Presupuesto (COP)</p>
                                 <p class="text-lg font-bold text-teal-600">${formatDualCurrency(
 																	day.budget
 																)}</p>
@@ -1703,7 +1716,7 @@
                          </div>
                     </div>
 										<div>
-											<h3 class="text-xl font-bold mb-4 text-slate-700">Desglose de Presupuesto Diario</h3>
+											<h3 class="text-xl font-bold mb-4 text-slate-700">Desglose de Presupuesto Diario (COP)</h3>
 											${budgetTableHTML}
 										</div>
                 </div>
@@ -1767,19 +1780,9 @@
 						item => `
 					<tr class="border-b border-slate-200 last:border-b-0">
 						<td class="py-3 pr-3 text-sm font-semibold text-slate-700">${item.city}</td>
-						<td class="py-3 pr-3 text-sm text-slate-600"><a href="${
-							item.mapLink
-						}" target="_blank" class="text-teal-600 hover:underline">${
-							item.name
-						}</a></td>
-						<td class="py-3 pr-3 text-sm text-slate-600">${item.checkIn} - ${
-							item.checkOut
-						}</td>
+						<td class="py-3 pr-3 text-sm text-slate-600"><a href="${item.mapLink}" target="_blank" class="text-teal-600 hover:underline">${item.name}</a></td>
+						<td class="py-3 pr-3 text-sm text-slate-600">${item.checkIn} - ${item.checkOut}</td>
 						<td class="py-3 pr-3 text-sm text-slate-600 text-center">${item.nights}</td>
-						<td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${formatDualCurrency(
-							item.cost,
-							item.currency
-						)}</td>
 					</tr>
 				`
 					)
@@ -1791,38 +1794,139 @@
 				const container = document.getElementById(
 					"general-budget-table-container"
 				);
-				const totalBudget = 6250000; // Total sin vuelos internacionales, para cálculo de %
+
+				// --- All calculations are now data-driven for consistency ---
+
+				// 1. Calculate On-Trip Costs per category from daily data
+				let onTripAlimentacion = 0;
+				let onTripActividades = 0;
+				let onTripTransporte = 0;
+				const categorizeExpense = concept => {
+					const lowerConcept = concept.toLowerCase();
+					if (
+						lowerConcept.includes("almuerzo") ||
+						lowerConcept.includes("cena") ||
+						lowerConcept.includes("bebida") ||
+						lowerConcept.includes("desayuno") ||
+						lowerConcept.includes("degustación")
+					)
+						return "Alimentación";
+					if (
+						lowerConcept.includes("tour") ||
+						lowerConcept.includes("entrada") ||
+						lowerConcept.includes("pass") ||
+						lowerConcept.includes("peinado") ||
+						lowerConcept.includes("impuesto portuario") ||
+						lowerConcept.includes("tiquete") ||
+						lowerConcept.includes("foto")
+					)
+						return "Actividades";
+					if (
+						lowerConcept.includes("taxi") ||
+						lowerConcept.includes("metro") ||
+						lowerConcept.includes("buseta") ||
+						lowerConcept.includes("jeep") ||
+						lowerConcept.includes("traslado") ||
+						lowerConcept.includes("bus")
+					)
+						return "Transporte";
+					return null;
+				};
+				tripData.days.forEach(day => {
+					if (day.budgetTable && day.budgetTable.items) {
+						day.budgetTable.items.forEach(item => {
+							const category = categorizeExpense(item.concept);
+							if (category === "Alimentación") onTripAlimentacion += item.cost;
+							else if (category === "Actividades")
+								onTripActividades += item.cost;
+							else if (category === "Transporte") onTripTransporte += item.cost;
+						});
+					}
+				});
+				const onTripTotalCOP =
+					onTripAlimentacion + onTripActividades + onTripTransporte;
+
+				// 2. Get Pre-Paid costs (per person) from data object
+				const { costs } = tripData;
+				const prepaidHospedajesMXN = Object.values(costs.hospedajes).reduce(
+					(sum, cost) => sum + cost,
+					0
+				);
+
+				// 3. Convert On-Trip costs to MXN
+				const onTripAlimentacionMXN = onTripAlimentacion * COP_TO_MXN_RATE;
+				const onTripActividadesMXN = onTripActividades * COP_TO_MXN_RATE;
+				const onTripTransporteMXN = onTripTransporte * COP_TO_MXN_RATE;
+
+				// 4. Pre-paid activities from daily data
+				let prepaidActividadesCOP = 0;
+				tripData.days.forEach(day => {
+					day.itinerary.forEach(item => {
+						if (item.prepaid && item.cost_cop_prepaid !== undefined) {
+							prepaidActividadesCOP += item.cost_cop_prepaid;
+						} else if (item.prepaid && item.cost_cop !== null) {
+							prepaidActividadesCOP += item.cost_cop;
+						}
+					});
+				});
+				const prepaidActividadesMXN = prepaidActividadesCOP * COP_TO_MXN_RATE;
+
+				// 5. Calculate Contingency & Total
+				const contingenciaMXN = onTripTotalCOP * 0.15 * COP_TO_MXN_RATE;
+
 				const budgetData = [
-					{ category: "Alojamiento (11 noches)", cost: 1545000 },
-					{ category: "Vuelos Internos (2 vuelos)", cost: 600000 },
-					{ category: "Actividades y Entradas", cost: 1150000 },
-					{ category: "Alimentación y Bebidas", cost: 1280000 },
-					{ category: "Transporte Local", cost: 455000 },
-					{ category: "Fondo de Contingencia (15%)", cost: 815000 },
+					{
+						category: "Vuelos Internacionales",
+						cost: costs.vuelosInternacionalesMXN,
+					},
+					{ category: "Hospedajes (12 noches)", cost: prepaidHospedajesMXN },
+					{
+						category: "Vuelos Internos (4 vuelos)",
+						cost: costs.vuelosInternosMXN,
+					},
+					{
+						category: "Actividades y Entradas",
+						cost: onTripActividadesMXN + prepaidActividadesMXN,
+					},
+					{ category: "Alimentación", cost: onTripAlimentacionMXN },
+					{ category: "Transporte Local", cost: onTripTransporteMXN },
+					{ category: "Fondo de Contingencia (15%)", cost: contingenciaMXN },
 				];
 
+				let totalMXN = budgetData.reduce((sum, item) => sum + item.cost, 0);
+
+				// Update summary box
+				document.getElementById("summary-total-mxn").textContent =
+					formatSingleCurrency(totalMXN, "MXN");
+				document.getElementById(
+					"summary-total-cop"
+				).textContent = `(${formatSingleCurrency(
+					totalMXN / COP_TO_MXN_RATE,
+					"COP",
+					"~"
+				)})`;
+
+				// 6. Build HTML Table
 				let tableHTML = `
 					<div class="overflow-x-auto">
 						<table class="w-full text-left">
 							<thead>
 								<tr class="border-b-2 border-slate-300">
 									<th class="py-2 pr-3 font-semibold text-sm">Categoría</th>
-									<th class="py-2 pr-3 font-semibold text-sm text-right">Costo Estimado</th>
-									<th class="py-2 pr-3 font-semibold text-sm text-center">% del Total</th>
+									<th class="py-2 pr-3 font-semibold text-sm text-right">Costo Estimado (MXN)</th>
 								</tr>
 							</thead>
 							<tbody>
 				`;
 
 				budgetData.forEach(item => {
-					const percentage = ((item.cost / totalBudget) * 100).toFixed(2);
 					tableHTML += `
 						<tr class="border-b border-slate-200 last:border-b-0">
 							<td class="py-3 pr-3 text-sm text-slate-600">${item.category}</td>
-							<td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${formatDualCurrency(
-								item.cost
+							<td class="py-3 pr-3 text-sm text-slate-800 font-semibold text-right whitespace-nowrap">${formatSingleCurrency(
+								item.cost,
+								"MXN"
 							)}</td>
-							<td class="py-3 pr-3 text-sm text-slate-600 font-semibold text-center">${percentage}%</td>
 						</tr>
 					`;
 				});
@@ -1831,11 +1935,11 @@
 							</tbody>
 							<tfoot>
 								<tr class="border-t-2 border-slate-300">
-									<td class="py-3 pr-3 font-bold text-slate-800">Total (sin vuelos int.)</td>
-									<td class="py-3 pr-3 font-bold text-teal-600 text-right whitespace-nowrap">${formatDualCurrency(
-										totalBudget
+									<td class="py-3 pr-3 font-bold text-slate-800">Total Estimado p.p.</td>
+									<td class="py-3 pr-3 font-bold text-teal-600 text-right whitespace-nowrap">${formatSingleCurrency(
+										totalMXN,
+										"MXN"
 									)}</td>
-									<td class="py-3 pr-3 font-bold text-teal-600 text-center">100%</td>
 								</tr>
 							</tfoot>
 						</table>
@@ -1846,47 +1950,132 @@
 			}
 
 			function createOverallDailyCostChart() {
+				// 1. Calculate total costs per category for each destination
+				const destinationMap = {};
+				tripData.days.forEach(day => {
+					const city = day.city.split("/")[0].trim();
+					if (city === "Cartagena") destinationMap[day.day] = "Cartagena";
+					else if (city === "Medellín") destinationMap[day.day] = "Medellín";
+					else if (city === "Salento" || city === "Filandia")
+						destinationMap[day.day] = "Eje Cafetero";
+					else if (city === "Bogotá") destinationMap[day.day] = "Bogotá";
+				});
+
+				const destinationCosts = {
+					Cartagena: { Alimentación: 0, Actividades: 0, Transporte: 0 },
+					Medellín: { Alimentación: 0, Actividades: 0, Transporte: 0 },
+					"Eje Cafetero": { Alimentación: 0, Actividades: 0, Transporte: 0 },
+					Bogotá: { Alimentación: 0, Actividades: 0, Transporte: 0 },
+				};
+
+				const categorizeExpense = concept => {
+					const lowerConcept = concept.toLowerCase();
+					if (
+						lowerConcept.includes("almuerzo") ||
+						lowerConcept.includes("cena") ||
+						lowerConcept.includes("bebida") ||
+						lowerConcept.includes("desayuno") ||
+						lowerConcept.includes("degustación")
+					)
+						return "Alimentación";
+					if (
+						lowerConcept.includes("tour") ||
+						lowerConcept.includes("entrada") ||
+						lowerConcept.includes("pass") ||
+						lowerConcept.includes("peinado") ||
+						lowerConcept.includes("impuesto portuario") ||
+						lowerConcept.includes("tiquete") ||
+						lowerConcept.includes("foto")
+					)
+						return "Actividades";
+					if (
+						lowerConcept.includes("taxi") ||
+						lowerConcept.includes("metro") ||
+						lowerConcept.includes("buseta") ||
+						lowerConcept.includes("jeep") ||
+						lowerConcept.includes("traslado") ||
+						lowerConcept.includes("bus")
+					)
+						return "Transporte";
+					return null;
+				};
+
+				tripData.days.forEach(day => {
+					const destination = destinationMap[day.day];
+					if (destination && day.budgetTable && day.budgetTable.items) {
+						day.budgetTable.items.forEach(item => {
+							const category = categorizeExpense(item.concept);
+							if (category) {
+								destinationCosts[destination][category] += item.cost;
+							}
+						});
+					}
+				});
+
+				// 2. Prepare data for a stacked bar chart
+				const labels = Object.keys(destinationCosts);
+				const datasets = [
+					{
+						label: "Alimentación",
+						data: labels.map(label => destinationCosts[label]["Alimentación"]),
+						backgroundColor: palette.chartColors[1], // amber-500
+					},
+					{
+						label: "Actividades",
+						data: labels.map(label => destinationCosts[label]["Actividades"]),
+						backgroundColor: palette.chartColors[2], // blue-500
+					},
+					{
+						label: "Transporte",
+						data: labels.map(label => destinationCosts[label]["Transporte"]),
+						backgroundColor: palette.chartColors[3], // violet-500
+					},
+				];
+
+				// 3. Render the Chart
 				const ctx = document.getElementById("dailyCostChart").getContext("2d");
-				new Chart(ctx, {
+
+				// Destroy existing chart instance if it exists, to prevent memory leaks
+				if (window.myDailyCostChart) {
+					window.myDailyCostChart.destroy();
+				}
+
+				window.myDailyCostChart = new Chart(ctx, {
 					type: "bar",
 					data: {
-						labels: tripData.general.dailyCost.labels,
-						datasets: [
-							{
-								label: "Gasto Promedio Diario (COP)",
-								data: tripData.general.dailyCost.data,
-								backgroundColor: palette.chartColors.slice(0, 4),
-							},
-						],
+						labels: labels,
+						datasets: datasets,
 					},
 					options: {
 						indexAxis: "y",
 						responsive: true,
 						maintainAspectRatio: false,
 						plugins: {
-							legend: { display: false },
+							legend: {
+								position: "top",
+							},
 							tooltip: {
 								callbacks: {
-									label: c => ` ${formatDualCurrency(c.raw)}`,
+									label: c =>
+										` ${c.dataset.label}: ${formatSingleCurrency(
+											c.raw,
+											"COP"
+										)}`,
 								},
 							},
 							datalabels: {
-								anchor: "end",
-								align: "end",
-								formatter: value => {
-									return (value / 1000).toFixed(0) + "K";
-								},
-								color: "#334155",
-								font: {
-									weight: "bold",
-								},
+								display: false, // Stacked charts can get cluttered with labels
 							},
 						},
 						scales: {
 							x: {
+								stacked: true,
 								ticks: {
 									callback: v => v / 1000 + "K",
 								},
+							},
+							y: {
+								stacked: true,
 							},
 						},
 					},
