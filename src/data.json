@@ -1,0 +1,1081 @@
+{
+  "config": {
+    "copToMxnRate": 0.006,
+    "contingencyRate": 0.15,
+    "chartColors": [
+      "#14b8a6",
+      "#f59e0b",
+      "#3b82f6",
+      "#8b5cf6",
+      "#ec4899",
+      "#65a30d"
+    ]
+  },
+  "tripData": {
+    "prepaidCosts": {
+      "vuelosInternacionalesMXN": 7074,
+      "vuelosInternosMXN": 8708.33,
+      "hospedajesMXN": {
+        "cartagena": 1815.5,
+        "medellin": 303.71,
+        "salento": 2520.0,
+        "bogota": 2189.67
+      }
+    },
+    "lodgingSummary": [
+      {
+        "city": "Cartagena",
+        "name": "Airbnb's Bolivar",
+        "checkIn": "10 Oct",
+        "checkOut": "13 Oct",
+        "nights": 3,
+        "mapLink": "https://www.google.com/maps/search/?api=1&query=Apartamento+Bijou+Centro+Historico+Cartagena"
+      },
+      {
+        "city": "Medellín",
+        "name": "Airbnb's Laureles",
+        "checkIn": "13 Oct",
+        "checkOut": "15 Oct",
+        "nights": 2,
+        "mapLink": "https://www.google.com/maps/search/?api=1&query=Casa+Santafé+Carrera+72+%23C2-30+Medellín"
+      },
+      {
+        "city": "Salento",
+        "name": "Hotel El Edén",
+        "checkIn": "15 Oct",
+        "checkOut": "18 Oct",
+        "nights": 3,
+        "mapLink": "https://www.google.com/maps/search/?api=1&query=Hotel+El+Jardín+Salento+Quindio"
+      },
+      {
+        "city": "Bogotá",
+        "name": "DoubleTree By Hilton Salitre",
+        "checkIn": "18 Oct",
+        "checkOut": "22 Oct",
+        "nights": 4,
+        "mapLink": "https://www.google.com/maps/search/?api=1&query=DoubleTree+by+Hilton+Bogota+Salitre+AR"
+      }
+    ],
+    "generalRecommendations": {
+      "title": "📝 Briefing Táctico General",
+      "points": [
+        {
+          "title": "1. ✈️ Procedimientos de Entrada (Aduanas y Migración)",
+          "content": "El requisito más crítico es completar el formulario <strong>Check-Mig</strong>. Debe llenarse en línea entre <strong>72 y 1 hora ANTES</strong> del vuelo. Es obligatorio tanto para entrar como para salir de Colombia. Tengan el código QR generado a la mano en sus celulares."
+        },
+        {
+          "title": "2. 💵 Manejo de Divisas y Pagos",
+          "content": "<strong>Efectivo (COP):</strong> Es indispensable. Se recomienda llevar un aproximado de <strong>$150.000 COP por persona</strong> para gastos diarios menores. Muchos tours (impuestos portuarios), transportes locales (buses, jeeps) y pequeños comercios solo aceptan efectivo. La tasa de cambio en el aeropuerto es de ~0.006 COP por MXN, mientras que con tarjetas (ej. Mastercard) es más favorable, ~0.005 COP por MXN.<br /><strong>Denominaciones de Billetes:</strong> Para facilitar las transacciones y evitar problemas con el cambio, procuren tener siempre billetes de <strong>$10.000, $20.000 y $50.000 COP</strong>. Eviten usar billetes de $100.000 COP para compras pequeñas.<br /><strong>Tarjetas de Crédito/Débito:</strong> Ampliamente aceptadas en hoteles, restaurantes formales y grandes cadenas. Notifiquen a sus bancos sobre las fechas del viaje para evitar bloqueos."
+        },
+        {
+          "title": "3. 🛡️ Seguridad y Conciencia Situacional",
+          "content": "Colombia es un país acogedor, pero como en cualquier destino, es clave mantener la prudencia. Eviten exhibir objetos de valor como joyas o cámaras costosas en zonas concurridas. No dejen sus pertenencias desatendidas. En las ciudades, después del anochecer, es preferible moverse en <strong>apps de transporte (Uber, Cabify, etc.)</strong> en lugar de caminar por zonas poco iluminadas."
+        },
+        {
+          "title": "4. 📱 Comunicaciones y Tecnología",
+          "content": "Verifiquen los planes de roaming internacional con sus operadores en México, como <strong>Telcel o AT&T</strong>. Alternativamente, para tener datos desde el momento del aterrizaje, pueden adquirir una <strong>eSIM internacional</strong> de servicios como <strong>Airalo</strong> antes de viajar. Descarguen los mapas de las ciudades en Google Maps para poder usarlos sin conexión."
+        }
+      ]
+    },
+    "mapLinks": {
+      "title": "🗺️ Mapas Compartidos",
+      "maps": [
+        {
+          "city": "Cartagena",
+          "url": "https://maps.app.goo.gl/sFSmPyzs55npkfx17"
+        },
+        {
+          "city": "Medellín",
+          "url": "https://maps.app.goo.gl/XL7HyXrgzsBm55kGA"
+        },
+        {
+          "city": "Eje Cafetero",
+          "url": "https://maps.app.goo.gl/dhChw3SVxqhaVCqa8"
+        },
+        {
+          "city": "Bogotá",
+          "url": "https://maps.app.goo.gl/UwqWoeggSLbJKq377"
+        }
+      ]
+    },
+    "days": [
+      {
+        "day": 1,
+        "date": "Viernes, 10 de Octubre",
+        "title": "Llegada e Inmersión en la Ciudad Amurallada",
+        "city": "Cartagena",
+        "narrative": "El viaje comienza en el Caribe. Saldremos de CDMX, haremos una escala de 4h en Bogotá y aterrizaremos en la vibrante Cartagena. Nos instalaremos en el corazón de la Ciudad Amurallada y nos sumergiremos de inmediato en sus calles coloridas y su historia palpable, culminando con un atardecer inolvidable sobre las antiguas murallas.",
+        "logistics": "La estructura de este día es ideal para la llegada. La exploración autoguiada permite una aclimatación gradual al ritmo y clima del Caribe. La elección del Baluarte de Santo Domingo para el atardecer, en lugar del conocido Café del Mar, es una decisión estratégica que optimiza la experiencia y el presupuesto.",
+        "effort": "Medio",
+        "steps": "10,000 - 12,000",
+        "weather": "Ropa muy ligera (lino, algodón), sandalias cómodas, sombrero y protector solar.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Taxi Aeropuerto - Centro", "cost": 20000 },
+            { "concept": "Almuerzo de Bienvenida", "cost": 28000 },
+            { "concept": "Bebida en la Muralla", "cost": 30000 },
+            { "concept": "Peinado con Ros (Propina)", "cost": 15000 },
+            { "concept": "Cena en Getsemaní", "cost": 55000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "10:00 - 13:00",
+            "activity": "✈️ Llegada y Traslado a Cartagena",
+            "cost_cop": 20000,
+            "transport": "🚕 <strong>Taxi (15-20 min)</strong><br>Desde el Aeropuerto CTG al Centro Histórico.",
+            "comments": "Llegada de CDMX a Bogotá (BOG), escala de 4h y vuelo a Cartagena (CTG). Nuestro hospedaje está en el corazón de la Ciudad Amurallada, la tarifa de taxi está regulada.<br><strong>Consejo Táctico:</strong> Confirmar el precio antes de abordar. El pago suele ser en efectivo.",
+            "links": [
+              {
+                "name": "Ubicación: Aeropuerto CTG",
+                "url": "https://www.google.com/maps/search/?api=1&query=Aeropuerto+Internacional+Rafael+Núñez+Cartagena"
+              },
+              {
+                "name": "Destino: Apartamento Bijou",
+                "url": "https://www.google.com/maps/search/?api=1&query=Apartamento+Bijou+Centro+Historico+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "13:00 - 14:30",
+            "activity": "🍽️ Almuerzo de Bienvenida",
+            "cost_cop": 28000,
+            "transport": "👟 <strong>A pie (5 min)</strong><br>Desde el apartamento.",
+            "comments": "Restaurantes como Espiritu Santo o La Mulata son excelentes opciones para probar un buen \"corrientazo\" gourmet o platos locales.<br><strong>Consejo Táctico:</strong> Un \"corrientazo\" es un almuerzo ejecutivo local, abundante y económico. La Mulata es famoso por su pescado fresco.",
+            "links": [
+              {
+                "name": "Restaurante La Mulata",
+                "url": "https://www.google.com/maps/search/?api=1&query=La+Mulata+Cartagena"
+              },
+              {
+                "name": "Restaurante Espiritu Santo",
+                "url": "https://www.google.com/maps/search/?api=1&query=Restaurante+Espiritu+Santo+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "14:30 - 17:30",
+            "activity": "🚶‍♂️ Explorar Ciudad Amurallada (Zona Norte)",
+            "cost_cop": 0,
+            "transport": "👟 <strong>A pie</strong><br>Recorrido por la zona norte.",
+            "comments": "Exploraremos la Plaza Fernández Madrid, Las Bóvedas (mercado de artesanías) y caminaremos sobre la muralla.<br><strong>Consejo Táctico:</strong> Llevar agua, el calor puede ser intenso. Las Bóvedas son antiguas celdas ahora convertidas en tiendas de souvenirs.",
+            "links": [
+              {
+                "name": "Ubicación: Plaza Fernández Madrid",
+                "url": "https://www.google.com/maps/search/?api=1&query=Plaza+Fernández+Madrid+Cartagena"
+              },
+              {
+                "name": "Ubicación: Las Bóvedas",
+                "url": "https://www.google.com/maps/search/?api=1&query=Las+Bóvedas+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "17:30 - 18:30",
+            "activity": "🌅 Atardecer en la Muralla",
+            "cost_cop": 30000,
+            "transport": "👟 <strong>A pie (10 min)</strong><br>Caminata hacia el Baluarte de Santo Domingo.",
+            "comments": "Ver la puesta de sol desde el Baluarte de Santo Domingo. Opción más auténtica y económica que Café del Mar.<br><strong>Consejo Táctico:</strong> Ideal para tomar una Club Colombia o un cóctel mientras se disfruta de la vista. Suele haber vendedores locales.",
+            "links": [
+              {
+                "name": "Ubicación: Baluarte Santo Domingo",
+                "url": "https://www.google.com/maps/search/?api=1&query=Baluarte+de+Santo+Domingo+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "18:30 - 20:00",
+            "activity": "🎨 Peinado con Ros (Opcional)",
+            "cost_cop": 15000,
+            "comments": "Actividad cultural única. Se arregla un pago/propina directamente con Ros en la plaza.<br><strong>Consejo Táctico:</strong> Una experiencia cultural con las \"palenqueras\". El costo es una propina negociada por la foto y la interacción.",
+            "transport": "👟 <strong>A pie (2 min)</strong><br>En la Plaza de Santo Domingo.",
+            "links": [
+              {
+                "name": "Ubicación: Plaza de Santo Domingo",
+                "url": "https://www.google.com/maps/search/?api=1&query=Plaza+de+Santo+Domingo+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "20:00 +",
+            "activity": "🍽️ Cena en Getsemaní",
+            "cost_cop": 55000,
+            "transport": "👟 <strong>A pie (15 min)</strong><br>Caminata agradable cruzando el Parque Centenario.",
+            "comments": "Explorar el vibrante barrio bohemio, conocido por su arte callejero, ambiente y excelentes restaurantes.<br><strong>Consejo Táctico:</strong> Getsemaní cobra vida de noche. Demente Bar es excelente para pizzas y tapas.",
+            "links": [
+              {
+                "name": "Restaurante Demente",
+                "url": "https://www.google.com/maps/search/?api=1&query=Demente+Bar+Cartagena"
+              },
+              {
+                "name": "Restaurante La Cocina de Pepina",
+                "url": "https://www.google.com/maps/search/?api=1&query=La+Cocina+de+Pepina+Cartagena"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 2,
+        "date": "Sábado, 11 de Octubre",
+        "title": "Fortalezas y Vistas Panorámicas",
+        "city": "Cartagena",
+        "narrative": "Hoy conquistaremos los puntos más altos de Cartagena. Empezaremos en el imponente Castillo de San Felipe, una obra maestra de la ingeniería militar, y luego ascenderemos al Convento de la Popa para obtener las vistas panorámicas más espectaculares.",
+        "logistics": "El plan de negociar un taxi para el trayecto de ida, espera y vuelta al Convento de la Popa es la metodología más segura y eficiente. No se recomienda intentar el ascenso a pie debido a consideraciones de seguridad en la ruta. Esta es una recomendación logística crítica.",
+        "effort": "Pesado",
+        "steps": "13,000 - 16,000",
+        "weather": "Caluroso y húmedo. Calzado extremadamente cómodo para subir rampas y escaleras, gorra indispensable.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno", "cost": 20000 },
+            { "concept": "Taxi a Castillo", "cost": 11800 },
+            { "concept": "Entrada Castillo San Felipe", "cost": 36000 },
+            { "concept": "Taxi I/V a Convento de la Popa", "cost": 50000 },
+            { "concept": "Entrada Convento de la Popa", "cost": 15000 },
+            { "concept": "Almuerzo y Cena", "cost": 93000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "09:00 - 12:00",
+            "activity": "🏰 Explorar Castillo de San Felipe",
+            "cost_cop": 47800,
+            "transport": "🚕 <strong>Taxi (10 min)</strong><br>Desde Getsemaní.",
+            "comments": "Explorar la fortaleza y sus túneles. Comprar tickets en línea para evitar filas. Entrada: 36,000 COP. Taxi: ~11,800 COP.<br><strong>Consejo Táctico:</strong> Audioguía muy recomendada para entender la historia y la ingeniería del fuerte.",
+            "links": [
+              {
+                "name": "Ubicación: Castillo de San Felipe",
+                "url": "https://www.google.com/maps/search/?api=1&query=Castillo+de+San+Felipe+de+Barajas+Cartagena"
+              },
+              {
+                "name": "Tickets Oficiales",
+                "url": "https://fortificacionescartagena.com.co/es/tarifas/"
+              }
+            ]
+          },
+          {
+            "time": "12:00 - 14:00",
+            "activity": "⛪ Convento de la Popa",
+            "cost_cop": 65000,
+            "transport": "🚕 <strong>Taxi (20 min)</strong><br>Desde el Castillo. Negociar ida, espera y vuelta.",
+            "comments": "Subir al punto más alto para las mejores vistas. Entrada: 15,000 COP. Taxi I/V ~50,000 COP para el grupo.<br><strong>Consejo Táctico:</strong> El taxi espera mientras se realiza la visita. Es la opción más segura.",
+            "links": [
+              {
+                "name": "Ubicación: Convento de la Popa",
+                "url": "https://www.google.com/maps/search/?api=1&query=Convento+de+la+Popa+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "14:00 - 15:30",
+            "activity": "🍽️ Almuerzo en Getsemaní",
+            "cost_cop": 35000,
+            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Bajada desde La Popa.",
+            "comments": "Regresar a Getsemaní para almorzar y descansar del calor del mediodía.",
+            "links": [
+              {
+                "name": "Restaurante Caffé Lunático",
+                "url": "https://www.google.com/maps/search/?api=1&query=Caffé+Lunático+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "15:30 +",
+            "activity": "🚶‍♀️ Tarde/Noche Libre",
+            "cost_cop": 78000,
+            "transport": "👟 <strong>A pie</strong><br>Exploración por el Centro y Getsemaní.",
+            "comments": "Tiempo para compras de artesanías o disfrutar de la atmósfera de la ciudad antes de cenar. Alma es una opción de cena más elegante.<br><strong>Consejo Táctico:</strong> Requiere reserva previa.",
+            "links": [
+              {
+                "name": "Restaurante Alma (Reservar)",
+                "url": "https://www.almacolombia.com/"
+              },
+              {
+                "name": "Restaurante Candé (Reservar)",
+                "url": "https://www.restaurantecande.com/"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 3,
+        "date": "Domingo, 12 de Octubre",
+        "title": "Escapada Caribeña: Day Pass en Isla",
+        "city": "Cartagena / Islas del Rosario",
+        "narrative": "Dejamos la historia atrás para un día de relajación total en el Caribe. Navegaremos hacia el Parque Nacional Natural Corales del Rosario para disfrutar de un día completo en un exclusivo club de playa, con sol, mar turquesa y gastronomía isleña.",
+        "logistics": "Optar por un 'day pass' a un club de playa es la mejor estrategia para una experiencia familiar controlada y de calidad. Estos paquetes suelen incluir transporte, almuerzo, y uso de instalaciones. Es crucial recordar que el impuesto portuario (~29.000 COP) se paga aparte y en efectivo en el muelle.",
+        "effort": "Relajado",
+        "steps": "< 4,000",
+        "weather": "Sol radiante. Traje de baño, ropa de playa, sandalias, sombrero y protector solar biodegradable.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona"],
+          "items": [
+            {
+              "concept": "Day Pass Club de Playa (c/almuerzo)",
+              "cost": 300000
+            },
+            { "concept": "Impuesto Portuario (efectivo)", "cost": 29000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "08:00 - 17:00",
+            "activity": "🏝️ Day Pass en Club de Playa",
+            "cost_cop": 329000,
+            "transport": "🚤 <strong>Lancha rápida (50-60 min)</strong><br>Desde el Muelle de la Bodeguita.",
+            "comments": "Día completo en un club de playa. El tour (~300.000 COP) incluye transporte y almuerzo. Pagar impuesto portuario (29.000 COP) en efectivo.<br><strong>Consejo Táctico:</strong> Reservar online con antelación. Bora Bora, Rosario Beach e Isla del Sol son excelentes opciones familiares con buenas instalaciones.",
+            "links": [
+              {
+                "name": "Ubicación: Muelle de la Bodeguita",
+                "url": "https://www.google.com/maps/search/?api=1&query=Muelle+de+la+Bodeguita+Cartagena"
+              },
+              {
+                "name": "Opción 1: Bora Bora Beach Club",
+                "url": "https://www.boraboracartagena.com/"
+              },
+              {
+                "name": "Opción 2: Rosario Beach Club",
+                "url": "https://rosariobeach.co/"
+              },
+              {
+                "name": "Opción 3: Hotel Isla del Sol",
+                "url": "https://www.isladelsol.com.co/pasadia/"
+              }
+            ]
+          },
+          {
+            "time": "17:00 +",
+            "activity": "🌙 Regreso y Noche Tranquila",
+            "cost_cop": 0,
+            "transport": "👟 <strong>A pie</strong><br>Desde el muelle al apartamento.",
+            "comments": "Noche para descansar, empacar para el vuelo de mañana y cenar algo ligero.",
+            "links": []
+          }
+        ]
+      },
+      {
+        "day": 4,
+        "date": "Lunes, 13 de Octubre",
+        "title": "Transformación Urbana y Cultura Paisa",
+        "city": "Medellín",
+        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín, la ciudad de la eterna primavera, para sumergirnos en su historia de transformación en la Comuna 13 y admirar el arte de Botero en el corazón de la ciudad.",
+        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Adquirir una tarjeta Cívica al llegar es una decisión acertada. Para la Comuna 13, un tour guiado pre-pagado es esencial para comprender el contexto.",
+        "effort": "Pesado",
+        "steps": "15,000 - 18,000",
+        "weather": "Templado, alta probabilidad de lluvia. Calzado muy cómodo y chaqueta ligera indispensable.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Taxi Hotel - Aeropuerto CTG", "cost": 17100 },
+            { "concept": "Bus Aeropuerto MDE - Laureles", "cost": 17000 },
+            { "concept": "Metro (2 trayectos)", "cost": 6860 },
+            {
+              "concept": "Tour Guiado Comuna 13",
+              "cost": 55500,
+              "prepaid": true
+            },
+            { "concept": "Almuerzo en San Javier", "cost": 20000 },
+            { "concept": "Taxi Centro - Pueblito Paisa", "cost": 13000 },
+            { "concept": "Cena en Laureles", "cost": 50000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "07:00 - 11:00",
+            "activity": "✈️ Vuelo y Llegada a Medellín",
+            "cost_cop": 34100,
+            "transport": "✈️ <strong>Vuelo (1h) / 🚌 Bus (45 min)</strong><br>Vuelo CTG-MDE y bus desde aeropuerto Rionegro al hotel.",
+            "comments": "Traslados a/desde aeropuertos. El bus desde MDE es eficiente y económico.<br><strong>Consejo Táctico:</strong> Comprar la tarjeta Cívica en una estación de metro principal para agilizar los traslados.",
+            "links": [
+              {
+                "name": "Ubicación: Aeropuerto MDE",
+                "url": "https://www.google.com/maps/search/?api=1&query=Aeropuerto+Internacional+José+María+Córdova"
+              },
+              {
+                "name": "Destino: Casa Santafé (Hotel)",
+                "url": "https://www.google.com/maps/search/?api=1&query=Casa+Santafé+Carrera+72+%23C2-30+Medellín"
+              }
+            ]
+          },
+          {
+            "time": "11:00 - 14:30",
+            "activity": "🎨 Tour Guiado Comuna 13",
+            "prepaid": true,
+            "cost_cop": 62360,
+            "transport": "🚇 <strong>Metro y Metrocable (40 min)</strong><br>Desde Est. Estadio a Est. San Javier.",
+            "comments": "Un tour guiado es clave para entender la resiliencia del barrio. El costo incluye snacks y Metrocable.<br><strong>Consejo Táctico:</strong> Es una experiencia cultural y social muy potente. Reservar con antelación.",
+            "links": [
+              {
+                "name": "Ubicación: Estación San Javier",
+                "url": "https://www.google.com/maps/search/?api=1&query=Estación+San+Javier+Medellín"
+              },
+              {
+                "name": "Tour Recomendado (GYG)",
+                "url": "https://www.getyourguide.com/medellin-l363/medellin-comuna-13-graffiti-tour-w-street-food-cable-car-t385233"
+              }
+            ]
+          },
+          {
+            "time": "14:30 - 15:30",
+            "activity": "🍽️ Almuerzo en San Javier",
+            "cost_cop": 20000,
+            "transport": "👟 <strong>A pie</strong><br>Cerca de la estación del Metrocable.",
+            "comments": "Comida local y rápida para recargar energías.",
+            "links": []
+          },
+          {
+            "time": "15:30 - 17:00",
+            "activity": "🗿 Plaza Botero",
+            "cost_cop": 6860,
+            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde San Javier a Parque Berrío.",
+            "comments": "Visitar el famoso museo al aire libre con las esculturas de Botero. El costo es del transporte.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona céntrica y concurrida.",
+            "links": [
+              {
+                "name": "Ubicación: Plaza Botero",
+                "url": "https://www.google.com/maps/search/?api=1&query=Plaza+Botero+Medellin"
+              }
+            ]
+          },
+          {
+            "time": "17:00 - 18:30",
+            "activity": "🏘️ Subir al Pueblito Paisa",
+            "cost_cop": 15000,
+            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde el centro de la ciudad.",
+            "comments": "Disfrutar de vistas panorámicas de todo el valle al atardecer.",
+            "links": [
+              {
+                "name": "Ubicación: Pueblito Paisa",
+                "url": "https://www.google.com/maps/search/?api=1&query=Pueblito+Paisa+Cerro+Nutibara+Medellin"
+              }
+            ]
+          },
+          {
+            "time": "19:00 +",
+            "activity": "🍽️ Cena en Laureles",
+            "cost_cop": 65000,
+            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde el Pueblito Paisa.",
+            "comments": "Laureles es conocido por su excelente y variada oferta gastronómica, más local que El Poblado.",
+            "links": [
+              {
+                "name": "Restaurante Mondongo's",
+                "url": "https://www.google.com/maps/search/?api=1&query=Mondongo's+Laureles+Medellín"
+              },
+              {
+                "name": "Restaurante Oci.Mde",
+                "url": "https://www.google.com/maps/search/?api=1&query=Oci.Mde+Medellín"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 5,
+        "date": "Martes, 14 de Octubre",
+        "title": "Ciencia, Naturaleza y el Medellín Moderno",
+        "city": "Medellín",
+        "narrative": "Un día de contrastes. Exploraremos la belleza natural en el Jardín Botánico, nos maravillaremos con la ciencia en el Parque Explora y terminaremos la noche en El Poblado, el epicentro de la modernidad y la gastronomía paisa.",
+        "logistics": "La combinación del Jardín Botánico y el Parque Explora es muy eficiente, ya que se encuentran uno al lado del otro. Se puede llegar fácilmente en Metro (Estación Universidad), optimizando tiempos y costos.",
+        "effort": "Medio",
+        "steps": "12,000 - 14,000",
+        "weather": "Clima templado. Atuendo cómodo. Opcional un atuendo más arreglado para la noche en El Poblado.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno", "cost": 20000 },
+            { "concept": "Metro (2 trayectos)", "cost": 6860 },
+            { "concept": "Almuerzo", "cost": 38000 },
+            { "concept": "Entrada Parque Explora", "cost": 55000 },
+            { "concept": "Cena en El Poblado", "cost": 100000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "09:00 - 12:00",
+            "activity": "🌳 Visitar Jardín Botánico",
+            "cost_cop": 3430,
+            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Universidad.",
+            "comments": "La entrada es gratuita. No perderse el Orquideorama, una maravilla arquitectónica. Costo es del transporte.<br><strong>Consejo Táctico:</strong> Es un lugar perfecto para una mañana tranquila y fotos espectaculares.",
+            "links": [
+              {
+                "name": "Ubicación: Jardín Botánico",
+                "url": "https://www.google.com/maps/search/?api=1&query=Jardín+Botánico+de+Medellín"
+              },
+              {
+                "name": "Sitio Oficial",
+                "url": "https://www.botanicomedellin.org/"
+              }
+            ]
+          },
+          {
+            "time": "12:00 - 13:30",
+            "activity": "🍽️ Almuerzo",
+            "cost_cop": 38000,
+            "transport": "👟 <strong>A pie</strong><br>En los alrededores del Jardín Botánico.",
+            "comments": "Almorzar antes de entrar al siguiente parque.",
+            "links": []
+          },
+          {
+            "time": "13:30 - 17:00",
+            "activity": "🔬 Recorrer Parque Explora",
+            "cost_cop": 40000,
+            "transport": "👟 <strong>A pie (2 min)</strong><br>Cruzando la calle desde el Jardín Botánico.",
+            "comments": "Entrada: ~40,000 COP. Ideal para la adolescente del grupo por sus exhibiciones interactivas.<br><strong>Consejo Táctico:</strong> Comprar entradas online para elegir un horario de ingreso.",
+            "links": [
+              {
+                "name": "Ubicación: Parque Explora",
+                "url": "https://www.google.com/maps/search/?api=1&query=Parque+Explora+Medellín"
+              },
+              {
+                "name": "Tickets Oficiales",
+                "url": "https://www.parqueexplora.org/cobertura"
+              }
+            ]
+          },
+          {
+            "time": "18:00 +",
+            "activity": "🌆 Noche en El Poblado",
+            "cost_cop": 83430,
+            "transport": "🚇 <strong>Metro (30 min)</strong><br>Desde Est. Universidad a Est. Poblado.",
+            "comments": "Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna. Costo incluye cena y transporte.",
+            "links": [
+              {
+                "name": "Ubicación: Parque Lleras",
+                "url": "https://www.google.com/maps/search/?api=1&query=Parque+Lleras+El+Poblado+Medellin"
+              },
+              {
+                "name": "Restaurante El Cielo (Lujo)",
+                "url": "https://elcielorestaurant.com/restaurantes/medellin/"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 6,
+        "date": "Miércoles, 15 de Octubre",
+        "title": "Viaje al Corazón del Eje Cafetero",
+        "city": "Salento",
+        "narrative": "Hoy nos adentramos en el alma de Colombia. Volamos hacia el Eje Cafetero y ascendemos entre montañas verdes hasta llegar a Salento, un pueblo de ensueño que será nuestra base para explorar la cultura cafetera.",
+        "logistics": "La ruta de volar a Armenia (AXM) y tomar una buseta directa a Salento desde la terminal es la más estándar, eficiente y económica. El trayecto por carretera ya es parte de la experiencia y ofrece vistas espectaculares.",
+        "budget": 112000,
+        "effort": "Relajado",
+        "steps": "5,000 - 7,000",
+        "weather": "Templado y húmedo. Alta probabilidad de lluvia. Chaqueta ligera para la noche es indispensable.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Almuerzo en Medellín", "cost": 30000 },
+            { "concept": "Traslado al Aeropuerto MDE", "cost": 40000 },
+            { "concept": "Buseta Armenia - Salento", "cost": 6000 },
+            { "concept": "Cena en Salento", "cost": 36000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "Mañana",
+            "activity": "🍽️ Mañana Libre y Almuerzo",
+            "cost_cop": 30000,
+            "transport": "👟 <strong>A pie</strong><br>En Medellín.",
+            "comments": "Disfrutar de la mañana con calma antes del viaje.",
+            "links": []
+          },
+          {
+            "time": "13:00 - 18:00",
+            "activity": "✈️ Vuelo y Traslado a Salento",
+            "cost_cop": 46000,
+            "transport": "✈️ <strong>Vuelo (45 min) / 🚌 Buseta (40 min)</strong><br>Vuelo MDE-AXM y buseta desde Terminal de Armenia.",
+            "comments": "Traslado al aeropuerto MDE (40,000 COP) y buseta a Salento (6,000 COP).<br><strong>Consejo Táctico:</strong> Las busetas a Salento salen frecuentemente desde la terminal de Armenia.",
+            "links": [
+              {
+                "name": "Ubicación: Aeropuerto AXM",
+                "url": "https://www.google.com/maps/search/?api=1&query=Aeropuerto+Internacional+El+Edén+Armenia"
+              },
+              {
+                "name": "Destino: Hotel El Jardín",
+                "url": "https://www.google.com/maps/search/?api=1&query=Hotel+El+Jardín+Salento+Quindio"
+              }
+            ]
+          },
+          {
+            "time": "19:00 - 20:00",
+            "activity": "🚶‍♀️ Exploración de Salento",
+            "cost_cop": 0,
+            "transport": "👟 <strong>A pie</strong><br>Desde el hotel.",
+            "comments": "Caminar por la Calle Real y subir al Mirador Alto de la Cruz.<br><strong>Consejo Táctico:</strong> La vista al atardecer desde el mirador es espectacular.",
+            "links": [
+              {
+                "name": "Ubicación: Mirador Alto de la Cruz",
+                "url": "https://www.google.com/maps/search/?api=1&query=Mirador+Alto+de+la+Cruz+Salento"
+              }
+            ]
+          },
+          {
+            "time": "20:00 +",
+            "activity": "🍽️ Cena en Salento",
+            "cost_cop": 36000,
+            "transport": "👟 <strong>A pie</strong><br>En el centro del pueblo.",
+            "comments": "Probar la trucha con patacón, el plato icónico de la región.",
+            "links": [
+              {
+                "name": "Restaurante Donde Laurita",
+                "url": "https://www.google.com/maps/search/?api=1&query=Donde+Laurita+Parrilla+Salento"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 7,
+        "date": "Jueves, 16 de Octubre",
+        "title": "Palmas de Cera Icónicas y Legado del Café",
+        "city": "Salento",
+        "narrative": "Este es el día icónico del Eje Cafetero. Caminaremos entre las palmas de cera más altas del mundo en el Valle de Cocora y por la tarde descubriremos los secretos del café colombiano en una finca tradicional.",
+        "logistics": "Visitar el Valle de Cocora a primera hora es crucial para encontrar el valle despejado. Los Jeeps \"Willys\" salen de la plaza principal. Reservar el tour de café en línea es recomendable.",
+        "effort": "Pesado",
+        "steps": "14,000 - 17,000",
+        "weather": "Prepararse para lluvia y posible barro. Calzado resistente e impermeable (o botas de hule) es esencial. Vestir en capas.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno", "cost": 17000 },
+            { "concept": "Jeep \"Willy\" a Cocora (I/V)", "cost": 10000 },
+            { "concept": "Entrada Valle de Cocora", "cost": 25000 },
+            { "concept": "Almuerzo en Salento", "cost": 33000 },
+            { "concept": "Jeep a Finca de Café", "cost": 8000 },
+            { "concept": "Tour de Café Tradicional", "cost": 35000 },
+            { "concept": "Cena", "cost": 36000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "07:00 - 12:30",
+            "activity": "🌴 Valle de Cocora",
+            "cost_cop": 35000,
+            "transport": "🚙 <strong>Jeep \"Willy\" (30 min)</strong><br>Desde la Plaza de Bolívar de Salento.",
+            "comments": "Jeep I/V: 10,000 COP. Entrada \"Bosque de las Palmas\": 25,000 COP. La ruta corta es ideal para el grupo.<br><strong>Consejo Táctico:</strong> Ir lo más temprano posible para evitar nubes. Llevar botas de hule si ha llovido.",
+            "links": [
+              {
+                "name": "Ubicación: Valle de Cocora",
+                "url": "https://www.google.com/maps/search/?api=1&query=Valle+de+Cocora"
+              }
+            ]
+          },
+          {
+            "time": "12:30 - 14:00",
+            "activity": "🍽️ Almuerzo en Salento",
+            "cost_cop": 32000,
+            "transport": "🚙 <strong>Jeep \"Willy\" (30 min)</strong><br>Regreso desde Cocora.",
+            "comments": "Recargar energías antes de la siguiente actividad.",
+            "links": []
+          },
+          {
+            "time": "14:00 - 16:30",
+            "activity": "☕ Tour de Café en Finca El Ocaso",
+            "cost_cop": 43000,
+            "transport": "🚙 <strong>Jeep \"Willy\" (20 min)</strong><br>Desde Salento.",
+            "comments": "Tour: 35,000 COP. Transporte I/V: 8,000 COP. Es una experiencia muy educativa y sensorial.<br><strong>Consejo Táctico:</strong> Reservar el tour con anticipación, especialmente en temporada alta.",
+            "links": [
+              {
+                "name": "Ubicación: Finca El Ocaso",
+                "url": "https://www.google.com/maps/search/?api=1&query=Finca+El+Ocaso+Salento"
+              },
+              {
+                "name": "Reservar Tour (El Ocaso)",
+                "url": "https://fincaelocasosalento.com/tours-de-cafe/"
+              }
+            ]
+          },
+          {
+            "time": "17:00 +",
+            "activity": "🌙 Tarde Libre y Cena",
+            "cost_cop": 53000,
+            "transport": "👟 <strong>A pie</strong><br>En Salento.",
+            "comments": "Tiempo para descansar, comprar souvenirs y cenar.",
+            "links": []
+          }
+        ]
+      },
+      {
+        "day": 8,
+        "date": "Viernes, 17 de Octubre",
+        "title": "Filandia, la Colina Iluminada",
+        "city": "Salento / Filandia",
+        "narrative": "Hoy exploramos más allá de Salento con una visita a Filandia, un pueblo menos turístico pero rebosante de encanto. Subiremos a su famoso mirador para obtener vistas de 360 grados del paisaje cultural cafetero.",
+        "logistics": "Incluir Filandia es una excelente decisión para una perspectiva más auténtica del Eje Cafetero. El transporte en bus o jeep entre Salento y Filandia es frecuente y económico.",
+        "effort": "Medio",
+        "steps": "10,000 - 12,000",
+        "weather": "Similar a Salento. Estar preparado para la lluvia intermitente y llevar una chaqueta ligera.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno", "cost": 17000 },
+            { "concept": "Transporte a Filandia (I/V)", "cost": 15000 },
+            { "concept": "Entrada Mirador", "cost": 12000 },
+            { "concept": "Almuerzo en Filandia", "cost": 36000 },
+            { "concept": "Cena en Salento", "cost": 35000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "09:00 - 12:00",
+            "activity": "🏞️ Visita a Filandia y Mirador",
+            "cost_cop": 27000,
+            "transport": "🚌 <strong>Bus (45 min)</strong><br>Desde la terminal de Salento.",
+            "comments": "Transporte I/V: 15,000 COP. Entrada \"Mirador Colina Iluminada\": 12,000 COP.",
+            "links": [
+              {
+                "name": "Ubicación: Mirador Colina Iluminada",
+                "url": "https://www.google.com/maps/search/?api=1&query=Mirador+Colina+Iluminada+Filandia"
+              }
+            ]
+          },
+          {
+            "time": "12:00 - 13:30",
+            "activity": "🍽️ Almuerzo en Filandia",
+            "cost_cop": 36000,
+            "transport": "👟 <strong>A pie</strong><br>En el centro de Filandia.",
+            "comments": "Helena Adentro es uno de los restaurantes más aclamados de la región.<br><strong>Consejo Táctico:</strong> Reservar es altamente recomendable.",
+            "links": [
+              {
+                "name": "Restaurante Helena Adentro",
+                "url": "https://www.google.com/maps/search/?api=1&query=Helena+Adentro+Restaurante+Filandia"
+              }
+            ]
+          },
+          {
+            "time": "13:30 +",
+            "activity": "🛍️ Regreso y Tarde Libre",
+            "cost_cop": 52000,
+            "transport": "🚌 <strong>Bus (45 min)</strong><br>Regreso a Salento.",
+            "comments": "Últimas compras de artesanías y disfrutar del ambiente del pueblo antes de la cena.",
+            "links": []
+          }
+        ]
+      },
+      {
+        "day": 9,
+        "date": "Sábado, 18 de Octubre",
+        "title": "Llegada a la Capital y Corazón Histórico",
+        "city": "Bogotá",
+        "narrative": "Dejamos la tranquilidad del campo para sumergirnos en la vibrante capital. Volamos a Bogotá y nos dirigimos directamente a La Candelaria, el centro histórico, para probar su plato insignia y maravillarnos con el tesoro del Museo del Oro.",
+        "logistics": "Un primer día en Bogotá bien aprovechado. La ubicación del hotel en Salitre implica que los traslados a La Candelaria en taxi o VTC son necesarios. La altitud puede afectar, por lo que es clave tomarlo con calma.",
+        "effort": "Medio",
+        "steps": "10,000 - 13,000",
+        "weather": "Clima fresco. Necesitará chaqueta. El clima puede ser muy variable, con sol y lluvia en el mismo día.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Buseta Salento - Armenia", "cost": 7200 },
+            { "concept": "Taxi Aeropuerto BOG - Salitre", "cost": 25000 },
+            { "concept": "Taxi Salitre - La Candelaria", "cost": 25000 },
+            { "concept": "Almuerzo (Ajiaco)", "cost": 29000 },
+            { "concept": "Entrada Museo del Oro", "cost": 5000 },
+            { "concept": "Cena en La Candelaria", "cost": 41000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "08:00 - 12:00",
+            "activity": "✈️ Vuelo y Llegada a Bogotá",
+            "cost_cop": 32200,
+            "transport": "✈️ <strong>Vuelo (1h) / 🚕 Taxi (20 min)</strong><br>Vuelo AXM-BOG y taxi a hotel en Salitre.",
+            "comments": "Buseta a Armenia: 7,200 COP. Taxi Aeropuerto BOG - Hotel: 25,000 COP.",
+            "links": [
+              {
+                "name": "Ubicación: Aeropuerto BOG",
+                "url": "https://www.google.com/maps/search/?api=1&query=Aeropuerto+Internacional+El+Dorado+Bogotá"
+              },
+              {
+                "name": "Destino: Hotel DoubleTree Salitre AR",
+                "url": "https://www.google.com/maps/search/?api=1&query=DoubleTree+by+Hilton+Bogota+Salitre+AR"
+              }
+            ]
+          },
+          {
+            "time": "13:00 - 14:30",
+            "activity": "🍲 Almuerzo: Ajiaco Santafereño",
+            "cost_cop": 54000,
+            "transport": "🚕 <strong>Taxi (25-30 min)</strong><br>Desde Salitre a La Candelaria.",
+            "comments": "Probar el plato emblemático en La Puerta Falsa (29,000 COP). Taxi: 25,000 COP.<br><strong>Consejo Táctico:</strong> La Puerta Falsa es muy popular y pequeño, puede haber fila.",
+            "links": [
+              {
+                "name": "Restaurante La Puerta Falsa",
+                "url": "https://www.google.com/maps/search/?api=1&query=La+Puerta+Falsa+Restaurante+Bogotá"
+              }
+            ]
+          },
+          {
+            "time": "14:30 - 16:30",
+            "activity": "🏛️ Visitar Museo del Oro",
+            "cost_cop": 5000,
+            "transport": "👟 <strong>A pie (5 min)</strong><br>Desde el restaurante.",
+            "comments": "Entrada: 5,000 COP.<br><strong>Consejo Táctico:</strong> Considerar la audioguía por un costo extra para una experiencia más rica.",
+            "links": [
+              {
+                "name": "Ubicación: Museo del Oro",
+                "url": "https://www.google.com/maps/search/?api=1&query=Museo+del+Oro+Bogotá"
+              },
+              {
+                "name": "Sitio Oficial",
+                "url": "https://www.banrepcultural.org/bogota/museo-del-oro"
+              }
+            ]
+          },
+          {
+            "time": "16:30 +",
+            "activity": "🚶‍♀️ Plaza de Bolívar y Chorro de Quevedo",
+            "cost_cop": 41000,
+            "transport": "👟 <strong>A pie (10-15 min)</strong><br>Recorrido por el centro histórico.",
+            "comments": "Visitar el corazón político de Colombia y la plazoleta bohemia fundacional antes de cenar.<br><strong>Consejo Táctico:</strong> El Chorro de Quevedo es ideal para probar una chicha, bebida ancestral de maíz.",
+            "links": [
+              {
+                "name": "Ubicación: Plaza de Bolívar",
+                "url": "https://www.google.com/maps/search/?api=1&query=Plaza+de+Bolívar+Bogotá"
+              },
+              {
+                "name": "Ubicación: Chorro de Quevedo",
+                "url": "https://www.google.com/maps/search/?api=1&query=Chorro+de+Quevedo+Bogotá"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 10,
+        "date": "Domingo, 19 de Octubre",
+        "title": "Vistas desde Monserrate y el Arte de Botero",
+        "city": "Bogotá",
+        "narrative": "Hoy ascendemos a los cielos de Bogotá. Subiremos al Cerro de Monserrate para obtener la vista más espectacular de la metrópolis, y luego descenderemos para sumergirnos en el arte universal de Fernando Botero.",
+        "logistics": "Ascender a Monserrate a primera hora es fundamental para vistas despejadas. La compra de tiquetes en línea es una recomendación operativa clave para evitar filas extremadamente largas.",
+        "effort": "Pesado",
+        "steps": "14,000 - 16,000",
+        "weather": "Notablemente más frío en Monserrate (3,152m). Una chaqueta abrigada es esencial. Vestir en capas.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno en el hotel", "cost": 45000 },
+            { "concept": "Taxi Hotel - Monserrate", "cost": 25000 },
+            { "concept": "Tiquete Monserrate (I/V)", "cost": 32000 },
+            { "concept": "Taxi Monserrate - La Candelaria", "cost": 20000 },
+            { "concept": "Almuerzo y Cena (Zona G)", "cost": 100000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "07:45 - 11:00",
+            "activity": "🏞️ Cerro de Monserrate",
+            "cost_cop": 57000,
+            "transport": "🚕 <strong>Taxi (30 min) / 🚠 Funicular</strong><br>Taxi desde hotel a base; funicular para ascender.",
+            "comments": "Tiquete I/V: 32,000 COP. Taxi: 25,000 COP.<br><strong>Consejo Táctico:</strong> Comprar tiquetes en línea es CRUCIAL para evitar filas de hasta 2 horas.",
+            "links": [
+              {
+                "name": "Ubicación: Taquilla Monserrate",
+                "url": "https://www.google.com/maps/search/?api=1&query=Taquilla+Teleférico+Monserrate+Bogotá"
+              },
+              {
+                "name": "Compra Online (Tiqets)",
+                "url": "https://www.tiqets.com/es/atracciones-bogota-c81/entradas-para-monserrate-funicular-o-teleferico-ida-y-vuelta-p1003913/"
+              }
+            ]
+          },
+          {
+            "time": "11:00 - 13:00",
+            "activity": "🎨 Visitar Museo Botero",
+            "cost_cop": 20000,
+            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde la base de Monserrate a La Candelaria.",
+            "comments": "Entrada gratuita. El costo es del transporte.<br><strong>Consejo Táctico:</strong> La colección incluye obras de Picasso, Monet y otros maestros, además de las de Botero.",
+            "links": [
+              {
+                "name": "Ubicación: Museo Botero",
+                "url": "https://www.google.com/maps/search/?api=1&query=Museo+Botero+Bogotá"
+              },
+              {
+                "name": "Sitio Oficial",
+                "url": "https://www.banrepcultural.org/bogota/museo-botero"
+              }
+            ]
+          },
+          {
+            "time": "13:00 +",
+            "activity": "🍽️ Almuerzo y Tarde/Noche en Zona G",
+            "cost_cop": 145000,
+            "transport": "🚕 <strong>Taxi (25-30 min)</strong><br>Desde La Candelaria a Chapinero.",
+            "comments": "Trasladarse a la exclusiva Zona Gastronómica para almorzar y pasar la tarde/noche. Costo incluye taxi y comidas.<br><strong>Consejo Táctico:</strong> La 'G' es de Gourmet. Se recomienda reservar si se elige un restaurante específico.",
+            "links": [
+              {
+                "name": "Ubicación: Zona G, Chapinero",
+                "url": "https://www.google.com/maps/search/?api=1&query=restaurantes+en+Zona+G+Chapinero+Bogota"
+              },
+              {
+                "name": "Restaurante Criterión",
+                "url": "https://www.google.com/maps/search/?api=1&query=Restaurante+Criterión+by+Rausch+Bogotá"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 11,
+        "date": "Lunes, 20 de Octubre",
+        "title": "Mercado de Paloquemao y Nostalgia Televisiva",
+        "city": "Bogotá",
+        "narrative": "Un día de inmersión en la cultura popular colombiana. Empezamos con la explosión de colores, olores y sabores del Mercado de Paloquemao y terminamos siguiendo los pasos de la telenovela más famosa del mundo: \"Betty, la Fea\".",
+        "logistics": "Este día está diseñado para una inmersión cultural auténtica. Paloquemao es una experiencia sensorial vibrante. La ruta de Betty es un toque único y divertido que resonará con los fans.",
+        "effort": "Medio",
+        "steps": "11,000 - 13,000",
+        "weather": "Atuendo estándar de Bogotá. Calzado cómodo y cerrado es recomendable para el mercado.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno en el hotel", "cost": 45000 },
+            { "concept": "Taxi Hotel - Paloquemao", "cost": 18000 },
+            { "concept": "Degustación de Frutas", "cost": 15000 },
+            { "concept": "Taxi Paloquemao - Teusaquillo", "cost": 15000 },
+            { "concept": "Almuerzo en Teusaquillo", "cost": 38000 },
+            { "concept": "Cena", "cost": 80000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "07:30 - 10:30",
+            "activity": "🍓 Mercado de Paloquemao",
+            "cost_cop": 33000,
+            "transport": "🚕 <strong>Taxi (20 min)</strong><br>Desde el hotel.",
+            "comments": "Taxi: 18,000 COP. Degustación frutas: 15,000 COP.<br><strong>Consejo Táctico:</strong> Ir temprano para ver la sección de flores en su apogeo. Es un festín para los sentidos.",
+            "links": [
+              {
+                "name": "Ubicación: Mercado de Paloquemao",
+                "url": "https://www.google.com/maps/search/?api=1&query=Mercado+de+Paloquemao+Bogotá"
+              }
+            ]
+          },
+          {
+            "time": "10:30 +",
+            "activity": "🤓 Ruta \"Betty, la Fea\"",
+            "cost_cop": 53000,
+            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde Paloquemao al barrio Teusaquillo.",
+            "comments": "Visitaremos la casa de Betty (Carrera 18A #43A-59). Taxi: 15,000 COP. Almuerzo: 38,000 COP.<br><strong>Consejo Táctico:</strong> La casa es ahora un museo-café, ideal para fans.",
+            "links": [
+              {
+                "name": "Ubicación: Casa de Betty",
+                "url": "https://maps.app.goo.gl/x2Qy7Y8v1kX3fJgP9"
+              }
+            ]
+          },
+          {
+            "time": "19:00 +",
+            "activity": "🍽️ Cena de Despedida",
+            "cost_cop": 85000,
+            "transport": "🚕 <strong>Taxi</strong>",
+            "comments": "Cena final en Andrés Carne de Res (requiere viaje largo y costoso) o una opción más céntrica.",
+            "links": [
+              {
+                "name": "Restaurante Andrés Carne de Res (Chía)",
+                "url": "https://www.google.com/maps/search/?api=1&query=Andrés+Carne+de+Res+Chía"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "day": 12,
+        "date": "Martes, 21 de Octubre",
+        "title": "La Catedral Subterránea de Sal",
+        "city": "Bogotá / Zipaquirá",
+        "narrative": "En nuestro último día completo, realizamos una excursión inolvidable a Zipaquirá para descender 180 metros bajo tierra y maravillarnos con la primera maravilla de Colombia: una imponente catedral católica tallada enteramente en una mina de sal.",
+        "logistics": "La planificación de usar la Terminal de Salitre para el transporte a Zipaquirá es logísticamente sólida dada la proximidad del hotel. Asignar cuatro horas para la visita es adecuado. Comprar la entrada en línea evita filas.",
+        "effort": "Medio",
+        "steps": "9,000 - 11,000",
+        "weather": "Vestir en capas. Llevar chaqueta abrigada para la catedral (temperatura interior de ~14°C).",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno en el hotel", "cost": 45000 },
+            { "concept": "Transporte a Zipaquirá (I/V)", "cost": 40000 },
+            { "concept": "Entrada Catedral de Sal", "cost": 118000 },
+            { "concept": "Almuerzo en Zipaquirá", "cost": 33000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "07:30 - 13:30",
+            "activity": "⛪ Excursión a la Catedral de Sal",
+            "cost_cop": 158000,
+            "transport": "🚕 <strong>Taxi (10 min) / 🚌 Bus (1.5h)</strong><br>Taxi a Terminal Salitre y bus intermunicipal a Zipaquirá.",
+            "comments": "Transporte I/V: 40,000 COP. Entrada: 118,000 COP.<br><strong>Consejo Táctico:</strong> Comprar tickets en línea para evitar filas. El recorrido básico dura unas 2 horas.",
+            "links": [
+              {
+                "name": "Ubicación: Catedral de Sal",
+                "url": "https://www.google.com/maps/search/?api=1&query=Catedral+de+Sal+de+Zipaquirá"
+              },
+              {
+                "name": "Tickets Oficiales",
+                "url": "https://www.catedraldesal.gov.co/"
+              }
+            ]
+          },
+          {
+            "time": "13:30 - 15:00",
+            "activity": "🍽️ Almuerzo en Zipaquirá",
+            "cost_cop": 33000,
+            "transport": "👟 <strong>A pie</strong><br>En el centro de Zipaquirá.",
+            "comments": "Probar la gastronomía local antes de regresar a Bogotá.",
+            "links": []
+          },
+          {
+            "time": "15:00 +",
+            "activity": "🌙 Regreso y Tarde Libre",
+            "cost_cop": 45000,
+            "transport": "🚌 <strong>Bus (1.5h) / 🚕 Taxi (10 min)</strong><br>Regreso a Bogotá.",
+            "comments": "Tarde para descansar y una cena ligera.",
+            "links": []
+          }
+        ]
+      },
+      {
+        "day": 13,
+        "date": "Miércoles, 22 de Octubre",
+        "title": "Regreso a Casa",
+        "city": "Bogotá",
+        "narrative": "Es el final de nuestra aventura colombiana. Después del desayuno, nos dirigiremos al Aeropuerto El Dorado para tomar nuestro vuelo de regreso a casa, llenos de recuerdos inolvidables.",
+        "logistics": "Coordinar el taxi o VTC al aeropuerto con suficiente antelación, considerando el tráfico de Bogotá. El Aeropuerto El Dorado es moderno y eficiente.",
+        "effort": "Relajado",
+        "steps": "< 3,000",
+        "weather": "Ropa cómoda para el vuelo.",
+        "budgetTable": {
+          "headers": ["Concepto", "Costo por Persona (COP)"],
+          "items": [
+            { "concept": "Desayuno", "cost": 40000 },
+            { "concept": "Traslado al Aeropuerto (BOG)", "cost": 25000 }
+          ]
+        },
+        "itinerary": [
+          {
+            "time": "Mañana",
+            "activity": "🍽️ Desayuno y Check-out",
+            "cost_cop": 40000,
+            "transport": "👟 <strong>A pie</strong><br>En el hotel.",
+            "comments": "Disfrutar del último desayuno colombiano y realizar el check-out.",
+            "links": []
+          },
+          {
+            "time": "12:00",
+            "activity": "✈️ Traslado al Aeropuerto (BOG)",
+            "cost_cop": 25000,
+            "transport": "🚕 <strong>Taxi (20 min)</strong><br>Desde el hotel al aeropuerto.",
+            "comments": "Asegurarse de llegar 3 horas antes para un vuelo internacional.",
+            "links": [
+              {
+                "name": "Ubicación: Aeropuerto El Dorado",
+                "url": "https://www.google.com/maps/search/?api=1&query=Aeropuerto+Internacional+El+Dorado+Bogotá"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
