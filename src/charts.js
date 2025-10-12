@@ -220,7 +220,7 @@ function renderDailyStackedBudgetChart (canvasId, days) {
  * @param {object} data - The full data object from data.json.
  */
 export async function renderSummaryCharts (data) {
-  const { tripData, config } = data
+  const { tripData } = data
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
   const weatherData = await getWeatherData(apiKey)
 
