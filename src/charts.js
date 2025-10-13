@@ -246,7 +246,10 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
         legend: { position: 'top' },
         tooltip: {
           callbacks: {
-            label: (context) => `${context.dataset.label}: ${context.formattedValue}°C`
+            label: (context) => {
+              const value = Math.round(context.raw)
+              return `${context.dataset.label}: ${value}°C`
+            }
           }
         }
       },
