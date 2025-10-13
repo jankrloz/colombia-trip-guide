@@ -359,25 +359,25 @@
       {
         "day": 4,
         "date": "Lunes, 13 de Octubre",
-        "title": "Transformación Urbana y Cultura Paisa",
+        "title": "Transformación Urbana y Vistas Panorámicas",
         "city": "Medellín",
-        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín, la ciudad de la eterna primavera, para sumergirnos en su historia de transformación en la Comuna 13 y admirar el arte de Botero en el corazón de la ciudad.",
-        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Adquirir una tarjeta Cívica al llegar es una decisión acertada. Para la Comuna 13, un tour guiado pre-pagado es esencial para comprender el contexto.",
-        "effort": "Pesado",
-        "steps": "15,000 - 18,000",
+        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín, la ciudad de la eterna primavera. Tras instalarnos, nos sumergiremos en la inspiradora historia de transformación de la Comuna 13 y terminaremos el día con las mejores vistas panorámicas de la ciudad desde el Pueblito Paisa.",
+        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Adquirir una tarjeta Cívica al llegar es una decisión acertada. Para la Comuna 13, un tour guiado pre-pagado es esencial para comprender el contexto. La visita al Pueblito Paisa al atardecer ofrece una vista espectacular.",
+        "effort": "Medio",
+        "steps": "12,000 - 15,000",
         "weather": "Templado, alta probabilidad de lluvia. Calzado muy cómodo y chaqueta ligera indispensable.",
         "budgetTable": {
           "headers": ["Concepto", "Costo por Persona (COP)"],
           "items": [
             { "concept": "Taxi Hotel - Aeropuerto CTG", "cost": 17100 },
             { "concept": "Bus Aeropuerto MDE - Laureles", "cost": 17000 },
+            { "concept": "Almuerzo", "cost": 30000 },
             { "concept": "Metro (2 trayectos)", "cost": 6860 },
             {
               "concept": "Tour Guiado Comuna 13",
               "cost": 55500,
               "prepaid": true
             },
-            { "concept": "Almuerzo en San Javier", "cost": 20000 },
             { "concept": "Taxi Centro - Pueblito Paisa", "cost": 13000 },
             { "concept": "Cena en Laureles", "cost": 50000 }
           ]
@@ -401,7 +401,15 @@
             ]
           },
           {
-            "time": "11:00 - 14:30",
+            "time": "11:00 - 13:00",
+            "activity": "🍽️ Almuerzo y Check-in",
+            "cost_cop": 30000,
+            "transport": "👟 <strong>A pie</strong><br>Cerca del hotel en Laureles.",
+            "comments": "Tiempo para instalarnos en el hotel y almorzar en la zona de Laureles antes de empezar las actividades de la tarde.",
+            "links": []
+          },
+          {
+            "time": "13:00 - 16:30",
             "activity": "🎨 Tour Guiado Comuna 13",
             "prepaid": true,
             "cost_cop": 62360,
@@ -419,31 +427,10 @@
             ]
           },
           {
-            "time": "14:30 - 15:30",
-            "activity": "🍽️ Almuerzo en San Javier",
-            "cost_cop": 20000,
-            "transport": "👟 <strong>A pie</strong><br>Cerca de la estación del Metrocable.",
-            "comments": "Comida local y rápida para recargar energías.",
-            "links": []
-          },
-          {
-            "time": "15:30 - 17:00",
-            "activity": "🗿 Plaza Botero",
-            "cost_cop": 6860,
-            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde San Javier a Parque Berrío.",
-            "comments": "Visitar el famoso museo al aire libre con las esculturas de Botero. El costo es del transporte.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona céntrica y concurrida.",
-            "links": [
-              {
-                "name": "Ubicación: Plaza Botero",
-                "url": "https://www.google.com/maps/search/?api=1&query=Plaza+Botero+Medellin"
-              }
-            ]
-          },
-          {
             "time": "17:00 - 18:30",
             "activity": "🏘️ Subir al Pueblito Paisa",
             "cost_cop": 15000,
-            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde el centro de la ciudad.",
+            "transport": "🚕 <strong>Taxi (20 min)</strong><br>Desde la estación de Metro más cercana.",
             "comments": "Disfrutar de vistas panorámicas de todo el valle al atardecer.",
             "links": [
               {
@@ -474,71 +461,57 @@
       {
         "day": 5,
         "date": "Martes, 14 de Octubre",
-        "title": "Ciencia, Naturaleza y el Medellín Moderno",
+        "title": "Corazón de Medellín y Noche en El Poblado",
         "city": "Medellín",
-        "narrative": "Un día de contrastes. Exploraremos la belleza natural en el Jardín Botánico, nos maravillaremos con la ciencia en el Parque Explora y terminaremos la noche en El Poblado, el epicentro de la modernidad y la gastronomía paisa.",
-        "logistics": "La combinación del Jardín Botánico y el Parque Explora es muy eficiente, ya que se encuentran uno al lado del otro. Se puede llegar fácilmente en Metro (Estación Universidad), optimizando tiempos y costos.",
-        "effort": "Medio",
-        "steps": "12,000 - 14,000",
+        "narrative": "Un día para explorar el corazón cultural de Medellín y su faceta más moderna. Por la mañana, admiraremos el arte de Botero en el centro de la ciudad. La tarde quedará libre para explorar a nuestro ritmo, y terminaremos la noche en El Poblado, el epicentro de la modernidad y la gastronomía paisa.",
+        "logistics": "Este día combina una visita cultural clave con tiempo flexible. El metro sigue siendo el mejor aliado para llegar al centro. La tarde libre permite adaptarse a los intereses del grupo, ya sea para compras o descanso, antes de disfrutar de la oferta de El Poblado.",
+        "effort": "Ligero",
+        "steps": "8,000 - 10,000",
         "weather": "Clima templado. Atuendo cómodo. Opcional un atuendo más arreglado para la noche en El Poblado.",
         "budgetTable": {
           "headers": ["Concepto", "Costo por Persona (COP)"],
           "items": [
             { "concept": "Desayuno", "cost": 20000 },
             { "concept": "Metro (2 trayectos)", "cost": 6860 },
-            { "concept": "Almuerzo", "cost": 38000 },
-            { "concept": "Entrada Parque Explora", "cost": 55000 },
+            { "concept": "Almuerzo en el Centro", "cost": 38000 },
             { "concept": "Cena en El Poblado", "cost": 100000 }
           ]
         },
         "itinerary": [
           {
-            "time": "09:00 - 12:00",
-            "activity": "🌳 Visitar Jardín Botánico",
+            "time": "10:00 - 12:00",
+            "activity": "🗿 Plaza Botero",
             "cost_cop": 3430,
-            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Universidad.",
-            "comments": "La entrada es gratuita. No perderse el Orquideorama, una maravilla arquitectónica. Costo es del transporte.<br><strong>Consejo Táctico:</strong> Es un lugar perfecto para una mañana tranquila y fotos espectaculares.",
+            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Parque Berrío.",
+            "comments": "Visitar el famoso museo al aire libre con las esculturas de Botero. El costo es del transporte.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona céntrica y concurrida.",
             "links": [
               {
-                "name": "Ubicación: Jardín Botánico",
-                "url": "https://www.google.com/maps/search/?api=1&query=Jardín+Botánico+de+Medellín"
-              },
-              {
-                "name": "Sitio Oficial",
-                "url": "https://www.botanicomedellin.org/"
+                "name": "Ubicación: Plaza Botero",
+                "url": "https://www.google.com/maps/search/?api=1&query=Plaza+Botero+Medellin"
               }
             ]
           },
           {
             "time": "12:00 - 13:30",
-            "activity": "🍽️ Almuerzo",
+            "activity": "🍽️ Almuerzo en el Centro",
             "cost_cop": 38000,
-            "transport": "👟 <strong>A pie</strong><br>En los alrededores del Jardín Botánico.",
-            "comments": "Almorzar antes de entrar al siguiente parque.",
+            "transport": "👟 <strong>A pie</strong><br>En los alrededores de la Plaza Botero.",
+            "comments": "Probar la gastronomía local en el corazón de la ciudad.",
             "links": []
           },
           {
-            "time": "13:30 - 17:00",
-            "activity": "🔬 Recorrer Parque Explora",
-            "cost_cop": 40000,
-            "transport": "👟 <strong>A pie (2 min)</strong><br>Cruzando la calle desde el Jardín Botánico.",
-            "comments": "Entrada: ~40,000 COP. Ideal para la adolescente del grupo por sus exhibiciones interactivas.<br><strong>Consejo Táctico:</strong> Comprar entradas online para elegir un horario de ingreso.",
-            "links": [
-              {
-                "name": "Ubicación: Parque Explora",
-                "url": "https://www.google.com/maps/search/?api=1&query=Parque+Explora+Medellín"
-              },
-              {
-                "name": "Tickets Oficiales",
-                "url": "https://www.parqueexplora.org/cobertura"
-              }
-            ]
+            "time": "13:30 - 18:00",
+            "activity": "🚶‍♀️ Tarde Libre",
+            "cost_cop": 0,
+            "transport": "🚇 <strong>Metro / 👟 A pie</strong>",
+            "comments": "Tiempo libre para explorar el centro, hacer compras o regresar al hotel a descansar antes de la noche.",
+            "links": []
           },
           {
             "time": "18:00 +",
             "activity": "🌆 Noche en El Poblado",
-            "cost_cop": 83430,
-            "transport": "🚇 <strong>Metro (30 min)</strong><br>Desde Est. Universidad a Est. Poblado.",
+            "cost_cop": 103430,
+            "transport": "🚇 <strong>Metro (30 min)</strong><br>Desde Est. Estadio a Est. Poblado.",
             "comments": "Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna. Costo incluye cena y transporte.",
             "links": [
               {
