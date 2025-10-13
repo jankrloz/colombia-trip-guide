@@ -139,44 +139,16 @@ export function renderDestinationCostChart (canvasId, days, config) {
 }
 
 /**
- * Fetches weather forecast data from OpenWeather API.
- * @param {string} apiKey - The OpenWeather API key.
- * @returns {Promise<object|null>} A map of dates to high/low temperatures.
+ * Returns a set of typical weather data for each city in October.
+ * This is a simulation as no real forecast is available for 2025.
+ * @returns {object} An object with typical min/max temperatures for each city.
  */
-async function getWeatherData (apiKey) {
-  // Coordinates for Bogotá, a central point for the trip's weather profile.
-  const lat = 4.7110
-  const lon = -74.0721
-  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-
-  try {
-    const response = await fetch(url)
-    if (!response.ok) {
-      console.error(`Weather API error: ${response.statusText}`)
-      return null
-    }
-    const data = await response.json()
-
-    // Process data to get daily min/max
-    const dailyData = {}
-    data.list.forEach(item => {
-      const date = item.dt_txt.split(' ')[0] // Get YYYY-MM-DD
-      if (!dailyData[date]) {
-        dailyData[date] = {
-          min: item.main.temp,
-          max: item.main.temp,
-          descriptions: new Set()
-        }
-      }
-      dailyData[date].min = Math.min(dailyData[date].min, item.main.temp)
-      dailyData[date].max = Math.max(dailyData[date].max, item.main.temp)
-      dailyData[date].descriptions.add(item.weather[0].description)
-    })
-
-    return dailyData
-  } catch (error) {
-    console.error('Failed to fetch weather data:', error)
-    return null
+function getTypicalWeatherData () {
+  return {
+    Cartagena: { min: 25, max: 31 },
+    Medellín: { min: 17, max: 27 },
+    Salento: { min: 14, max: 23 },
+    Bogotá: { min: 9, max: 19 }
   }
 }
 
@@ -184,37 +156,22 @@ async function getWeatherData (apiKey) {
  * Renders the consolidated weather forecast timeline chart.
  * @param {string} canvasId - The ID of the canvas element.
  * @param {Array} days - All days of the trip to create the timeline.
- * @param {object} weatherData - The processed data from the API.
  */
-function renderWeatherTimelineChart (canvasId, days, weatherData) {
+function renderWeatherTimelineChart (canvasId, days) {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
 
+  const typicalWeatherData = getTypicalWeatherData()
   const labels = days.map(day => `Día ${day.day} (${day.city.split('/')[0].trim()})`)
-  let minTemps, maxTemps
-  let useFallback = false
 
-  if (weatherData) {
-    const tripDates = days.map(d => {
-      const dateParts = d.date.split(', ')[1].split(' de ')
-      const day = parseInt(dateParts[0], 10)
-      return `2025-10-${day.toString().padStart(2, '0')}`
-    })
-    minTemps = tripDates.map(date => weatherData[date] ? Math.round(weatherData[date].min) : null)
-    maxTemps = tripDates.map(date => weatherData[date] ? Math.round(weatherData[date].max) : null)
-
-    // If all values are null (because dates are in the future), use fallback data
-    if (minTemps.every(t => t === null)) {
-      useFallback = true
-    }
-  } else {
-    useFallback = true
-  }
-
-  if (useFallback) {
-    minTemps = days.map(() => Math.round(Math.random() * 5 + 12))
-    maxTemps = minTemps.map(min => Math.round(min + Math.random() * 5 + 5))
-  }
+  const minTemps = days.map(day => {
+    const city = day.city.split('/')[0].trim()
+    return typicalWeatherData[city]?.min || 0
+  })
+  const maxTemps = days.map(day => {
+    const city = day.city.split('/')[0].trim()
+    return typicalWeatherData[city]?.max || 0
+  })
 
   if (chartInstances[canvasId]) chartInstances[canvasId].destroy()
 
@@ -365,14 +322,11 @@ function renderDailyStackedBudgetChart (canvasId, days) {
  * @param {object} data - The full data object from data.json.
  * @param {object} budgetCalculations - The calculated budget data.
  */
-export async function renderSummaryCharts (data, budgetCalculations) {
+export function renderSummaryCharts (data, budgetCalculations) {
   const { tripData, config } = data
-  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
-  const weatherData = await getWeatherData(apiKey)
-
   renderBudgetByConceptChart('budgetByConceptChart', budgetCalculations, config)
   renderDestinationCostChart('destinationCostChart', tripData.days, config)
-  renderWeatherTimelineChart('weatherTimelineChart', tripData.days, weatherData)
+  renderWeatherTimelineChart('weatherTimelineChart', tripData.days)
   renderDailyStackedBudgetChart('dailyStackedBudgetChart', tripData.days)
 }
 
