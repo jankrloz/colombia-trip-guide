@@ -200,8 +200,8 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
       const day = parseInt(dateParts[0], 10)
       return `2025-10-${day.toString().padStart(2, '0')}`
     })
-    minTemps = tripDates.map(date => weatherData[date]?.min || null)
-    maxTemps = tripDates.map(date => weatherData[date]?.max || null)
+    minTemps = tripDates.map(date => weatherData[date] ? Math.round(weatherData[date].min) : null)
+    maxTemps = tripDates.map(date => weatherData[date] ? Math.round(weatherData[date].max) : null)
 
     // If all values are null (because dates are in the future), use fallback data
     if (minTemps.every(t => t === null)) {
@@ -212,8 +212,8 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
   }
 
   if (useFallback) {
-    minTemps = days.map(() => Math.random() * 5 + 12)
-    maxTemps = minTemps.map(min => min + Math.random() * 5 + 5)
+    minTemps = days.map(() => Math.round(Math.random() * 5 + 12))
+    maxTemps = minTemps.map(min => Math.round(min + Math.random() * 5 + 5))
   }
 
   if (chartInstances[canvasId]) chartInstances[canvasId].destroy()
