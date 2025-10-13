@@ -44,11 +44,11 @@ const renderDetailedItineraryTable = (day, config) => {
       <table class="table table-sm w-full table-zebra">
         <thead>
           <tr>
-            <th class="w-[10%]">Horario</th>
-            <th class="w-[20%]">Actividad y Costo</th>
-            <th class="w-[20%]">Transporte</th>
-            <th class="w-[25%]">Comentarios</th>
-            <th class="w-[25%]">Recursos</th>
+            <th class="min-w-[6rem]">Horario</th>
+            <th class="min-w-[15rem]">Actividad y Costo</th>
+            <th class="min-w-[12rem]">Transporte</th>
+            <th class="min-w-[20rem]">Comentarios</th>
+            <th class="min-w-[15rem]">Recursos</th>
           </tr>
         </thead>
         <tbody>${itineraryRows}</tbody>
