@@ -47,6 +47,33 @@ const renderDetailedItineraryTable = (day, config) => {
   `
 }
 
+const renderBudgetTable = (day) => {
+  const budgetRows = day.budgetTable.items
+    .map(
+      item => `
+    <tr class="hover">
+      <td>${item.concept}</td>
+      <td class="text-right">${formatCurrency(item.cost, 'COP')}</td>
+    </tr>
+  `
+    )
+    .join('')
+
+  return `
+    <div class="overflow-x-auto">
+      <table class="table table-sm w-full">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th class="text-right">Costo (COP)</th>
+          </tr>
+        </thead>
+        <tbody>${budgetRows}</tbody>
+      </table>
+    </div>
+  `
+}
+
 const renderDayContent = (day, config, weatherData) => {
   const dailyTotalCOP = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
   const city = day.city.split('/')[0].trim()
@@ -109,10 +136,14 @@ const renderDayContent = (day, config, weatherData) => {
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="bg-base-200 p-6 rounded-box">
             <h3 class="text-xl font-semibold mb-4">📊 Presupuesto por Categoría</h3>
             <div class="h-64"><canvas id="dailyBudgetChart-day-${day.day}"></canvas></div>
+        </div>
+        <div class="bg-base-200 p-6 rounded-box">
+            <h3 class="text-xl font-semibold mb-4">📋 Conceptos del Presupuesto</h3>
+            ${renderBudgetTable(day)}
         </div>
     </div>
   `
