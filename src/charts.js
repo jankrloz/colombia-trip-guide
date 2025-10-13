@@ -230,7 +230,8 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
           backgroundColor: '#f97316',
           tension: 0.3
         },
-        {n          label: 'Temp. Mín (°C)',
+        {
+          label: 'Temp. Mín (°C)',
           data: minTemps,
           borderColor: '#3b82f6',
           backgroundColor: '#3b82f6',
