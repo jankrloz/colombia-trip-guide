@@ -138,7 +138,7 @@ export function renderItineraryTab (data) {
 
   const dayTabs = tripData.days.map((day, index) => {
     const city = day.city.split('/')[0].trim()
-    return `<a role="tab" class="tab ${index === 0 ? 'tab-active' : ''}" data-day="${day.day}">Día ${day.day}<br/><span class="text-xs">${city}</span></a>`
+    return `<a role="tab" class="tab ${index === 0 ? 'tab-active' : ''}" data-day="${day.day}">Día ${day.day}<br/>${city}</a>`
   }).join('')
 
   const dayContents = tripData.days.map((day, index) => `
