@@ -149,7 +149,7 @@ export function renderItineraryTab (data) {
 
   itineraryTabContent.innerHTML = `
     <div class="overflow-x-auto">
-      <div role="tablist" class="tabs tabs-boxed" id="day-tabs-container">
+      <div role="tablist" class="tabs tabs-boxed min-w-max" id="day-tabs-container">
         ${dayTabs}
       </div>
     </div>
