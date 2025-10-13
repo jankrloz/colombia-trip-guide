@@ -141,14 +141,14 @@ export function renderDestinationCostChart (canvasId, days, config) {
 /**
  * Returns a set of typical weather data for each city in October.
  * This is a simulation as no real forecast is available for 2025.
- * @returns {object} An object with typical min/max temperatures for each city.
+ * @returns {object} An object with typical min/max temperatures and an emoji for each city.
  */
-function getTypicalWeatherData () {
+export function getTypicalWeatherData () {
   return {
-    Cartagena: { min: 25, max: 31 },
-    Medellín: { min: 17, max: 27 },
-    Salento: { min: 14, max: 23 },
-    Bogotá: { min: 9, max: 19 }
+    Cartagena: { min: 25, max: 31, emoji: '☀️' },
+    Medellín: { min: 17, max: 27, emoji: '🌦️' },
+    Salento: { min: 14, max: 23, emoji: '🌦️' },
+    Bogotá: { min: 9, max: 19, emoji: '☁️' }
   }
 }
 

@@ -1,4 +1,5 @@
 import { formatCurrency, formatDualCurrency } from './utils.js'
+import { getTypicalWeatherData } from './charts.js'
 
 /**
  * Generates the HTML for a single link resource.
@@ -65,12 +66,11 @@ const renderDetailedItineraryTable = (day, config) => {
  */
 const renderDayContent = (day, config) => {
   const dailyTotalCOP = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
-
-  const weatherEmoji = day.city.includes('Cartagena')
-    ? '☀️'
-    : day.city.includes('Medellín') || day.city.includes('Salento')
-      ? '🌦️'
-      : '☁️'
+  const typicalWeatherData = getTypicalWeatherData()
+  const city = day.city.split('/')[0].trim()
+  const weatherInfo = typicalWeatherData[city]
+  const avgTemp = weatherInfo ? Math.round((weatherInfo.min + weatherInfo.max) / 2) : 'N/A'
+  const weatherEmoji = weatherInfo ? weatherInfo.emoji : '❔'
 
   return `
     <div class="border-b-2 border-primary pb-4 mb-6">
@@ -104,7 +104,8 @@ const renderDayContent = (day, config) => {
       <div class="stat bg-base-200 rounded-box">
         <div class="stat-figure text-2xl">${weatherEmoji}</div>
         <div class="stat-title">Clima</div>
-        <div class="stat-value text-sm whitespace-normal break-words">${day.weather}</div>
+        <div class="stat-value text-lg">${avgTemp}°C</div>
+        <div class="stat-desc text-sm">${day.weather}</div>
       </div>
     </div>
 
