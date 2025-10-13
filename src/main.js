@@ -2,11 +2,8 @@ import './style.css'
 import data from './data.json'
 import { renderSummaryTab } from './summary.js'
 import { renderItineraryTab } from './itinerary.js'
-import { renderSummaryCharts, renderItineraryCharts } from './charts.js'
+import { getWeatherData, renderSummaryCharts, renderItineraryCharts } from './charts.js'
 
-/**
- * Renders the basic application shell with the main tabs.
- */
 function renderShell () {
   const app = document.querySelector('#app')
   if (!app) return
@@ -39,27 +36,63 @@ function renderShell () {
   `
 }
 
-/**
- * Main application initialization function.
- */
 async function main () {
-  // 1. Render the basic structure of the site
   renderShell()
 
-  // 2. Render the content for both main tabs
-  renderSummaryTab(data)
-  renderItineraryTab(data)
+  const uniqueCities = [...new Set(data.tripData.days.map(day => day.city.split('/')[0].trim()))]
+  const weatherData = await getWeatherData(uniqueCities)
 
-  // 3. Render the charts for the initially visible itinerary tab
-  // A small timeout ensures the tab content is visible before chart rendering
+  renderSummaryTab(data, weatherData)
+  renderItineraryTab(data, weatherData)
+
   setTimeout(() => renderItineraryCharts(data), 0)
 
-  // 4. Add a listener to render summary charts ONLY when that tab is first clicked
   const summaryTabInput = document.getElementById('tab-summary')
-  summaryTabInput.addEventListener('click', async () => {
-    await renderSummaryCharts(data)
-  }, { once: true }) // Only needs to run once
+  summaryTabInput.addEventListener('click', () => {
+    renderSummaryCharts(data, calculateGeneralBudget(data.tripData, data.config), weatherData)
+  }, { once: true })
 }
 
-// Start the application
+// Helper functions moved from summary.js to be available for budget calculation
+function calculateGeneralBudget (tripData, config) {
+  const { prepaidCosts, days } = tripData
+  const { copToMxnRate, contingencyRate } = config
+  const onTripCostsCOP = { Alimentación: 0, Actividades: 0, Transporte: 0, Otros: 0 }
+  days.forEach(day => {
+    if (day.budgetTable && day.budgetTable.items) {
+      day.budgetTable.items.forEach(item => {
+        if (item.prepaid) return
+        const category = categorizeExpense(item.concept)
+        onTripCostsCOP[category] += item.cost
+      })
+    }
+  })
+  const prepaidHospedajesMXN = Object.values(prepaidCosts.hospedajesMXN).reduce((sum, cost) => sum + cost, 0)
+  const onTripTotalCOP = Object.values(onTripCostsCOP).reduce((sum, cost) => sum + cost, 0)
+  const onTripAlimentacionMXN = onTripCostsCOP.Alimentación * copToMxnRate
+  const onTripActividadesMXN = onTripCostsCOP.Actividades * copToMxnRate
+  const onTripTransporteMXN = onTripCostsCOP.Transporte * copToMxnRate
+  const onTripOtrosMXN = onTripCostsCOP.Otros * copToMxnRate
+  const contingenciaMXN = onTripTotalCOP * contingencyRate * copToMxnRate
+  const budgetData = [
+    { category: 'Vuelos Internacionales', cost: prepaidCosts.vuelosInternacionalesMXN, currency: 'MXN' },
+    { category: 'Hospedajes (12 noches)', cost: prepaidHospedajesMXN, currency: 'MXN' },
+    { category: 'Vuelos Internos (4 vuelos)', cost: prepaidCosts.vuelosInternosMXN, currency: 'MXN' },
+    { category: 'Actividades y Entradas', cost: onTripActividadesMXN, currency: 'MXN' },
+    { category: 'Alimentación', cost: onTripAlimentacionMXN, currency: 'MXN' },
+    { category: 'Transporte Local', cost: onTripTransporteMXN + onTripOtrosMXN, currency: 'MXN' },
+    { category: 'Fondo de Contingencia (15%)', cost: contingenciaMXN, currency: 'MXN' }
+  ]
+  const totalMXN = budgetData.reduce((sum, item) => sum + item.cost, 0)
+  return { budgetData, totalMXN }
+}
+
+function categorizeExpense (concept) {
+  const lowerConcept = concept.toLowerCase()
+  if (['almuerzo', 'cena', 'bebida', 'desayuno', 'degustación'].some(c => lowerConcept.includes(c))) { return 'Alimentación' }
+  if (['tour', 'entrada', 'pass', 'peinado', 'impuesto portuario', 'tiquete', 'foto'].some(c => lowerConcept.includes(c))) { return 'Actividades' }
+  if (['taxi', 'metro', 'buseta', 'jeep', 'traslado', 'bus', 'funicular'].some(c => lowerConcept.includes(c))) { return 'Transporte' }
+  return 'Otros'
+}
+
 main()

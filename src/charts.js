@@ -7,171 +7,109 @@ Chart.register(ChartDataLabels)
 // To keep track of chart instances and prevent duplicates
 export const chartInstances = {}
 
-/**
- * Renders a pie chart for budget distribution by concept.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {object} budgetData - The calculated budget data.
- * @param {object} config - The configuration object with chart colors.
- */
-export function renderBudgetByConceptChart (canvasId, budgetData, config) {
-  const canvas = document.getElementById(canvasId)
-  if (!canvas) return
-
-  const labels = budgetData.budgetData.map(item => item.category)
-  const data = budgetData.budgetData.map(item => item.cost)
-
-  if (chartInstances[canvasId]) {
-    chartInstances[canvasId].destroy()
-  }
-
-  chartInstances[canvasId] = new Chart(canvas.getContext('2d'), {
-    type: 'pie',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Costo por Concepto',
-        data,
-        backgroundColor: config.chartColors,
-        hoverOffset: 4
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'right'
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              let label = context.label || ''
-              if (label) {
-                label += ': '
-              }
-              if (context.parsed !== null) {
-                label += formatCurrency(context.parsed, 'MXN')
-              }
-              return label
-            }
-          }
-        },
-        datalabels: {
-          formatter: (value, ctx) => {
-            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
-            const percentage = ((value / total) * 100).toFixed(2) + '%'
-            return percentage
-          },
-          color: '#fff'
-        }
-      }
-    }
-  })
+const cityCoordinates = {
+  Cartagena: { lat: 10.3910, lon: -75.4794 },
+  Medellín: { lat: 6.2442, lon: -75.5812 },
+  Salento: { lat: 4.6389, lon: -75.5694 },
+  Bogotá: { lat: 4.7110, lon: -74.0721 }
 }
 
 /**
- * Renders a bar chart for total cost per destination.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {Array} days - The array of day objects from the data.
- * @param {object} config - The configuration object with chart colors.
+ * Fetches weather forecast data from OpenWeather API for multiple cities.
+ * @param {Array<string>} cities - An array of unique city names.
+ * @returns {Promise<object|null>} A nested object with weather data keyed by date and city.
  */
-export function renderDestinationCostChart (canvasId, days, config) {
-  const canvas = document.getElementById(canvasId)
-  if (!canvas) return
-
-  const costsByCity = days.reduce((acc, day) => {
-    const city = day.city.split('/')[0].trim()
-    const dailyTotal = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
-    if (!acc[city]) {
-      acc[city] = 0
-    }
-    acc[city] += dailyTotal
-    return acc
-  }, {})
-
-  const labels = Object.keys(costsByCity)
-  const data = Object.values(costsByCity)
-
-  if (chartInstances[canvasId]) {
-    chartInstances[canvasId].destroy()
+export const getWeatherData = async (cities) => {
+  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
+  if (!apiKey) {
+    console.error('OpenWeather API key is missing. Please add it to your .env file.')
+    return null
   }
+  const weatherData = {}
 
-  chartInstances[canvasId] = new Chart(canvas.getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Costo Total por Destino (COP)',
-        data,
-        backgroundColor: config.chartColors,
-        borderColor: config.chartColors.map(color => color.replace('0.6', '1')),
-        borderWidth: 1
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              return formatCurrency(context.raw, 'COP')
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return formatCurrency(value, 'COP')
-            }
-          }
-        }
+  for (const city of cities) {
+    const coords = cityCoordinates[city]
+    if (!coords) continue
+
+    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${apiKey}&units=metric`
+
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        console.error(`Weather API error for ${city}: ${response.statusText}`)
+        continue
       }
+      const data = await response.json()
+
+      data.list.forEach(item => {
+        const date = item.dt_txt.split(' ')[0]
+        if (!weatherData[date]) {
+          weatherData[date] = {}
+        }
+        if (!weatherData[date][city]) {
+          weatherData[date][city] = { min: item.main.temp, max: item.main.temp, descriptions: new Set() }
+        }
+        weatherData[date][city].min = Math.min(weatherData[date][city].min, item.main.temp)
+        weatherData[date][city].max = Math.max(weatherData[date][city].max, item.main.temp)
+        weatherData[date][city].descriptions.add(item.weather[0].main.toLowerCase())
+      })
+    } catch (error) {
+      console.error(`Failed to fetch weather data for ${city}:`, error)
     }
-  })
+  }
+  return Object.keys(weatherData).length > 0 ? weatherData : null
 }
 
 /**
- * Returns a set of typical weather data for each city in October.
- * This is a simulation as no real forecast is available for 2025.
- * @returns {object} An object with typical min/max temperatures and an emoji for each city.
+ * Returns a weather emoji based on weather description.
+ * @param {Set<string>} descriptions - A set of weather descriptions for the day.
+ * @returns {string} A single emoji representing the most likely weather.
  */
-export function getTypicalWeatherData () {
-  return {
-    Cartagena: { min: 25, max: 31, emoji: '☀️' },
-    Medellín: { min: 17, max: 27, emoji: '🌦️' },
-    Salento: { min: 14, max: 23, emoji: '🌦️' },
-    Bogotá: { min: 9, max: 19, emoji: '☁️' }
-  }
+export const getWeatherEmoji = (descriptions) => {
+  if (!descriptions || descriptions.size === 0) return '❔'
+  if (descriptions.has('rain')) return '🌧️'
+  if (descriptions.has('clouds')) return '☁️'
+  if (descriptions.has('clear')) return '☀️'
+  return '🌦️' // Default for mixed conditions
 }
 
 /**
  * Renders the consolidated weather forecast timeline chart.
  * @param {string} canvasId - The ID of the canvas element.
  * @param {Array} days - All days of the trip to create the timeline.
+ * @param {object} weatherData - The processed data from the API.
  */
-function renderWeatherTimelineChart (canvasId, days) {
+export const renderWeatherTimelineChart = (canvasId, days, weatherData) => {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
 
-  const typicalWeatherData = getTypicalWeatherData()
   const labels = days.map(day => `Día ${day.day} (${day.city.split('/')[0].trim()})`)
+  let minTemps = []
+  let maxTemps = []
 
-  const minTemps = days.map(day => {
-    const city = day.city.split('/')[0].trim()
-    return typicalWeatherData[city]?.min || 0
-  })
-  const maxTemps = days.map(day => {
-    const city = day.city.split('/')[0].trim()
-    return typicalWeatherData[city]?.max || 0
-  })
+  if (weatherData) {
+    const today = new Date()
+    const tripDates = days.map(d => {
+      const dayOfMonth = parseInt(d.date.split(', ')[1].split(' de ')[0], 10)
+      const forecastDate = new Date(today.getFullYear(), today.getMonth(), dayOfMonth)
+      return forecastDate.toISOString().split('T')[0]
+    })
+
+    minTemps = tripDates.map((date, index) => {
+      const day = days[index]
+      const city = day.city.split('/')[0].trim()
+      return weatherData[date]?.[city] ? Math.round(weatherData[date][city].min) : null
+    })
+    maxTemps = tripDates.map((date, index) => {
+      const day = days[index]
+      const city = day.city.split('/')[0].trim()
+      return weatherData[date]?.[city] ? Math.round(weatherData[date][city].max) : null
+    })
+  }
+
+  if (minTemps.every(t => t === null)) {
+    console.warn('No live weather data available for the upcoming days. The chart will be empty.')
+  }
 
   if (chartInstances[canvasId]) chartInstances[canvasId].destroy()
 
@@ -204,8 +142,8 @@ function renderWeatherTimelineChart (canvasId, days) {
         tooltip: {
           callbacks: {
             label: (context) => {
-              const value = Math.round(context.raw)
-              return `${context.dataset.label}: ${value}°C`
+              const value = context.raw
+              return value !== null ? `${context.dataset.label}: ${Math.round(value)}°C` : 'No data'
             }
           }
         }
@@ -214,7 +152,7 @@ function renderWeatherTimelineChart (canvasId, days) {
         y: {
           beginAtZero: false,
           ticks: {
-            precision: 0, // Ensure only whole numbers are shown
+            precision: 0,
             callback: (value) => `${value}°C`
           }
         }
@@ -223,12 +161,7 @@ function renderWeatherTimelineChart (canvasId, days) {
   })
 }
 
-/**
- * Renders the daily budget breakdown chart.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {object} day - The specific day's data.
- */
-export function renderDailyBudgetChart (canvasId, day) {
+export const renderDailyBudgetChart = (canvasId, day) => {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
 
@@ -274,12 +207,7 @@ export function renderDailyBudgetChart (canvasId, day) {
   })
 }
 
-/**
- * Renders the stacked bar chart for daily expenses by category.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {Array} days - All days of the trip.
- */
-function renderDailyStackedBudgetChart (canvasId, days) {
+export const renderDailyStackedBudgetChart = (canvasId, days) => {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
 
@@ -317,24 +245,13 @@ function renderDailyStackedBudgetChart (canvasId, days) {
   })
 }
 
-/**
- * Orchestrator to render charts for the summary tab.
- * @param {object} data - The full data object from data.json.
- * @param {object} budgetCalculations - The calculated budget data.
- */
-export function renderSummaryCharts (data, budgetCalculations) {
-  const { tripData, config } = data
-  renderBudgetByConceptChart('budgetByConceptChart', budgetCalculations, config)
-  renderDestinationCostChart('destinationCostChart', tripData.days, config)
-  renderWeatherTimelineChart('weatherTimelineChart', tripData.days)
+export const renderSummaryCharts = (data, budgetCalculations, weatherData) => {
+  const { tripData } = data
+  renderWeatherTimelineChart('weatherTimelineChart', tripData.days, weatherData)
   renderDailyStackedBudgetChart('dailyStackedBudgetChart', tripData.days)
 }
 
-/**
- * Orchestrator to render all charts for the itinerary tab.
- * @param {object} data - The full data object from data.json.
- */
-export function renderItineraryCharts (data) {
+export const renderItineraryCharts = (data) => {
   const { tripData } = data
   tripData.days.forEach(day => {
     renderDailyBudgetChart(`dailyBudgetChart-day-${day.day}`, day)

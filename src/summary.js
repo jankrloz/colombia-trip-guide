@@ -1,14 +1,6 @@
 import { formatCurrency, categorizeExpense } from './utils.js'
-import {
-  renderSummaryCharts
-} from './charts.js'
+import { renderSummaryCharts } from './charts.js'
 
-/**
- * Calculates the entire trip budget from the single source of truth.
- * @param {object} tripData - The main data object for the trip.
- * @param {object} config - The configuration object with rates and colors.
- * @returns {object} An object with detailed budget breakdown.
- */
 function calculateGeneralBudget (tripData, config) {
   const { prepaidCosts, days } = tripData
   const { copToMxnRate, contingencyRate } = config
@@ -54,12 +46,6 @@ function calculateGeneralBudget (tripData, config) {
   return { budgetData, totalMXN }
 }
 
-/**
- * Renders the main summary cards with total costs.
- * @param {number} totalMXN - The total estimated cost in MXN.
- * @param {number} copToMxnRate - The conversion rate from COP to MXN.
- * @returns {string} The HTML for the summary cards.
- */
 function renderSummaryCards (totalMXN, copToMxnRate) {
   const totalCOP = totalMXN / copToMxnRate
   return `
@@ -83,11 +69,6 @@ function renderSummaryCards (totalMXN, copToMxnRate) {
   `
 }
 
-/**
- * Renders the general budget distribution table.
- * @param {object} budgetCalculations - The calculated budget data.
- * @returns {string} The HTML for the budget table.
- */
 function renderGeneralBudgetTable ({ budgetData, totalMXN }) {
   const tableRows = budgetData.map(item => `
     <tr>
@@ -120,11 +101,6 @@ function renderGeneralBudgetTable ({ budgetData, totalMXN }) {
   `
 }
 
-/**
- * Renders the lodging summary table.
- * @param {Array} lodgingSummary - The array of lodging objects.
- * @returns {string} The HTML for the lodging table.
- */
 function renderLodgingSummary (lodgingSummary) {
   const tableRows = lodgingSummary.map(item => `
     <tr>
@@ -166,11 +142,6 @@ function renderLodgingSummary (lodgingSummary) {
   `
 }
 
-/**
- * Renders the general recommendations section.
- * @param {object} recommendations - The general recommendations data.
- * @returns {string} The HTML for the recommendations section.
- */
 function renderGeneralRecommendations (recommendations) {
   if (!recommendations) return ''
 
@@ -194,11 +165,6 @@ function renderGeneralRecommendations (recommendations) {
   `
 }
 
-/**
- * Renders the shared map links section.
- * @param {object} mapLinks - The map links data.
- * @returns {string} The HTML for the map links section.
- */
 function renderMapLinks (mapLinks) {
   if (!mapLinks) return ''
 
@@ -221,11 +187,7 @@ function renderMapLinks (mapLinks) {
   `
 }
 
-/**
- * Main render function for the summary tab.
- * @param {object} data - The full data object from data.json.
- */
-export function renderSummaryTab (data) {
+export function renderSummaryTab (data, weatherData) {
   const { tripData, config } = data
   const summaryTabContent = document.getElementById('summary-tab-content')
   if (!summaryTabContent) return
@@ -276,13 +238,5 @@ export function renderSummaryTab (data) {
     ${renderGeneralRecommendations(tripData.generalRecommendations)}
     ${renderMapLinks(tripData.mapLinks)}
   `
-
-  // We need to call the chart rendering functions from `charts.js`
-  renderSummaryCharts(data, budgetCalculations)
+  renderSummaryCharts(data, budgetCalculations, weatherData)
 }
-
-/**
- * Renders the budget by concept chart.
- * @param {object} budgetCalculations - The calculated budget data.
- * @param {object} config - The configuration object with chart colors.
- */

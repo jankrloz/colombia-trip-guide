@@ -1,11 +1,6 @@
 import { formatCurrency, formatDualCurrency } from './utils.js'
-import { getTypicalWeatherData } from './charts.js'
+import { getWeatherEmoji } from './charts.js'
 
-/**
- * Generates the HTML for a single link resource.
- * @param {Array} links - Array of link objects.
- * @returns {string} The HTML for the links.
- */
 const renderLinks = (links) => {
   if (!links || links.length === 0) return ''
   return links
@@ -16,12 +11,6 @@ const renderLinks = (links) => {
     .join('')
 }
 
-/**
- * Generates the HTML for the detailed itinerary table for a single day.
- * @param {object} day - The day object from the data.
- * @param {object} config - The configuration object.
- * @returns {string} The HTML for the itinerary table.
- */
 const renderDetailedItineraryTable = (day, config) => {
   const itineraryRows = day.itinerary
     .map(
@@ -58,19 +47,17 @@ const renderDetailedItineraryTable = (day, config) => {
   `
 }
 
-/**
- * Generates the HTML for a single day's content panel.
- * @param {object} day - The day object from the data.
- * @param {object} config - The configuration object.
- * @returns {string} The HTML for the day's content.
- */
-const renderDayContent = (day, config) => {
+const renderDayContent = (day, config, weatherData) => {
   const dailyTotalCOP = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
-  const typicalWeatherData = getTypicalWeatherData()
   const city = day.city.split('/')[0].trim()
-  const weatherInfo = typicalWeatherData[city]
+
+  const today = new Date()
+  const dayOfMonth = parseInt(day.date.split(', ')[1].split(' de ')[0], 10)
+  const forecastDate = new Date(today.getFullYear(), today.getMonth(), dayOfMonth).toISOString().split('T')[0]
+
+  const weatherInfo = weatherData?.[forecastDate]?.[city]
   const avgTemp = weatherInfo ? Math.round((weatherInfo.min + weatherInfo.max) / 2) : 'N/A'
-  const weatherEmoji = weatherInfo ? weatherInfo.emoji : '❔'
+  const weatherEmoji = weatherInfo ? getWeatherEmoji(weatherInfo.descriptions) : '❔'
 
   return `
     <div class="border-b-2 border-primary pb-4 mb-6">
@@ -104,7 +91,7 @@ const renderDayContent = (day, config) => {
       <div class="stat bg-base-200 rounded-box">
         <div class="stat-figure text-2xl">${weatherEmoji}</div>
         <div class="stat-title">Clima</div>
-        <div class="stat-value text-lg">${avgTemp}°C</div>
+        <div class="stat-value text-lg">${avgTemp}${avgTemp !== 'N/A' ? '°C' : ''}</div>
         <div class="stat-desc text-sm">${day.weather}</div>
       </div>
     </div>
@@ -128,11 +115,7 @@ const renderDayContent = (day, config) => {
   `
 }
 
-/**
- * Main render function for the itinerary tab.
- * @param {object} data - The full data object from data.json.
- */
-export function renderItineraryTab (data) {
+export function renderItineraryTab (data, weatherData) {
   const { tripData, config } = data
   const itineraryTabContent = document.getElementById('itinerary-tab-content')
   if (!itineraryTabContent) return
@@ -143,8 +126,8 @@ export function renderItineraryTab (data) {
   }).join('')
 
   const dayContents = tripData.days.map((day, index) => `
-    <div role="tabpanel" class="py-6 ${index === 0 ? '' : 'hidden'}" data-day-content="${day.day}">
-      ${renderDayContent(day, config)}
+    <div role="tabpanel" class="tab-content py-6 ${index === 0 ? '' : 'hidden'}" data-day-content="${day.day}">
+      ${renderDayContent(day, config, weatherData)}
     </div>
   `).join('')
 
@@ -159,23 +142,17 @@ export function renderItineraryTab (data) {
     </div>
   `
 
-  // Add event listeners for the newly created day tabs
   const dayTabsContainer = document.getElementById('day-tabs-container')
   dayTabsContainer.addEventListener('click', (e) => {
-    if (e.target.matches('[role="tab"]')) {
-      const day = e.target.dataset.day
+    const tab = e.target.closest('[role="tab"]')
+    if (tab) {
+      const day = tab.dataset.day
 
-      // Update active tab
-      dayTabsContainer.querySelectorAll('[role="tab"]').forEach(tab => tab.classList.remove('tab-active'))
-      e.target.classList.add('tab-active')
+      dayTabsContainer.querySelectorAll('[role="tab"]').forEach(t => t.classList.remove('tab-active'))
+      tab.classList.add('tab-active')
 
-      // Update visible content
       document.querySelectorAll('[data-day-content]').forEach(content => {
-        if (content.dataset.dayContent === day) {
-          content.classList.remove('hidden')
-        } else {
-          content.classList.add('hidden')
-        }
+        content.classList.toggle('hidden', content.dataset.dayContent !== day)
       })
     }
   })
