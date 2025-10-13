@@ -101,10 +101,10 @@ const renderDayContent = (day, config) => {
         <div class="stat-title">Pasos Aprox.</div>
         <div class="stat-value text-lg">${day.steps}</div>
       </div>
-      <div class="stat bg-base-200 rounded-box" title="${day.weather}">
+      <div class="stat bg-base-200 rounded-box">
         <div class="stat-figure text-2xl">${weatherEmoji}</div>
         <div class="stat-title">Clima</div>
-        <div class="stat-value text-lg">${day.city.split('/')[0].trim()}</div>
+        <div class="stat-value text-sm">${day.weather}</div>
       </div>
     </div>
 
@@ -147,8 +147,10 @@ export function renderItineraryTab (data) {
   `).join('')
 
   itineraryTabContent.innerHTML = `
-    <div role="tablist" class="tabs tabs-bordered" id="day-tabs-container">
-      ${dayTabs}
+    <div class="overflow-x-auto">
+      <div role="tablist" class="tabs tabs-boxed" id="day-tabs-container">
+        ${dayTabs}
+      </div>
     </div>
     <div id="day-contents-container">
       ${dayContents}

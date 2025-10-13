@@ -12,7 +12,7 @@ export function formatCurrency (value, currency = 'COP') {
   }
   const locale = currency === 'COP' ? 'es-CO' : 'es-MX'
   const formattedValue = new Intl.NumberFormat(locale, options).format(value)
-  return `${formattedValue}` // The Intl.NumberFormat already includes the currency symbol
+  return `${formattedValue} ${currency}`
 }
 
 /**
