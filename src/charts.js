@@ -8,6 +8,137 @@ Chart.register(ChartDataLabels)
 export const chartInstances = {}
 
 /**
+ * Renders a pie chart for budget distribution by concept.
+ * @param {string} canvasId - The ID of the canvas element.
+ * @param {object} budgetData - The calculated budget data.
+ * @param {object} config - The configuration object with chart colors.
+ */
+export function renderBudgetByConceptChart (canvasId, budgetData, config) {
+  const canvas = document.getElementById(canvasId)
+  if (!canvas) return
+
+  const labels = budgetData.budgetData.map(item => item.category)
+  const data = budgetData.budgetData.map(item => item.cost)
+
+  if (chartInstances[canvasId]) {
+    chartInstances[canvasId].destroy()
+  }
+
+  chartInstances[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'pie',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Costo por Concepto',
+        data,
+        backgroundColor: config.chartColors,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              let label = context.label || ''
+              if (label) {
+                label += ': '
+              }
+              if (context.parsed !== null) {
+                label += formatCurrency(context.parsed, 'MXN')
+              }
+              return label
+            }
+          }
+        },
+        datalabels: {
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
+            const percentage = ((value / total) * 100).toFixed(2) + '%'
+            return percentage
+          },
+          color: '#fff'
+        }
+      }
+    }
+  })
+}
+
+/**
+ * Renders a bar chart for total cost per destination.
+ * @param {string} canvasId - The ID of the canvas element.
+ * @param {Array} days - The array of day objects from the data.
+ * @param {object} config - The configuration object with chart colors.
+ */
+export function renderDestinationCostChart (canvasId, days, config) {
+  const canvas = document.getElementById(canvasId)
+  if (!canvas) return
+
+  const costsByCity = days.reduce((acc, day) => {
+    const city = day.city.split('/')[0].trim()
+    const dailyTotal = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
+    if (!acc[city]) {
+      acc[city] = 0
+    }
+    acc[city] += dailyTotal
+    return acc
+  }, {})
+
+  const labels = Object.keys(costsByCity)
+  const data = Object.values(costsByCity)
+
+  if (chartInstances[canvasId]) {
+    chartInstances[canvasId].destroy()
+  }
+
+  chartInstances[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Costo Total por Destino (COP)',
+        data,
+        backgroundColor: config.chartColors,
+        borderColor: config.chartColors.map(color => color.replace('0.6', '1')),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return formatCurrency(context.raw, 'COP')
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (value) {
+              return formatCurrency(value, 'COP')
+            }
+          }
+        }
+      }
+    }
+  })
+}
+
+/**
  * Fetches weather forecast data from OpenWeather API.
  * @param {string} apiKey - The OpenWeather API key.
  * @returns {Promise<object|null>} A map of dates to high/low temperatures.
@@ -61,6 +192,7 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
 
   const labels = days.map(day => `Día ${day.day}`)
   let minTemps, maxTemps
+  let useFallback = false
 
   if (weatherData) {
     const tripDates = days.map(d => {
@@ -70,7 +202,16 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
     })
     minTemps = tripDates.map(date => weatherData[date]?.min || null)
     maxTemps = tripDates.map(date => weatherData[date]?.max || null)
+
+    // If all values are null (because dates are in the future), use fallback data
+    if (minTemps.every(t => t === null)) {
+      useFallback = true
+    }
   } else {
+    useFallback = true
+  }
+
+  if (useFallback) {
     minTemps = days.map(() => Math.random() * 5 + 12)
     maxTemps = minTemps.map(min => min + Math.random() * 5 + 5)
   }
@@ -218,12 +359,15 @@ function renderDailyStackedBudgetChart (canvasId, days) {
 /**
  * Orchestrator to render charts for the summary tab.
  * @param {object} data - The full data object from data.json.
+ * @param {object} budgetCalculations - The calculated budget data.
  */
-export async function renderSummaryCharts (data) {
-  const { tripData } = data
+export async function renderSummaryCharts (data, budgetCalculations) {
+  const { tripData, config } = data
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
   const weatherData = await getWeatherData(apiKey)
 
+  renderBudgetByConceptChart('budgetByConceptChart', budgetCalculations, config)
+  renderDestinationCostChart('destinationCostChart', tripData.days, config)
   renderWeatherTimelineChart('weatherTimelineChart', tripData.days, weatherData)
   renderDailyStackedBudgetChart('dailyStackedBudgetChart', tripData.days)
 }

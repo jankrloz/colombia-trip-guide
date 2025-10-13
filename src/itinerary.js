@@ -141,7 +141,7 @@ export function renderItineraryTab (data) {
   `).join('')
 
   const dayContents = tripData.days.map((day, index) => `
-    <div role="tabpanel" class="py-6 ${index === 0 ? '' : 'hidden'}" data-day-content="${day.day}">
+    <div role="tabpanel" class="tab-content py-6" data-day-content="${day.day}">
       ${renderDayContent(day, config)}
     </div>
   `).join('')

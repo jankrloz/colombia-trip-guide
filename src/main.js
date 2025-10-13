@@ -24,12 +24,12 @@ function renderShell () {
     <main>
       <div role="tablist" class="tabs tabs-lifted tabs-lg">
 
-        <input type="radio" id="tab-summary" name="main_tabs" role="tab" class="tab" aria-label="Resumen General" checked />
+        <input type="radio" id="tab-summary" name="main_tabs" role="tab" class="tab" aria-label="Resumen General" />
         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6" id="summary-tab-content">
           <div class="text-center"><span class="loading loading-spinner loading-lg"></span></div>
         </div>
 
-        <input type="radio" id="tab-itinerary" name="main_tabs" role="tab" class="tab" aria-label="Itinerario por Día" />
+        <input type="radio" id="tab-itinerary" name="main_tabs" role="tab" class="tab" aria-label="Itinerario por Día" checked />
         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6" id="itinerary-tab-content">
           <div class="text-center"><span class="loading loading-spinner loading-lg"></span></div>
         </div>
@@ -50,15 +50,15 @@ async function main () {
   renderSummaryTab(data)
   renderItineraryTab(data)
 
-  // 3. Render the charts for the initially visible summary tab
-  await renderSummaryCharts(data)
+  // 3. Render the charts for the initially visible itinerary tab
+  // A small timeout ensures the tab content is visible before chart rendering
+  setTimeout(() => renderItineraryCharts(data), 0)
 
-  // 4. Add a listener to render itinerary charts ONLY when that tab is first clicked
-  const itineraryTabInput = document.getElementById('tab-itinerary')
-  itineraryTabInput.addEventListener('click', () => {
-    // A small timeout ensures the tab content is visible before chart rendering
-    setTimeout(() => renderItineraryCharts(data), 0)
-  }, { once: true }) // Only needs to run once, it renders all daily charts at once
+  // 4. Add a listener to render summary charts ONLY when that tab is first clicked
+  const summaryTabInput = document.getElementById('tab-summary')
+  summaryTabInput.addEventListener('click', async () => {
+    await renderSummaryCharts(data)
+  }, { once: true }) // Only needs to run once
 }
 
 // Start the application
