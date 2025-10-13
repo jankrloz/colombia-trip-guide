@@ -1,6 +1,6 @@
 # Colombia Trip Guide 🇨🇴
 
-A simple static website that serves as an interactive guide for a family trip to Colombia. It includes a detailed itinerary, budget summary, lodging information, and general travel recommendations. All data is managed within a single `index.html` file using a JavaScript object.
+A modular, production-ready web application that serves as an interactive guide for a family trip to Colombia. It includes a detailed itinerary, budget summary, lodging information, and general travel recommendations.
 
 The live version of this guide is hosted on Netlify:
 **[View Live Demo](https://gentle-mochi-05a532.netlify.app/)**
@@ -12,17 +12,19 @@ The live version of this guide is hosted on Netlify:
 -   **Lodging Details:** A summary of all accommodations with links to their locations.
 -   **Travel Recommendations:** Key travel tips regarding currency, safety, and local customs.
 -   **Shared Google Maps:** Direct links to curated lists of places of interest for each city.
+-   **Weather Forecast:** A timeline of the expected weather for the duration of the trip.
 
 ## Technologies Used
 
--   **HTML:** For the basic structure of the web page.
--   **[Tailwind CSS](https://tailwindcss.com/):** For styling the user interface.
--   **[Chart.js](https://www.chartjs.org/):** To create interactive charts for the budget summary.
--   **JavaScript:** To dynamically generate the itinerary and other content from the `tripData` object.
+-   **Vite:** A modern front-end build tool that provides a faster and leaner development experience.
+-   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+-   **daisyUI:** A component library for Tailwind CSS that provides a set of pre-designed UI components.
+-   **Chart.js:** A flexible JavaScript charting library for creating interactive charts.
+-   **ESLint:** A static code analysis tool for identifying and fixing problems in JavaScript code.
 
 ## Getting Started
 
-To run this project locally, you don't need any special setup. Just follow these steps:
+To run this project locally, please follow these steps:
 
 1.  **Clone the repository:**
     ```bash
@@ -32,38 +34,44 @@ To run this project locally, you don't need any special setup. Just follow these
     ```bash
     cd colombia-trip-guide
     ```
-3.  **Open the `index.html` file in your browser:**
-    You can do this by double-clicking the file or by running the following command in your terminal:
+3.  **Install the dependencies:**
     ```bash
-    open index.html
+    npm install
     ```
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+5.  **Open your browser** and navigate to the local URL provided by Vite.
 
 ## Data
 
-All the data for the trip (itinerary, budget, lodging, etc.) is stored in a JavaScript object named `tripData` inside the `<script>` tag in the `index.html` file. To modify the trip details, you can edit this object directly.
+All the data for the trip (itinerary, budget, lodging, etc.) is stored in the `src/data.json` file. To modify the trip details, you can edit this file directly.
 
-The `tripData` object has the following structure:
+The data has the following structure:
 
-```javascript
-const tripData = {
-  lodgingSummary: [
-    {
-      city: "Cartagena",
-      name: "Airbnb's Bolivar",
-      // ... other lodging details
-    },
-    // ... other lodging entries
-  ],
-  days: [
-    {
-      day: 1,
-      date: "Jueves, 10 de Octubre",
-      title: "Llegada a Cartagena",
-      // ... other day details
-    },
-    // ... other day entries
-  ]
-};
+```json
+{
+  "config": {
+    "copToMxnRate": 0.006,
+    "contingencyRate": 0.15
+  },
+  "tripData": {
+    "lodgingSummary": [
+      {
+        "city": "Cartagena",
+        "name": "Airbnb's Bolivar"
+      }
+    ],
+    "days": [
+      {
+        "day": 1,
+        "date": "Jueves, 10 de Octubre",
+        "title": "Llegada a Cartagena"
+      }
+    ]
+  }
+}
 ```
 
 ## License
