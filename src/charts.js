@@ -193,10 +193,12 @@ export const renderWeatherTimelineChart = (canvasId, days, weatherData) => {
   let maxTemps = []
 
   if (weatherData) {
-    const today = new Date()
+    // Simulate that "today" is the beginning of the trip for fetching forecasts
+    const tripStartDate = new Date('2025-10-10T00:00:00')
+
     const tripDates = days.map(d => {
       const dayOfMonth = parseInt(d.date.split(', ')[1].split(' de ')[0], 10)
-      const forecastDate = new Date(today.getFullYear(), today.getMonth(), dayOfMonth)
+      const forecastDate = new Date(tripStartDate.getFullYear(), tripStartDate.getMonth(), dayOfMonth)
       return forecastDate.toISOString().split('T')[0]
     })
 
