@@ -74,6 +74,111 @@ export const getWeatherEmoji = (descriptions) => {
 }
 
 /**
+ * Renders a pie chart for budget distribution by concept.
+ * @param {string} canvasId - The ID of the canvas element.
+ * @param {object} budgetData - The calculated budget data.
+ * @param {object} config - The configuration object with chart colors.
+ */
+const renderBudgetByConceptChart = (canvasId, budgetData, config) => {
+  const canvas = document.getElementById(canvasId)
+  if (!canvas) return
+
+  const labels = budgetData.budgetData.map(item => item.category)
+  const data = budgetData.budgetData.map(item => item.cost)
+
+  if (chartInstances[canvasId]) chartInstances[canvasId].destroy()
+
+  chartInstances[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'pie',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Costo por Concepto',
+        data,
+        backgroundColor: config.chartColors,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: (context) => ` ${context.label}: ${formatCurrency(context.parsed, 'MXN')}`
+          }
+        },
+        datalabels: {
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
+            return `${((value / total) * 100).toFixed(2)}%`
+          },
+          color: '#fff'
+        }
+      }
+    }
+  })
+}
+
+/**
+ * Renders a bar chart for total cost per destination.
+ * @param {string} canvasId - The ID of the canvas element.
+ * @param {Array} days - The array of day objects from the data.
+ * @param {object} config - The configuration object with chart colors.
+ */
+const renderDestinationCostChart = (canvasId, days, config) => {
+  const canvas = document.getElementById(canvasId)
+  if (!canvas) return
+
+  const costsByCity = days.reduce((acc, day) => {
+    const city = day.city.split('/')[0].trim()
+    const dailyTotal = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
+    if (!acc[city]) acc[city] = 0
+    acc[city] += dailyTotal
+    return acc
+  }, {})
+
+  const labels = Object.keys(costsByCity)
+  const data = Object.values(costsByCity)
+
+  if (chartInstances[canvasId]) chartInstances[canvasId].destroy()
+
+  chartInstances[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Costo Total por Destino (COP)',
+        data,
+        backgroundColor: config.chartColors
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (context) => formatCurrency(context.raw, 'COP')
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => formatCurrency(value, 'COP')
+          }
+        }
+      }
+    }
+  })
+}
+
+/**
  * Renders the consolidated weather forecast timeline chart.
  * @param {string} canvasId - The ID of the canvas element.
  * @param {Array} days - All days of the trip to create the timeline.
@@ -246,7 +351,9 @@ export const renderDailyStackedBudgetChart = (canvasId, days) => {
 }
 
 export const renderSummaryCharts = (data, budgetCalculations, weatherData) => {
-  const { tripData } = data
+  const { tripData, config } = data
+  renderBudgetByConceptChart('budgetByConceptChart', budgetCalculations, config)
+  renderDestinationCostChart('destinationCostChart', tripData.days, config)
   renderWeatherTimelineChart('weatherTimelineChart', tripData.days, weatherData)
   renderDailyStackedBudgetChart('dailyStackedBudgetChart', tripData.days)
 }
