@@ -10,7 +10,7 @@ const renderLinks = (links) => {
   return links
     .map(
       link =>
-        `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-outline btn-primary mr-2 mb-2">📍 ${link.name}</a>`
+        `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline btn-primary mr-2 mb-2 h-auto">📍 ${link.name}</a>`
     )
     .join('')
 }
@@ -28,11 +28,11 @@ const renderDetailedItineraryTable = (day, config) => {
     <tr class="hover">
       <td class="align-top font-semibold p-2">${item.time}</td>
       <td class="align-top p-2">
-        <p class="font-semibold">${item.activity}</p>
+        <p class="font-semibold text-base">${item.activity}</p>
         <p class="font-bold text-primary text-sm mt-1">${formatDualCurrency(item.cost_cop, config.copToMxnRate, item.prepaid)}</p>
       </td>
-      <td class="align-top p-2 text-sm">${item.transport}</td>
-      <td class="align-top p-2 text-sm">${item.comments}</td>
+      <td class="align-top p-2 text-base">${item.transport}</td>
+      <td class="align-top p-2 text-base">${item.comments}</td>
       <td class="align-top p-2">${renderLinks(item.links)}</td>
     </tr>
   `
@@ -108,13 +108,6 @@ const renderDayContent = (day, config) => {
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 mb-8">
-        <div class="bg-base-200 p-6 rounded-box">
-            <h3 class="text-xl font-semibold mb-4">📊 Presupuesto por Categoría</h3>
-            <div class="h-64"><canvas id="dailyBudgetChart-day-${day.day}"></canvas></div>
-        </div>
-    </div>
-
     <div class="collapse collapse-arrow bg-base-200 mb-8">
       <input type="checkbox" checked />
       <div class="collapse-title text-xl font-medium">
@@ -123,6 +116,13 @@ const renderDayContent = (day, config) => {
       <div class="collapse-content">
         ${renderDetailedItineraryTable(day, config)}
       </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 mb-8">
+        <div class="bg-base-200 p-6 rounded-box">
+            <h3 class="text-xl font-semibold mb-4">📊 Presupuesto por Categoría</h3>
+            <div class="h-64"><canvas id="dailyBudgetChart-day-${day.day}"></canvas></div>
+        </div>
     </div>
   `
 }

@@ -352,7 +352,7 @@ function renderDailyStackedBudgetChart (canvasId, days) {
           }
         }
       },
-      scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (value) => `${value / 1000}K` } } }
+      scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (value) => formatCurrency(value, 'COP') } } }
     }
   })
 }
