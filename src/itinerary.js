@@ -136,9 +136,10 @@ export function renderItineraryTab (data) {
   const itineraryTabContent = document.getElementById('itinerary-tab-content')
   if (!itineraryTabContent) return
 
-  const dayTabs = tripData.days.map((day, index) => `
-    <a role="tab" class="tab ${index === 0 ? 'tab-active' : ''}" data-day="${day.day}">Día ${day.day}</a>
-  `).join('')
+  const dayTabs = tripData.days.map((day, index) => {
+    const city = day.city.split('/')[0].trim()
+    return `<a role="tab" class="tab ${index === 0 ? 'tab-active' : ''}" data-day="${day.day}">Día ${day.day}<br/><span class="text-xs">${city}</span></a>`
+  }).join('')
 
   const dayContents = tripData.days.map((day, index) => `
     <div role="tabpanel" class="py-6 ${index === 0 ? '' : 'hidden'}" data-day-content="${day.day}">

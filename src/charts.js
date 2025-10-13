@@ -190,7 +190,7 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
 
-  const labels = days.map(day => `Día ${day.day}`)
+  const labels = days.map(day => `Día ${day.day} (${day.city.split('/')[0].trim()})`)
   let minTemps, maxTemps
   let useFallback = false
 
