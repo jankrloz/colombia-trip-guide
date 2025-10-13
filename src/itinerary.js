@@ -104,7 +104,7 @@ const renderDayContent = (day, config) => {
       <div class="stat bg-base-200 rounded-box">
         <div class="stat-figure text-2xl">${weatherEmoji}</div>
         <div class="stat-title">Clima</div>
-        <div class="stat-value text-sm">${day.weather}</div>
+        <div class="stat-value text-sm whitespace-normal break-words">${day.weather}</div>
       </div>
     </div>
 
