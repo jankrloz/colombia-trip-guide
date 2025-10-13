@@ -73,12 +73,6 @@ export const getWeatherEmoji = (descriptions) => {
   return '🌦️' // Default for mixed conditions
 }
 
-/**
- * Renders a pie chart for budget distribution by concept.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {object} budgetData - The calculated budget data.
- * @param {object} config - The configuration object with chart colors.
- */
 const renderBudgetByConceptChart = (canvasId, budgetData, config) => {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
@@ -121,12 +115,6 @@ const renderBudgetByConceptChart = (canvasId, budgetData, config) => {
   })
 }
 
-/**
- * Renders a bar chart for total cost per destination.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {Array} days - The array of day objects from the data.
- * @param {object} config - The configuration object with chart colors.
- */
 const renderDestinationCostChart = (canvasId, days, config) => {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
@@ -178,12 +166,6 @@ const renderDestinationCostChart = (canvasId, days, config) => {
   })
 }
 
-/**
- * Renders the consolidated weather forecast timeline chart.
- * @param {string} canvasId - The ID of the canvas element.
- * @param {Array} days - All days of the trip to create the timeline.
- * @param {object} weatherData - The processed data from the API.
- */
 export const renderWeatherTimelineChart = (canvasId, days, weatherData) => {
   const canvas = document.getElementById(canvasId)
   if (!canvas) return
@@ -193,14 +175,16 @@ export const renderWeatherTimelineChart = (canvasId, days, weatherData) => {
   let maxTemps = []
 
   if (weatherData) {
-    // Simulate that "today" is the beginning of the trip for fetching forecasts
-    const tripStartDate = new Date('2025-10-10T00:00:00')
-
+    const monthMap = { Octubre: 9 } // 0-indexed
     const tripDates = days.map(d => {
-      const dayOfMonth = parseInt(d.date.split(', ')[1].split(' de ')[0], 10)
-      const forecastDate = new Date(tripStartDate.getFullYear(), tripStartDate.getMonth(), dayOfMonth)
+      const parts = d.date.split(', ')[1].split(' de ')
+      const dayOfMonth = parseInt(parts[0], 10)
+      const month = monthMap[parts[1]]
+      const year = 2025
+      if (month === undefined) return null
+      const forecastDate = new Date(year, month, dayOfMonth)
       return forecastDate.toISOString().split('T')[0]
-    })
+    }).filter(Boolean)
 
     minTemps = tripDates.map((date, index) => {
       const day = days[index]

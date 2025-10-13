@@ -51,10 +51,12 @@ const renderDayContent = (day, config, weatherData) => {
   const dailyTotalCOP = day.budgetTable.items.reduce((sum, item) => sum + (item.cost || 0), 0)
   const city = day.city.split('/')[0].trim()
 
-  // Simulate that "today" is the beginning of the trip for fetching forecasts
-  const tripStartDate = new Date('2025-10-10T00:00:00')
-  const dayOfMonth = parseInt(day.date.split(', ')[1].split(' de ')[0], 10)
-  const forecastDate = new Date(tripStartDate.getFullYear(), tripStartDate.getMonth(), dayOfMonth).toISOString().split('T')[0]
+  const monthMap = { Octubre: 9 } // 0-indexed
+  const parts = day.date.split(', ')[1].split(' de ')
+  const dayOfMonth = parseInt(parts[0], 10)
+  const month = monthMap[parts[1]]
+  const year = 2025
+  const forecastDate = new Date(year, month, dayOfMonth).toISOString().split('T')[0]
 
   const weatherInfo = weatherData?.[forecastDate]?.[city]
   const avgTemp = weatherInfo ? Math.round((weatherInfo.min + weatherInfo.max) / 2) : 'N/A'
