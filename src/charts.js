@@ -254,6 +254,7 @@ function renderWeatherTimelineChart (canvasId, days, weatherData) {
         y: {
           beginAtZero: false,
           ticks: {
+            precision: 0, // Ensure only whole numbers are shown
             callback: (value) => `${value}°C`
           }
         }
