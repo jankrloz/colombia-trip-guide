@@ -278,7 +278,7 @@ export function renderSummaryTab (data) {
   `
 
   // We need to call the chart rendering functions from `charts.js`
-  renderSummaryCharts(data, budgetCalculations)
+  renderSummaryCharts(data)
 }
 
 /**
