@@ -359,10 +359,10 @@
       {
         "day": 4,
         "date": "Lunes, 13 de Octubre",
-        "title": "Transformación Urbana y Vistas Panorámicas",
+        "title": "Transformación Urbana y Vistas Panorámicas por Nuestra Cuenta",
         "city": "Medellín",
-        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín, la ciudad de la eterna primavera. Tras instalarnos, nos sumergiremos en la inspiradora historia de transformación de la Comuna 13 y terminaremos el día con las mejores vistas panorámicas de la ciudad desde el Pueblito Paisa.",
-        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Adquirir una tarjeta Cívica al llegar es una decisión acertada. Para la Comuna 13, un tour guiado pre-pagado es esencial para comprender el contexto. La visita al Pueblito Paisa al atardecer ofrece una vista espectacular.",
+        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín y, tras instalarnos, nos sumergiremos en la inspiradora historia de transformación de la Comuna 13 en una exploración autoguiada. Terminaremos el día con las mejores vistas panorámicas de la ciudad desde el Pueblito Paisa.",
+        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Para la Comuna 13, la exploración por nuestra cuenta nos dará la flexibilidad de movernos a nuestro propio ritmo. La visita al Pueblito Paisa al atardecer ofrece una vista espectacular.",
         "effort": "Medio",
         "steps": "12,000 - 15,000",
         "weather": "Templado, alta probabilidad de lluvia. Calzado muy cómodo y chaqueta ligera indispensable.",
@@ -373,12 +373,9 @@
             { "concept": "Bus Aeropuerto MDE - Laureles", "cost": 17000 },
             { "concept": "Almuerzo", "cost": 30000 },
             { "concept": "Metro (2 trayectos)", "cost": 6860 },
-            {
-              "concept": "Tour Guiado Comuna 13",
-              "cost": 55500,
-              "prepaid": true
-            },
-            { "concept": "Taxi Centro - Pueblito Paisa", "cost": 13000 },
+            { "concept": "Comida y Bebidas en Comuna 13", "cost": 25000 },
+            { "concept": "Foto con Esculturas (propina)", "cost": 10000 },
+            { "concept": "Taxi a Pueblito Paisa", "cost": 13000 },
             { "concept": "Cena en Laureles", "cost": 50000 }
           ]
         },
@@ -410,26 +407,21 @@
           },
           {
             "time": "13:00 - 16:30",
-            "activity": "🎨 Tour Guiado Comuna 13",
-            "prepaid": true,
-            "cost_cop": 62360,
+            "activity": "🎨 Exploración Autoguiada de Comuna 13",
+            "cost_cop": 41860,
             "transport": "🚇 <strong>Metro y Metrocable (40 min)</strong><br>Desde Est. Estadio a Est. San Javier.",
-            "comments": "Un tour guiado es clave para entender la resiliencia del barrio. El costo incluye snacks y Metrocable.<br><strong>Consejo Táctico:</strong> Es una experiencia cultural y social muy potente. Reservar con antelación.",
+            "comments": "Exploraremos a nuestro ritmo, disfrutando del arte callejero, la música y la energía del barrio. El costo incluye transporte, snacks y una propina para fotos.<br><strong>Consejo Táctico:</strong> No duden en probar las famosas paletas de mango biche y apoyar a los artistas locales.",
             "links": [
               {
                 "name": "Ubicación: Estación San Javier",
                 "url": "https://www.google.com/maps/search/?api=1&query=Estación+San+Javier+Medellín"
-              },
-              {
-                "name": "Tour Recomendado (GYG)",
-                "url": "https://www.getyourguide.com/medellin-l363/medellin-comuna-13-graffiti-tour-w-street-food-cable-car-t385233"
               }
             ]
           },
           {
             "time": "17:00 - 18:30",
             "activity": "🏘️ Subir al Pueblito Paisa",
-            "cost_cop": 15000,
+            "cost_cop": 13000,
             "transport": "🚕 <strong>Taxi (20 min)</strong><br>Desde la estación de Metro más cercana.",
             "comments": "Disfrutar de vistas panorámicas de todo el valle al atardecer.",
             "links": [
@@ -442,7 +434,7 @@
           {
             "time": "19:00 +",
             "activity": "🍽️ Cena en Laureles",
-            "cost_cop": 65000,
+            "cost_cop": 50000,
             "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde el Pueblito Paisa.",
             "comments": "Laureles es conocido por su excelente y variada oferta gastronómica, más local que El Poblado.",
             "links": [

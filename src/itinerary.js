@@ -95,7 +95,7 @@ const renderDayContent = (day, config, weatherData) => {
         <div class="stat-figure text-2xl">${weatherEmoji}</div>
         <div class="stat-title">Clima</div>
         <div class="stat-value text-lg">${avgTemp}${avgTemp !== 'N/A' ? '°C' : ''}</div>
-        <div class="stat-desc text-sm">${day.weather}</div>
+        <div class="stat-desc text-sm whitespace-normal">${day.weather}</div>
       </div>
     </div>
 
