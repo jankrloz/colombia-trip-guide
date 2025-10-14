@@ -303,55 +303,62 @@
       {
         "day": 3,
         "date": "Domingo, 12 de Octubre",
-        "title": "Escapada Caribeña: Day Pass en Isla",
-        "city": "Cartagena / Islas del Rosario",
-        "narrative": "Dejamos la historia atrás para un día de relajación total en el Caribe. Navegaremos hacia el Parque Nacional Natural Corales del Rosario para disfrutar de un día completo en un exclusivo club de playa, con sol, mar turquesa y gastronomía isleña.",
-        "logistics": "Optar por un 'day pass' a un club de playa es la mejor estrategia para una experiencia familiar controlada y de calidad. Estos paquetes suelen incluir transporte, almuerzo, y uso de instalaciones. Es crucial recordar que el impuesto portuario (~29.000 COP) se paga aparte y en efectivo en el muelle.",
+        "title": "Día de Playa en Bocagrande",
+        "city": "Cartagena",
+        "narrative": "Dejamos la historia atrás para un día de relajación en la playa más icónica de Cartagena. Disfrutaremos de la gastronomía local en un kiosko tradicional frente al mar y terminaremos el día con un paseo tranquilo por el centro histórico al atardecer.",
+        "logistics": "Este es un plan más flexible y económico que permite disfrutar del ambiente de playa de la ciudad sin necesidad de largos traslados en lancha. Los taxis son la forma más eficiente de moverse entre el centro y Bocagrande.",
         "effort": "Relajado",
-        "steps": "< 4,000",
-        "weather": "Sol radiante. Traje de baño, ropa de playa, sandalias, sombrero y protector solar biodegradable.",
+        "steps": "6,000 - 8,000",
+        "weather": "Sol radiante. Traje de baño, ropa de playa, sandalias, sombrero y protector solar.",
         "budgetTable": {
           "headers": ["Concepto", "Costo por Persona"],
           "items": [
-            {
-              "concept": "Day Pass Club de Playa (c/almuerzo)",
-              "cost": 300000
-            },
-            { "concept": "Impuesto Portuario (efectivo)", "cost": 29000 }
+            { "concept": "Taxi a Bocagrande (I/V)", "cost": 30000 },
+            { "concept": "Almuerzo en Kiosko El Bony", "cost": 60000 },
+            { "concept": "Snacks y bebidas", "cost": 20000 }
           ]
         },
         "itinerary": [
           {
-            "time": "08:00 - 17:00",
-            "activity": "🏝️ Day Pass en Club de Playa",
-            "cost_cop": 329000,
-            "transport": "🚤 <strong>Lancha rápida (50-60 min)</strong><br>Desde el Muelle de la Bodeguita.",
-            "comments": "Día completo en un club de playa. El tour (~300.000 COP) incluye transporte y almuerzo. Pagar impuesto portuario (29.000 COP) en efectivo.<br><strong>Consejo Táctico:</strong> Reservar online con antelación. Bora Bora, Rosario Beach e Isla del Sol son excelentes opciones familiares con buenas instalaciones.",
+            "time": "11:00 - 12:00",
+            "activity": "🚕 Traslado a Bocagrande",
+            "cost_cop": 15000,
+            "transport": "🚕 <strong>Taxi (10-15 min)</strong><br>Desde el Centro Histórico.",
+            "comments": "Nos dirigimos a la zona moderna de Bocagrande para un día de playa.",
             "links": [
               {
-                "name": "Ubicación: Muelle de la Bodeguita",
-                "url": "https://www.google.com/maps/search/?api=1&query=Muelle+de+la+Bodeguita+Cartagena"
-              },
-              {
-                "name": "Opción 1: Bora Bora Beach Club",
-                "url": "https://www.boraboracartagena.com/"
-              },
-              {
-                "name": "Opción 2: Rosario Beach Club",
-                "url": "https://rosariobeach.co/"
-              },
-              {
-                "name": "Opción 3: Hotel Isla del Sol",
-                "url": "https://www.isladelsol.com.co/pasadia/"
+                "name": "Ubicación: Playa de Bocagrande",
+                "url": "https://www.google.com/maps/search/?api=1&query=Playa+de+Bocagrande+Cartagena"
               }
             ]
           },
           {
-            "time": "17:00 +",
-            "activity": "🌙 Regreso y Noche Tranquila",
+            "time": "12:00 - 14:00",
+            "activity": "🍽️ Almuerzo en El Kiosko El Bony",
+            "cost_cop": 60000,
+            "transport": "👟 <strong>A pie</strong>",
+            "comments": "Disfrutar de pescado fresco y comida caribeña en un kiosko tradicional directamente sobre la playa.<br><strong>Consejo Táctico:</strong> Es una experiencia local y auténtica, ideal para comer con vista al mar.",
+            "links": [
+              {
+                "name": "Ubicación: El Kiosko El Bony",
+                "url": "https://www.google.com/maps/search/?api=1&query=El+Kiosko+El+Bony+Cartagena"
+              }
+            ]
+          },
+          {
+            "time": "14:00 - 17:00",
+            "activity": "🏝️ Tarde de Playa",
             "cost_cop": 0,
-            "transport": "👟 <strong>A pie</strong><br>Desde el muelle al apartamento.",
-            "comments": "Noche para descansar, empacar para el vuelo de mañana y cenar algo ligero.",
+            "transport": "👟 <strong>A pie</strong>",
+            "comments": "Tiempo para relajarse, disfrutar del mar y el ambiente de la playa.",
+            "links": []
+          },
+          {
+            "time": "17:00 +",
+            "activity": "🚶‍♀️ Regreso y Paseo por el Centro",
+            "cost_cop": 35000,
+            "transport": "🚕 <strong>Taxi (10-15 min)</strong>",
+            "comments": "Regresamos a la ciudad amurallada para un paseo al atardecer, disfrutar de la brisa y cenar algo ligero.",
             "links": []
           }
         ]
