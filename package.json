@@ -1,0 +1,38 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "A simple static website that serves as an interactive guide for a family trip to Colombia. It includes a detailed itinerary, budget summary, lodging information, and general travel recommendations. All data is managed within a single `index.html` file using a JavaScript object.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jankrloz/colombia-trip-guide.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jankrloz/colombia-trip-guide/issues"
+  },
+  "homepage": "https://github.com/jankrloz/colombia-trip-guide#readme",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "chart.js": "^4.5.0",
+    "chartjs-plugin-datalabels": "^2.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "daisyui": "^5.2.3",
+    "eslint": "^8.57.1",
+    "eslint-config-standard": "^17.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "vite": "^7.1.9"
+  }
+}
