@@ -359,23 +359,21 @@
       {
         "day": 4,
         "date": "Lunes, 13 de Octubre",
-        "title": "Transformación Urbana y Vistas Panorámicas por Nuestra Cuenta",
+        "title": "Llegada a Medellín y Comuna 13",
         "city": "Medellín",
-        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín y, tras instalarnos, nos sumergiremos en la inspiradora historia de transformación de la Comuna 13 en una exploración autoguiada. Terminaremos el día con las mejores vistas panorámicas de la ciudad desde el Pueblito Paisa.",
-        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Para la Comuna 13, la exploración por nuestra cuenta nos dará la flexibilidad de movernos a nuestro propio ritmo. La visita al Pueblito Paisa al atardecer ofrece una vista espectacular.",
+        "narrative": "Cambiamos el Caribe por las montañas. Hoy aterrizamos en Medellín y, tras instalarnos, nos sumergiremos en la inspiradora historia de transformación de la Comuna 13 en una exploración autoguiada por la tarde.",
+        "logistics": "El uso del sistema Metro es la forma más eficiente y auténtica de moverse. Para la Comuna 13, la exploración por nuestra cuenta nos dará la flexibilidad de movernos a nuestro propio ritmo.",
         "effort": "Medio",
-        "steps": "12,000 - 15,000",
+        "steps": "10,000 - 13,000",
         "weather": "Templado, alta probabilidad de lluvia. Calzado muy cómodo y chaqueta ligera indispensable.",
         "budgetTable": {
           "headers": ["Concepto", "Costo por Persona (COP)"],
           "items": [
             { "concept": "Taxi Hotel - Aeropuerto CTG", "cost": 17100 },
             { "concept": "Bus Aeropuerto MDE - Laureles", "cost": 17000 },
-            { "concept": "Almuerzo", "cost": 30000 },
-            { "concept": "Metro (2 trayectos)", "cost": 6860 },
+            { "concept": "Almuerzo en Laureles", "cost": 35000 },
+            { "concept": "Metro a Comuna 13 (I/V)", "cost": 6860 },
             { "concept": "Comida y Bebidas en Comuna 13", "cost": 25000 },
-            { "concept": "Foto con Esculturas (propina)", "cost": 10000 },
-            { "concept": "Taxi a Pueblito Paisa", "cost": 13000 },
             { "concept": "Cena en Laureles", "cost": 50000 }
           ]
         },
@@ -398,19 +396,19 @@
             ]
           },
           {
-            "time": "11:00 - 13:00",
-            "activity": "🍽️ Almuerzo y Check-in",
-            "cost_cop": 30000,
-            "transport": "👟 <strong>A pie</strong><br>Cerca del hotel en Laureles.",
-            "comments": "Tiempo para instalarnos en el hotel y almorzar en la zona de Laureles antes de empezar las actividades de la tarde.",
+            "time": "11:00 - 14:00",
+            "activity": "🍽️ Check-in y Almuerzo en Laureles",
+            "cost_cop": 35000,
+            "transport": "👟 <strong>A pie</strong><br>Cerca del hotel.",
+            "comments": "Tiempo para instalarnos en el hotel y almorzar con calma en la zona de Laureles antes de salir a explorar.",
             "links": []
           },
           {
-            "time": "13:00 - 16:30",
+            "time": "14:00 - 18:00",
             "activity": "🎨 Exploración Autoguiada de Comuna 13",
-            "cost_cop": 41860,
+            "cost_cop": 31860,
             "transport": "🚇 <strong>Metro y Metrocable (40 min)</strong><br>Desde Est. Estadio a Est. San Javier.",
-            "comments": "Exploraremos a nuestro ritmo, disfrutando del arte callejero, la música y la energía del barrio. El costo incluye transporte, snacks y una propina para fotos.<br><strong>Consejo Táctico:</strong> No duden en probar las famosas paletas de mango biche y apoyar a los artistas locales.",
+            "comments": "Exploraremos a nuestro ritmo, disfrutando del arte callejero, la música y la energía del barrio. El costo incluye transporte, snacks y bebidas.<br><strong>Consejo Táctico:</strong> No duden en probar las famosas paletas de mango biche y apoyar a los artistas locales.",
             "links": [
               {
                 "name": "Ubicación: Estación San Javier",
@@ -419,23 +417,10 @@
             ]
           },
           {
-            "time": "17:00 - 18:30",
-            "activity": "🏘️ Subir al Pueblito Paisa",
-            "cost_cop": 13000,
-            "transport": "🚕 <strong>Taxi (20 min)</strong><br>Desde la estación de Metro más cercana.",
-            "comments": "Disfrutar de vistas panorámicas de todo el valle al atardecer.",
-            "links": [
-              {
-                "name": "Ubicación: Pueblito Paisa",
-                "url": "https://www.google.com/maps/search/?api=1&query=Pueblito+Paisa+Cerro+Nutibara+Medellin"
-              }
-            ]
-          },
-          {
             "time": "19:00 +",
             "activity": "🍽️ Cena en Laureles",
             "cost_cop": 50000,
-            "transport": "🚕 <strong>Taxi (15 min)</strong><br>Desde el Pueblito Paisa.",
+            "transport": "🚇 <strong>Metro (30 min)</strong><br>Regreso desde San Javier.",
             "comments": "Laureles es conocido por su excelente y variada oferta gastronómica, más local que El Poblado.",
             "links": [
               {
@@ -453,29 +438,51 @@
       {
         "day": 5,
         "date": "Martes, 14 de Octubre",
-        "title": "Corazón de Medellín y Noche en El Poblado",
+        "title": "Vistas, Botero y Noche en El Poblado",
         "city": "Medellín",
-        "narrative": "Un día para explorar el corazón cultural de Medellín y su faceta más moderna. Por la mañana, admiraremos el arte de Botero en el centro de la ciudad. La tarde quedará libre para explorar a nuestro ritmo, y terminaremos la noche en El Poblado, el epicentro de la modernidad y la gastronomía paisa.",
-        "logistics": "Este día combina una visita cultural clave con tiempo flexible. El metro sigue siendo el mejor aliado para llegar al centro. La tarde libre permite adaptarse a los intereses del grupo, ya sea para compras o descanso, antes de disfrutar de la oferta de El Poblado.",
-        "effort": "Ligero",
-        "steps": "8,000 - 10,000",
+        "narrative": "El día comienza explorando la bonita zona de Laureles con un desayuno local. Luego, subiremos al Pueblito Paisa para disfrutar de vistas 360° de la ciudad. Por la tarde, nos sumergiremos en el arte y la cultura del centro de Medellín, con la icónica Plaza Botero como punto central. Remataremos la noche en El Poblado.",
+        "logistics": "Este día combina vistas panorámicas con una inmersión cultural en el centro. El metro sigue siendo el mejor aliado para los traslados largos, complementado con taxis para trayectos más cortos como la subida al cerro.",
+        "effort": "Medio",
+        "steps": "12,000 - 14,000",
         "weather": "Clima templado. Atuendo cómodo. Opcional un atuendo más arreglado para la noche en El Poblado.",
         "budgetTable": {
           "headers": ["Concepto", "Costo por Persona (COP)"],
           "items": [
-            { "concept": "Desayuno", "cost": 20000 },
+            { "concept": "Desayuno en Laureles", "cost": 25000 },
+            { "concept": "Taxi a Pueblito Paisa", "cost": 13000 },
             { "concept": "Metro (2 trayectos)", "cost": 6860 },
-            { "concept": "Almuerzo en el Centro", "cost": 38000 },
+            { "concept": "Almuerzo en el Centro", "cost": 40000 },
             { "concept": "Cena en El Poblado", "cost": 100000 }
           ]
         },
         "itinerary": [
           {
-            "time": "10:00 - 12:00",
-            "activity": "🗿 Plaza Botero",
-            "cost_cop": 3430,
-            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde Est. Estadio a Est. Parque Berrío.",
-            "comments": "Visitar el famoso museo al aire libre con las esculturas de Botero. El costo es del transporte.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona céntrica y concurrida.",
+            "time": "09:00 - 10:30",
+            "activity": "🥐 Desayuno y paseo por Laureles",
+            "cost_cop": 25000,
+            "transport": "👟 <strong>A pie</strong>",
+            "comments": "Empezamos el día a las 9:00 AM, disfrutando de un desayuno en alguno de los cafés de la zona y caminando por el agradable barrio de Laureles.",
+            "links": []
+          },
+          {
+            "time": "10:30 - 12:30",
+            "activity": "🏘️ Visita al Pueblito Paisa",
+            "cost_cop": 13000,
+            "transport": "🚕 <strong>Taxi (15-20 min)</strong><br>Desde Laureles.",
+            "comments": "Subiremos al Cerro Nutibara para disfrutar de las vistas panorámicas de 360° de Medellín y la réplica de un pueblo tradicional antioqueño.",
+            "links": [
+              {
+                "name": "Ubicación: Pueblito Paisa",
+                "url": "https://www.google.com/maps/search/?api=1&query=Pueblito+Paisa+Cerro+Nutibara+Medellin"
+              }
+            ]
+          },
+          {
+            "time": "12:30 - 17:00",
+            "activity": "🗿 Tour por el Centro y Plaza Botero",
+            "cost_cop": 46860,
+            "transport": "🚇 <strong>Metro (20 min)</strong><br>Desde la estación más cercana al centro.",
+            "comments": "Exploraremos el corazón de Medellín. Visitaremos la Plaza Botero, el Parque Berrío y los alrededores. El costo incluye transporte y almuerzo.<br><strong>Consejo Táctico:</strong> Estar atentos a las pertenencias en esta zona concurrida.",
             "links": [
               {
                 "name": "Ubicación: Plaza Botero",
@@ -484,35 +491,15 @@
             ]
           },
           {
-            "time": "12:00 - 13:30",
-            "activity": "🍽️ Almuerzo en el Centro",
-            "cost_cop": 38000,
-            "transport": "👟 <strong>A pie</strong><br>En los alrededores de la Plaza Botero.",
-            "comments": "Probar la gastronomía local en el corazón de la ciudad.",
-            "links": []
-          },
-          {
-            "time": "13:30 - 18:00",
-            "activity": "🚶‍♀️ Tarde Libre",
-            "cost_cop": 0,
-            "transport": "🚇 <strong>Metro / 👟 A pie</strong>",
-            "comments": "Tiempo libre para explorar el centro, hacer compras o regresar al hotel a descansar antes de la noche.",
-            "links": []
-          },
-          {
             "time": "18:00 +",
             "activity": "🌆 Noche en El Poblado",
-            "cost_cop": 103430,
-            "transport": "🚇 <strong>Metro (30 min)</strong><br>Desde Est. Estadio a Est. Poblado.",
-            "comments": "Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna. Costo incluye cena y transporte.",
+            "cost_cop": 100000,
+            "transport": "🚇 <strong>Metro (30 min)</strong><br>Desde Est. Parque Berrío a Est. Poblado.",
+            "comments": "Descubrir el barrio más moderno y cosmopolita de Medellín, famoso por su vibrante escena gastronómica y vida nocturna.",
             "links": [
               {
                 "name": "Ubicación: Parque Lleras",
                 "url": "https://www.google.com/maps/search/?api=1&query=Parque+Lleras+El+Poblado+Medellin"
-              },
-              {
-                "name": "Restaurante El Cielo (Lujo)",
-                "url": "https://elcielorestaurant.com/restaurantes/medellin/"
               }
             ]
           }

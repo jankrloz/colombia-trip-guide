@@ -6,7 +6,7 @@ const renderLinks = (links) => {
   return links
     .map(
       link =>
-        `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline btn-primary mr-2 mb-2 h-auto">📍 ${link.name}</a>`
+        `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-primary mr-2 mb-2 h-auto">📍 ${link.name}</a>`
     )
     .join('')
 }
